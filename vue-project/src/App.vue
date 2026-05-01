@@ -36,7 +36,7 @@ const logout = () => {
       </nav>
 
       <div v-else class="user">
-        <span>👤 {{ username }}</span>
+        <!-- <span>👤 {{ username }}</span> -->
         <button @click="logout">Logout</button>
       </div>
     </header>

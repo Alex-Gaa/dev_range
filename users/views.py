@@ -21,7 +21,6 @@ class MeView(APIView):
 
     def get(self, request):
         user = request.user
-        profile = user.profile
 
         return Response({
             "id": user.id,
@@ -29,8 +28,24 @@ class MeView(APIView):
             "first_name": user.first_name,
             "last_name": user.last_name,
             "role": user.role,
+            "profile": ProfileSerializer(user.profile).data
+        })
 
-            "profile": ProfileSerializer(profile).data
+    # 🔥 ДОБАВЬ ЭТО
+    def patch(self, request):
+        user = request.user
+
+        user.first_name = request.data.get("first_name", user.first_name)
+        user.last_name = request.data.get("last_name", user.last_name)
+        user.save()
+
+        return Response({
+            "id": user.id,
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "role": user.role,
+            "profile": ProfileSerializer(user.profile).data
         })
 
 class LogoutView(APIView):

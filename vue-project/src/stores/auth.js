@@ -1,3 +1,4 @@
+//C:\Users\Developer\PycharmProjects\devrange\vue-project\src\stores\auth.js
 import { defineStore } from "pinia";
 import api from "../api/axios";
 
