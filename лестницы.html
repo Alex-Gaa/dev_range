@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ЛестницаПро | Производство и монтаж лестниц под ключ</title>
+    <!-- Preconnect для шрифтов и CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Google Fonts: Montserrat + Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (Free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FEFCF8;
+            color: #2D2A26;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4, .logo, .nav-link, .btn {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Цветовые переменные */
+        :root {
+            --primary: #B87B4A;
+            --primary-dark: #9A6239;
+            --primary-light: #E9D9CE;
+            --dark: #2E2A24;
+            --gray: #6B625A;
+            --light-bg: #F9F5F0;
+            --white: #FFFFFF;
+            --shadow-sm: 0 10px 30px rgba(0,0,0,0.05);
+            --shadow-md: 0 20px 35px -10px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        /* Стили кнопок */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            background: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(184, 123, 74, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(184, 123, 74, 0.25);
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            position: relative;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray);
+            max-width: 650px;
+            margin: 0 auto 3rem auto;
+            font-size: 1.1rem;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255,255,245,0.96);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #B87B4A, #9A6239);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .logo span {
+            font-weight: 400;
+            color: #2E2A24;
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #3D352E;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(110deg, #FEF8F0 0%, #FFF5EA 100%);
+            padding: 80px 0 60px;
+        }
+        .hero-grid {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+        .hero-content {
+            flex: 1;
+        }
+        .hero-badge {
+            background: rgba(184,123,74,0.15);
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        .hero-content p {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            max-width: 90%;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .stat-item h3 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .hero-image {
+            flex: 1;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s;
+        }
+        .hero-image:hover img {
+            transform: scale(1.02);
+        }
+
+        /* Карточки моделей (магазин) */
+        .catalog {
+            padding: 80px 0;
+            background: var(--white);
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+        .product-card {
+            background: var(--white);
+            border-radius: 28px;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #F0E7DE;
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-md);
+        }
+        .product-img {
+            height: 240px;
+            overflow: hidden;
+        }
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+        .product-card:hover .product-img img {
+            transform: scale(1.05);
+        }
+        .product-info {
+            padding: 24px;
+        }
+        .product-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .product-desc {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin: 12px 0;
+        }
+        .price {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin: 12px 0;
+        }
+        .btn-card {
+            width: 100%;
+            background: #F3EFEA;
+            color: var(--dark);
+            font-weight: 600;
+            justify-content: center;
+        }
+        .btn-card:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Типы лестниц */
+        .types {
+            background: var(--light-bg);
+            padding: 80px 0;
+        }
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+        }
+        .type-icon {
+            background: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 30px;
+            transition: all 0.2s;
+            border: 1px solid #f0e4d8;
+        }
+        .type-icon i {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 18px;
+        }
+        .type-icon h4 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        .type-icon:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.05);
+        }
+
+        /* Преимущества */
+        .features {
+            padding: 80px 0;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 30px;
+        }
+        .feature-card {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--white);
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+        .feature-card i {
+            font-size: 2.5rem;
+            background: #FEF2E8;
+            padding: 18px;
+            border-radius: 60px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        /* Процесс работы */
+        .process {
+            background: var(--white);
+            padding: 60px 0;
+        }
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .step {
+            flex: 1;
+            min-width: 180px;
+            text-align: center;
+            padding: 20px;
+            border-radius: 30px;
+            background: #FCF9F5;
+        }
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.5rem;
+            margin: 0 auto 20px;
+        }
+
+        /* Swiper портфолио */
+        .portfolio {
+            padding: 70px 0;
+            background: #FEF7EF;
+        }
+        .swiper {
+            width: 100%;
+            padding: 20px 0 50px;
+        }
+        .swiper-slide {
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .swiper-slide img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            display: block;
+        }
+        .slide-caption {
+            background: white;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Форма */
+        .form-section {
+            padding: 80px 0;
+            background: linear-gradient(145deg, #2E2A24 0%, #1E1B17 100%);
+            color: white;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255,255,245,0.05);
+            backdrop-filter: blur(8px);
+            border-radius: 48px;
+            padding: 40px;
+            border: 1px solid rgba(255,215,180,0.2);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 60px;
+            border: none;
+            background: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        textarea {
+            border-radius: 28px;
+            resize: vertical;
+        }
+        .form-btn {
+            background: var(--primary);
+            width: 100%;
+            justify-content: center;
+            border-radius: 60px;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #1C1915;
+            color: #C7C1B8;
+            padding: 50px 0 20px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #E1C6AD;
+        }
+        .social i {
+            font-size: 1.4rem;
+            margin-right: 18px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .social i:hover { color: var(--primary);}
+
+        @media (max-width: 768px) {
+            .mobile-menu {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                border-radius: 30px;
+                gap: 1rem;
+                text-align: center;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .hero-stats {
+                flex-wrap: wrap;
+            }
+        }
+        /* back to top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 99;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">Лестница<span>Про</span></div>
+            <div class="mobile-menu" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Главная</a></li>
+                <li><a href="#catalog">Модели</a></li>
+                <li><a href="#portfolio">Работы</a></li>
+                <li><a href="#contacts">Контакты</a></li>
+                <li><a href="#orderform" class="btn btn-outline" style="padding: 8px 20px;">Расчёт</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section id="home" class="hero">
+    <div class="container hero-grid">
+        <div class="hero-content">
+            <div class="hero-badge"><i class="fas fa-crown"></i> Премиум качество</div>
+            <h1>Лестницы, которые превращают дом в искусство</h1>
+            <p>Изготовление и монтаж лестниц любой сложности. Индивидуальный проект, лучшие материалы, гарантия 10 лет.</p>
+            <div class="hero-buttons">
+                <a href="#orderform" class="btn btn-primary"><i class="fas fa-calculator"></i> Рассчитать стоимость</a>
+                <a href="#catalog" class="btn btn-outline" style="margin-left: 10px;"><i class="fas fa-arrow-down"></i> Каталог</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item"><h3>320+</h3><p>Проектов</p></div>
+                <div class="stat-item"><h3>12 лет</h3><p>Опыта</p></div>
+                <div class="stat-item"><h3>100%</h3><p>Контроль качества</p></div>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800&auto=format" alt="Современная лестница в доме">
+        </div>
+    </div>
+</section>
+
+<!-- Каталог / Модели (Магазин) -->
+<section id="catalog" class="catalog">
+    <div class="container">
+        <h2 class="section-title">Популярные модели лестниц</h2>
+        <p class="section-subtitle">Выберите стиль, который подчеркнёт индивидуальность вашего интерьера</p>
+        <div class="product-grid">
+            <div class="product-card" data-model="Классическая Маршевая">
+                <div class="product-img"><img src="https://images.unsplash.com/photo-1600585153490-76fb20a32601?w=500&auto=format" alt="Маршевая лестница"></div>
+                <div class="product-info">
+                    <h3 class="product-title">Маршевая "Элеганс"</h3>
+                    <p class="product-desc">Дуб, орех, классические балясины. Эргономичный наклон.</p>
+                    <div class="price">от 145 000 ₽</div>
+                    <button class="btn btn-card order-model-btn"><i class="fas fa-shopping-cart"></i> Заказать проект</button>
+                </div>
+            </div>
+            <div class="product-card" data-model="Винтовая Лестница">
+                <div class="product-img"><img src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=500&auto=format" alt="Винтовая лестница"></div>
+                <div class="product-info">
+                    <h3 class="product-title">Винтовая "Ренессанс"</h3>
+                    <p class="product-desc">Компактная, изящная, экономит пространство. Металл + массив.</p>
+                    <div class="price">от 189 000 ₽</div>
+                    <button class="btn btn-card order-model-btn"><i class="fas fa-shopping-cart"></i> Заказать проект</button>
+                </div>
+            </div>
+            <div class="product-card" data-model="Стеклянная Консоль">
+                <div class="product-img"><img src="https://images.unsplash.com/photo-1564049489314-60d154ffaad3?w=500&auto=format" alt="Лестница на стекле"></div>
+                <div class="product-info">
+                    <h3 class="product-title">Консоль "Loft Vibe"</h3>
+                    <p class="product-desc">Стекло, хром, подсветка. Для современных интерьеров.</p>
+                    <div class="price">от 230 000 ₽</div>
+                    <button class="btn btn-card order-model-btn"><i class="fas fa-shopping-cart"></i> Заказать проект</button>
+                </div>
+            </div>
+            <div class="product-card" data-model="Комбинированная Лестница">
+                <div class="product-img"><img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=500&auto=format" alt="Дерево+металл"></div>
+                <div class="product-info">
+                    <h3 class="product-title">Дизайн "Авангард"</h3>
+                    <p class="product-desc">Металлокаркас, деревянные ступени, уникальный дизайн.</p>
+                    <div class="price">от 198 000 ₽</div>
+                    <button class="btn btn-card order-model-btn"><i class="fas fa-shopping-cart"></i> Заказать проект</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Типы лестниц -->
+<section class="types">
+    <div class="container">
+        <h2 class="section-title">Любые конструкции — под ваш проект</h2>
+        <div class="types-grid">
+            <div class="type-icon"><i class="fas fa-stairs"></i><h4>Прямые маршевые</h4><p>Классика и надёжность</p></div>
+            <div class="type-icon"><i class="fas fa-circle-notch"></i><h4>Винтовые</h4><p>Экономия места</p></div>
+            <div class="type-icon"><i class="fas fa-chalkboard"></i><h4>Модульные</h4><p>Быстрый монтаж</p></div>
+            <div class="type-icon"><i class="fas fa-waveform"></i><h4>Гнутые & радиусные</h4><p>Эксклюзивные формы</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- Преимущества -->
+<section class="features">
+    <div class="container">
+        <h2 class="section-title">Почему выбирают нас</h2>
+        <div class="features-grid">
+            <div class="feature-card"><i class="fas fa-ruler-combined"></i><h4>Бесплатный замер</h4><p>Выезд инженера и точный проект</p></div>
+            <div class="feature-card"><i class="fas fa-tree"></i><h4>Экологичные материалы</h4><p>Массивы ценных пород, сертификаты</p></div>
+            <div class="feature-card"><i class="fas fa-clock"></i><h4>Сжатые сроки</h4><p>Изготовление от 14 дней</p></div>
+            <div class="feature-card"><i class="fas fa-shield-alt"></i><h4>Гарантия 10 лет</h4><p>На все виды работ и материалы</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- Процесс работы -->
+<section class="process">
+    <div class="container">
+        <h2 class="section-title">Как мы создаём вашу лестницу</h2>
+        <div class="steps">
+            <div class="step"><div class="step-number">1</div><h4>Заявка</h4><p>Оставляете заявку, мы связываемся</p></div>
+            <div class="step"><div class="step-number">2</div><h4>Замер + дизайн</h4><p>Создаём 3D-модель и КП</p></div>
+            <div class="step"><div class="step-number">3</div><h4>Изготовление</h4><p>Собственное производство</p></div>
+            <div class="step"><div class="step-number">4</div><h4>Монтаж</h4><p>Профессиональная установка</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- Портфолио слайдер Swiper -->
+<section id="portfolio" class="portfolio">
+    <div class="container">
+        <h2 class="section-title">Наши последние работы</h2>
+        <p class="section-subtitle">Более 300 реализованных проектов по всей России</p>
+        <div class="swiper portfolioSwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&auto=format" alt="Лестница в загородном доме"><div class="slide-caption">Классический дуб, г. Москва</div></div>
+                <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format" alt="Минимализм"><div class="slide-caption">Стекло+металл, ЖК Сколково</div></div>
+                <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=600&auto=format" alt="Винтовая в стиле лофт"><div class="slide-caption">Винтовая "Лофт", частный дом</div></div>
+                <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=600&auto=format" alt="Парадная лестница"><div class="slide-caption">Мрамор и металл, особняк</div></div>
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Форма обратной связи + консультация -->
+<section id="orderform" class="form-section">
+    <div class="container form-container">
+        <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Проконсультируем бесплатно</h3>
+        <p style="margin-bottom: 1.5rem;">Оставьте заявку, и мы подберём идеальную лестницу для вашего дома</p>
+        <form id="leadForm">
+            <div class="form-group"><input type="text" id="name" placeholder="Ваше имя" required></div>
+            <div class="form-group"><input type="tel" id="phone" placeholder="+7 (___) ___-__-__" required></div>
+            <div class="form-group"><select id="modelSelect"><option value="">— Выберите модель (или напишите свою) —</option><option>Маршевая "Элеганс"</option><option>Винтовая "Ренессанс"</option><option>Консоль "Loft Vibe"</option><option>Дизайн "Авангард"</option><option>Индивидуальный проект</option></select></div>
+            <div class="form-group"><textarea rows="3" id="message" placeholder="Комментарий, пожелания..."></textarea></div>
+            <button type="submit" class="btn btn-primary form-btn"><i class="fas fa-paper-plane"></i> Отправить заявку</button>
+            <p style="font-size: 0.75rem; margin-top: 20px;">Нажимая на кнопку, вы соглашаетесь с политикой обработки данных</p>
+        </form>
+    </div>
+</section>
+
+<!-- Footer + контакты -->
+<footer id="contacts">
+    <div class="container">
+        <div class="footer-grid">
+            <div><div class="footer-logo">ЛестницаПро</div><p style="margin-top: 12px;">Индивидуальное производство лестниц премиум-класса с монтажом под ключ.</p></div>
+            <div><h4>Контакты</h4><p><i class="fas fa-phone-alt"></i> +7 (495) 123-45-67</p><p><i class="fab fa-whatsapp"></i> WhatsApp: +7 999 888-77-66</p><p><i class="fas fa-envelope"></i> info@lestnicapro.ru</p></div>
+            <div><h4>Адрес</h4><p>г. Москва, ул. Лесная, 12, стр. 3</p><p>Ежедневно с 9:00 до 20:00</p></div>
+            <div class="social"><h4>Мы в соцсетях</h4><i class="fab fa-instagram"></i><i class="fab fa-vk"></i><i class="fab fa-telegram"></i><i class="fab fa-youtube"></i></div>
+        </div>
+        <hr style="border-color: #322D27; margin: 20px 0;">
+        <p style="text-align: center;">© 2025 ЛестницаПро — производство и монтаж лестниц в дома.</p>
+    </div>
+</footer>
+<div class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></div>
+
+<!-- Swiper JS + скрипты -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    // Мобильное меню
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const navLinks = document.getElementById('navLinks');
+    mobileBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+    // Закрывать при клике на ссылку
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => navLinks.classList.remove('active'));
+    });
+
+    // Инициализация Swiper
+    const swiper = new Swiper('.portfolioSwiper', {
+        loop: true,
+        spaceBetween: 24,
+        slidesPerView: 1,
+        pagination: { el: '.swiper-pagination', clickable: true },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        breakpoints: {
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 }
+        }
+    });
+
+    // Кнопка "Заказать модель" - прокрутка к форме + предзаполнение селекта
+    const orderBtns = document.querySelectorAll('.order-model-btn');
+    orderBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const card = btn.closest('.product-card');
+            const modelName = card ? card.getAttribute('data-model') : '';
+            if(modelName){
+                const selectField = document.getElementById('modelSelect');
+                if(selectField){
+                    // пробуем найти опцию с таким текстом
+                    let optionExists = false;
+                    for(let opt of selectField.options){
+                        if(opt.text === modelName){
+                            opt.selected = true;
+                            optionExists = true;
+                            break;
+                        }
+                    }
+                    if(!optionExists){
+                        selectField.value = "";
+                        // кастомное заполнение через комментарий (опционально)
+                        const msgField = document.getElementById('message');
+                        if(msgField && msgField.value.trim() === "") msgField.value = `Интересует модель: ${modelName}`;
+                        else if(msgField) msgField.value = `${msgField.value}\nМодель: ${modelName}`;
+                    }
+                }
+            }
+            // плавный скролл к форме
+            document.getElementById('orderform').scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // Обработка формы
+    const leadForm = document.getElementById('leadForm');
+    leadForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        if(!name || !phone){
+            alert('Пожалуйста, укажите имя и телефон для связи');
+            return;
+        }
+        // Имитация отправки
+        alert(`Спасибо, ${name}! Ваша заявка принята. Наш специалист свяжется с вами в ближайшее время.`);
+        leadForm.reset();
+    });
+
+    // Back to top кнопка
+    const backBtn = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+        if(window.scrollY > 500){
+            backBtn.classList.add('show');
+        } else {
+            backBtn.classList.remove('show');
+        }
+    });
+    backBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Плавный скролл для всех якорей (доп)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if(href === "#" || href === "") return;
+            const target = document.querySelector(href);
+            if(target){
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth' });
+                if(navLinks.classList.contains('active')) navLinks.classList.remove('active');
+            }
+        });
+    });
+</script>
+</body>
+</html>

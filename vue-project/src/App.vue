@@ -42,7 +42,7 @@ const logout = () => {
     </header>
 
     <!-- CONTENT -->
-    <main class="content">
+    <main class="content-wrapper">
       <router-view />
     </main>
   </div>

@@ -1,3 +1,4 @@
+<!-- C:\Users\Developer\PycharmProjects\devrange\vue-project\src\views\LandingView.vue -->
 <script setup>
 import { useRouter } from "vue-router";
 

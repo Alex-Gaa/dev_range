@@ -1,17 +1,24 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import LoginView from "../views/LoginView.vue";
-import RegisterView from "../views/RegisterView.vue";
-import DashboardView from "../views/DashboardView.vue";
-import LandingView from "../views/LandingView.vue";
+/* PUBLIC */
+import LandingView from "@/views/LandingView.vue";
+import LoginView from "@/views/LoginView.vue";
+import RegisterView from "@/views/RegisterView.vue";
+
+/* LAYOUT */
+import DashboardLayout from "@/layouts/DashboardLayout.vue";
+
+/* DASHBOARD */
+import ProfileView from "@/views/dashboard/ProfileView.vue";
+import FeedView from "@/views/dashboard/FeedView.vue";
+import CreatePostView from "@/views/dashboard/CreatePostView.vue";
+import SettingsView from "@/views/dashboard/SettingsView.vue";
+import PostDetailView from "@/views/dashboard/PostDetailView.vue";
+
 const routes = [
   {
     path: "/",
     component: LandingView,
-  },
-  {
-    path: "/",
-    redirect: "/dashboard",
   },
 
   {
@@ -24,10 +31,46 @@ const routes = [
     component: RegisterView,
   },
 
+  /* =========================
+     DASHBOARD
+  ========================= */
   {
     path: "/dashboard",
-    component: DashboardView,
+    component: DashboardLayout,
     meta: { requiresAuth: true },
+
+    children: [
+      {
+        path: "",
+        redirect: "/dashboard/feed",
+      },
+
+      {
+        path: "profile",
+        component: ProfileView,
+      },
+
+      {
+        path: "feed",
+        component: FeedView,
+      },
+
+      {
+        path: "posts/create",
+        component: CreatePostView,
+      },
+
+      /* 👇 ВАЖНО: пост теперь внутри dashboard */
+      {
+        path: "posts/:slug",
+        component: PostDetailView,
+      },
+
+      {
+        path: "settings",
+        component: SettingsView,
+      },
+    ],
   },
 ];
 
@@ -36,7 +79,6 @@ const router = createRouter({
   routes,
 });
 
-// 🔐 GUARD
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("access");
 
