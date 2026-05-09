@@ -1,3 +1,4 @@
+<!-- C:\Users\Developer\PycharmProjects\devrange\frontend\src\views\DashboardView.vue -->
 <template>
 
   <AppLayout>
@@ -5,7 +6,7 @@
     <div class="mb-8">
 
       <h1 class="text-3xl font-bold">
-        Welcome back,
+        Добро пожаловать,
         {{ authStore.user?.first_name }}
       </h1>
 
@@ -58,15 +59,15 @@
       >
 
         <h3 class="text-lg font-semibold">
-          Lessons completed
+          Lessons
         </h3>
 
         <p class="text-4xl mt-4 font-bold text-green-600">
-          0
+          {{ completedLessons }} / {{ totalLessons }}
         </p>
 
         <p class="text-slate-500 mt-2">
-          Completed AI lessons
+          Completed / Total lessons
         </p>
 
       </BaseCard>
@@ -155,9 +156,7 @@
                 font-bold
               "
             >
-
               {{ child.first_name.charAt(0) }}
-
             </div>
 
           </div>
@@ -168,13 +167,7 @@
 
       <div
         v-else
-        class="
-          bg-white
-          border
-          rounded-2xl
-          p-10
-          text-center
-        "
+        class="bg-white border rounded-2xl p-10 text-center"
       >
 
         <h3 class="text-xl font-semibold">
@@ -202,16 +195,21 @@ import BaseCard from "@/components/ui/BaseCard.vue"
 
 import { useAuthStore } from "@/stores/auth"
 import { useChildrenStore } from "@/stores/children"
+import { useLessonsStore } from "@/stores/lessons"
 
 const router = useRouter()
 
 const authStore = useAuthStore()
 const childrenStore = useChildrenStore()
+const lessonsStore = useLessonsStore()
 
+/* LOAD DATA */
 onMounted(() => {
   childrenStore.fetchChildren()
+  lessonsStore.fetchAllLessons()
 })
 
+/* CHILDREN */
 const childrenCount = computed(() => {
   return childrenStore.children.length
 })
@@ -220,8 +218,18 @@ const recentChildren = computed(() => {
   return childrenStore.children.slice(0, 3)
 })
 
-/* NAVIGATION */
+/* LESSONS STATS */
+const totalLessons = computed(() => {
+  return lessonsStore.lessons.length
+})
 
+const completedLessons = computed(() => {
+  return lessonsStore.lessons.filter(
+    l => l.status === "completed"
+  ).length
+})
+
+/* NAVIGATION */
 const goToChildren = () => {
   router.push("/children")
 }

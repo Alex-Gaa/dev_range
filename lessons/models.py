@@ -1,0 +1,35 @@
+#C:\Users\Developer\PycharmProjects\devrange\lessons\models.py
+
+from django.db import models
+from children.models import Child
+
+
+class Lesson(models.Model):
+
+    class Status(models.TextChoices):
+        DRAFT = "draft", "Draft"
+        IN_PROGRESS = "in_progress", "In Progress"
+        COMPLETED = "completed", "Completed"
+
+    child = models.ForeignKey(
+        Child,
+        on_delete=models.CASCADE,
+        related_name="lessons"
+    )
+
+    title = models.CharField(max_length=255)
+
+    content = models.TextField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.DRAFT
+    )
+
+    progress = models.PositiveIntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.child.first_name})"

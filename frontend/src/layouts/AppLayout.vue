@@ -59,7 +59,7 @@
 
         <div>
           <h2 class="text-2xl font-semibold">
-            {{ userRole }} dashboard
+            {{ userRole }} дашборд
           </h2>
         </div>
 

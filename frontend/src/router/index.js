@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import LandingView from "@/views/LandingView.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import ChildrenView from "@/views/ChildrenView.vue"
-
+import LessonsView from "@/views/LessonsView.vue"
 const routes = [
   {
     path: "/",
@@ -22,6 +22,16 @@ const routes = [
     component: ChildrenView,
     meta: { requiresAuth: true },
   },
+  {
+    path: "/children/:id",
+    component: () => import("@/views/ChildDetailView.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+      path: "/lessons",
+      component: LessonsView,
+      meta: { requiresAuth: true },
+    },
 ];
 
 const router = createRouter({
