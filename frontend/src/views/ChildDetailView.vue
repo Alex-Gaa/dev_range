@@ -129,7 +129,10 @@
               p-5
               transition-all
               hover:shadow-md
+              hover:-translate-y-1
+              cursor-pointer
             "
+            @click="openLesson(lesson.id)"
           >
 
             <div class="flex items-start justify-between">
@@ -140,7 +143,7 @@
                   {{ lesson.title }}
                 </h3>
 
-                <p class="text-slate-500 text-sm mt-2">
+                <p class="text-slate-500 text-sm mt-2 line-clamp-3">
                   {{ lesson.content }}
                 </p>
 
@@ -216,7 +219,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue"
-import { useRoute } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 
 import AppLayout from "@/layouts/AppLayout.vue"
 
@@ -224,6 +227,7 @@ import { useChildrenStore } from "@/stores/children"
 import { useLessonsStore } from "@/stores/lessons"
 
 const route = useRoute()
+const router = useRouter()
 
 const childrenStore = useChildrenStore()
 const lessonsStore = useLessonsStore()
@@ -251,12 +255,18 @@ onMounted(async () => {
   await lessonsStore.fetchLessons(id)
 })
 
+/* OPEN LESSON */
+const openLesson = (id) => {
+  router.push(`/lessons/${id}`)
+}
+
 /* CREATE LESSON */
 const addLesson = async () => {
 
   if (!newLesson.value.title) return
 
   await lessonsStore.addLesson(child.value.id, {
+
     title: newLesson.value.title,
 
     content: newLesson.value.content,

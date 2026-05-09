@@ -28,10 +28,16 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-      path: "/lessons",
-      component: LessonsView,
-      meta: { requiresAuth: true },
-    },
+    path: "/lessons",
+    component: LessonsView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/lessons/:id",
+    name: "lesson-detail",
+    component: () => import("@/views/LessonDetailView.vue"),
+  },
+
 ];
 
 const router = createRouter({

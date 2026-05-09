@@ -1,3 +1,4 @@
+<!-- C:\Users\Developer\PycharmProjects\devrange\frontend\src\views\ChildrenView.vue-->
 <template>
   <AppLayout>
 
