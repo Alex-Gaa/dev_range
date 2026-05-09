@@ -5,8 +5,8 @@ from django.db import models
 
 class User(AbstractUser):
     class Role(models.TextChoices):
-        DEVELOPER = "developer", "Developer"
-        HR = "hr", "HR"
+        PARENT = "parent", "Parent"
+        TEACHER = "teacher", "Teacher"
         ADMIN = "admin", "Admin"
 
     username = models.CharField(max_length=150, unique=True)  # оставляем для Django
@@ -19,7 +19,7 @@ class User(AbstractUser):
     role = models.CharField(
         max_length=20,
         choices=Role.choices,
-        default=Role.DEVELOPER
+        default=Role.PARENT
     )
 
     is_verified = models.BooleanField(default=False)

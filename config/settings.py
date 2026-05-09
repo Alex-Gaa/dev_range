@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     # local
     'users',
     "rest_framework_simplejwt.token_blacklist",
-    'posts',
+    "children",
 ]
 
 MIDDLEWARE = [
