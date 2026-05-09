@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-_%ep@fo-i$zs(fve6@no04=3*-k6y#whvzxemx4t*m7zwuc(#2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'salutatory-marylouise-snugly.ngrok-free.dev']
 
 
 # Application definition
@@ -63,6 +63,18 @@ MIDDLEWARE = [
 
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+# Убеждаем Django, что запросы от ngrok — безопасные HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Указываем, каким HTTPS-адресам можно доверять (для CSRF-защиты)
+CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app']
+
+# Говорим Django использовать безопасные куки
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
 
 
 ROOT_URLCONF = 'config.urls'
