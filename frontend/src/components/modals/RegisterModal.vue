@@ -1,3 +1,4 @@
+<!--C:\Users\Developer\PycharmProjects\devrange\frontend\src\components\modals\RegisterModal.vue-->
 <script setup>
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
@@ -14,7 +15,7 @@ const form = ref({
   email: "",
   password: "",
   password2: "",
-  role: "developer",
+
 })
 
 const handleRegister = async () => {
