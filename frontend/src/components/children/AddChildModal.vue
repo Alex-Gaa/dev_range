@@ -1,3 +1,4 @@
+<!-- C:\Users\Developer\PycharmProjects\devrange\frontend\src\components\children\AddChildModal.vue -->
 <template>
   <div class="bg-white rounded-2xl p-8 w-full max-w-lg">
 
@@ -27,6 +28,12 @@
         placeholder="Child name"
         class="w-full border rounded-xl px-4 py-3"
       />
+      <input
+        v-model="form.last_name"
+        type="text"
+        placeholder="Last name"
+        class="w-full border p-3 rounded-xl"
+      />
 
       <input
         v-model="form.age"
@@ -40,6 +47,12 @@
         type="text"
         placeholder="Grade"
         class="w-full border rounded-xl px-4 py-3"
+      />
+      <input
+        v-model="form.email"
+        type="email"
+        placeholder="Child email (optional)"
+        class="w-full border p-3 rounded-xl"
       />
 
       <textarea
@@ -89,6 +102,8 @@ const emit = defineEmits([
 
 const form = reactive({
   first_name: "",
+  last_name: "",
+  email: "",
   age: "",
   grade: "",
   interests: "",

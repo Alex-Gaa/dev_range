@@ -1,5 +1,5 @@
-<!--C:\Users\Developer\PycharmProjects\devrange\frontend\src\views\LessonDetailView.vue-->
-<!-- src/views/LessonDetailView.vue -->
+<!-- C:\Users\Developer\PycharmProjects\devrange\frontend\src\views\LessonDetailView.vue -->
+
 <template>
   <AppLayout>
 
@@ -48,10 +48,11 @@
             class="px-4 py-2 rounded-full text-sm font-medium"
             :class="statusClass"
           >
-            {{ lesson.status }}
+            {{ formatStatus(lesson.status) }}
           </div>
 
         </div>
+
       </div>
 
       <!-- CONTENT -->
@@ -61,18 +62,32 @@
           Lesson content
         </h2>
 
-        <div v-if="!editMode" class="whitespace-pre-line text-slate-700">
+        <div
+          v-if="!editMode"
+          class="whitespace-pre-line text-slate-700"
+        >
           {{ lesson.content }}
         </div>
 
       </div>
 
-      <!-- ACTIONS -->
-      <div class="flex gap-3">
+      <!-- PARENT ACTIONS -->
+      <div
+        v-if="authStore.user?.role === 'parent'"
+        class="flex gap-3 flex-wrap"
+      >
 
-        <!-- EDIT TOGGLE -->
+        <!-- EDIT -->
         <button
-          class="bg-blue-600 text-white px-5 py-2 rounded-xl"
+          class="
+            bg-blue-600
+            hover:bg-blue-700
+            text-white
+            px-5
+            py-2
+            rounded-xl
+            transition
+          "
           @click="toggleEdit"
         >
           {{ editMode ? "Cancel" : "Edit" }}
@@ -81,7 +96,15 @@
         <!-- SAVE -->
         <button
           v-if="editMode"
-          class="bg-green-600 text-white px-5 py-2 rounded-xl"
+          class="
+            bg-green-600
+            hover:bg-green-700
+            text-white
+            px-5
+            py-2
+            rounded-xl
+            transition
+          "
           @click="saveLesson"
         >
           Save
@@ -89,8 +112,16 @@
 
         <!-- DELETE -->
         <button
-          class="bg-red-600 text-white px-5 py-2 rounded-xl"
-          @click="deleteLesson"
+          class="
+            bg-red-600
+            hover:bg-red-700
+            text-white
+            px-5
+            py-2
+            rounded-xl
+            transition
+          "
+          @click="removeLesson"
         >
           Delete
         </button>
@@ -98,11 +129,57 @@
         <!-- COMPLETE -->
         <button
           v-if="lesson.status !== 'completed'"
-          class="bg-emerald-600 text-white px-5 py-2 rounded-xl"
+          class="
+            bg-emerald-600
+            hover:bg-emerald-700
+            text-white
+            px-5
+            py-2
+            rounded-xl
+            transition
+          "
           @click="completeLesson"
         >
           Complete
         </button>
+
+      </div>
+
+      <!-- CHILD ACTIONS -->
+      <div
+        v-if="authStore.user?.role === 'child'"
+        class="flex gap-3"
+      >
+
+        <button
+          v-if="lesson.status !== 'completed'"
+          class="
+            bg-emerald-600
+            hover:bg-emerald-700
+            text-white
+            px-6
+            py-3
+            rounded-xl
+            transition
+          "
+          @click="completeLesson"
+        >
+          Mark as completed
+        </button>
+
+        <div
+          v-else
+          class="
+            px-5
+            py-3
+            rounded-xl
+            bg-green-100
+            text-green-700
+            font-medium
+          "
+        >
+          Lesson completed 🎉
+        </div>
 
       </div>
 
@@ -116,13 +193,18 @@ import { ref, computed, onMounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
 import AppLayout from "@/layouts/AppLayout.vue"
+
 import { useLessonsStore } from "@/stores/lessons"
+import { useAuthStore } from "@/stores/auth"
 
 const route = useRoute()
 const router = useRouter()
+
 const lessonsStore = useLessonsStore()
+const authStore = useAuthStore()
 
 const lesson = ref(null)
+
 const editMode = ref(false)
 
 const form = ref({
@@ -132,7 +214,10 @@ const form = ref({
 
 /* LOAD */
 onMounted(async () => {
-  lesson.value = await lessonsStore.fetchLesson(route.params.id)
+
+  lesson.value = await lessonsStore.fetchLesson(
+    route.params.id
+  )
 
   form.value = {
     title: lesson.value.title,
@@ -142,9 +227,11 @@ onMounted(async () => {
 
 /* TOGGLE EDIT */
 const toggleEdit = () => {
+
   editMode.value = !editMode.value
 
   if (!editMode.value) {
+
     form.value.title = lesson.value.title
     form.value.content = lesson.value.content
   }
@@ -152,36 +239,81 @@ const toggleEdit = () => {
 
 /* SAVE */
 const saveLesson = async () => {
-  const updated = await lessonsStore.updateLesson(lesson.value.id, {
-    title: form.value.title,
-    content: form.value.content,
-  })
+
+  const updated = await lessonsStore.updateLesson(
+    lesson.value.id,
+    {
+      title: form.value.title,
+      content: form.value.content,
+    }
+  )
 
   lesson.value = updated
+
   editMode.value = false
 }
 
 /* DELETE */
-const deleteLesson = async () => {
-  await lessonsStore.deleteLesson(lesson.value.id)
+const removeLesson = async () => {
+
+  const confirmed = confirm(
+    "Delete this lesson?"
+  )
+
+  if (!confirmed) return
+
+  await lessonsStore.deleteLesson(
+    lesson.value.id
+  )
+
   router.push("/lessons")
 }
 
 /* COMPLETE */
 const completeLesson = async () => {
-  const updated = await lessonsStore.updateLesson(lesson.value.id, {
-    status: "completed",
-  })
+
+  const updated = await lessonsStore.updateLesson(
+    lesson.value.id,
+    {
+      status: "completed",
+      progress: 100,
+    }
+  )
 
   lesson.value = updated
 }
 
+/* FORMAT STATUS */
+const formatStatus = (status) => {
+
+  switch (status) {
+
+    case "completed":
+      return "Completed"
+
+    case "in_progress":
+      return "In Progress"
+
+    default:
+      return "Draft"
+  }
+}
+
 /* STATUS STYLE */
 const statusClass = computed(() => {
+
   if (!lesson.value) return ""
 
-  return lesson.value.status === "completed"
-    ? "bg-green-100 text-green-700"
-    : "bg-yellow-100 text-yellow-700"
+  switch (lesson.value.status) {
+
+    case "completed":
+      return "bg-green-100 text-green-700"
+
+    case "in_progress":
+      return "bg-blue-100 text-blue-700"
+
+    default:
+      return "bg-slate-100 text-slate-700"
+  }
 })
 </script>

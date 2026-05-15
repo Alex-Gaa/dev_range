@@ -1,4 +1,5 @@
 <!-- C:\Users\Developer\PycharmProjects\devrange\frontend\src\components\children\ChildCard.vue -->
+
 <template>
   <div
     @click="openChild"
@@ -19,11 +20,11 @@
       <div>
 
         <h3 class="text-xl font-semibold">
-          {{ child.first_name }}
+          {{ child.first_name }} {{ child.last_name || "" }}
         </h3>
 
         <p class="text-slate-500">
-          {{ child.age }} years old
+          {{ child.age }} лет от роду
         </p>
 
       </div>
@@ -59,25 +60,73 @@
         {{ child.interests || "—" }}
       </p>
 
+      <p v-if="child.email">
+        <span class="font-medium">Email:</span>
+        {{ child.email }}
+      </p>
+
     </div>
 
+    <!-- INVITE -->
     <div
       v-if="child.has_account"
-      class="mt-5 p-4 rounded-xl bg-green-50"
+      class="
+        mt-5
+        p-4
+        rounded-xl
+        bg-green-50
+        border
+        border-green-100
+      "
     >
-      <p class="text-green-700 font-medium text-sm">
-        Invite link generated
-      </p>
 
-      <p class="text-xs text-slate-500 break-all mt-2">
-        {{ child.invite_link }}
-      </p>
+      <div class="flex items-center justify-between">
+
+        <p class="text-green-700 font-medium text-sm">
+          Invite link generated
+        </p>
+
+        <button
+          @click.stop="copyInviteLink"
+          class="
+            text-xs
+            bg-green-600
+            hover:bg-green-700
+            text-white
+            px-3
+            py-1
+            rounded-lg
+            transition
+          "
+        >
+          Copy
+        </button>
+
+      </div>
+
+      <a
+        :href="fullInviteLink"
+        target="_blank"
+        class="
+          text-xs
+          text-blue-600
+          break-all
+          mt-3
+          block
+          hover:underline
+        "
+        @click.stop
+      >
+        {{ fullInviteLink }}
+      </a>
+
     </div>
 
   </div>
 </template>
 
 <script setup>
+import { computed } from "vue"
 import { useRouter } from "vue-router"
 
 const props = defineProps({
@@ -86,6 +135,27 @@ const props = defineProps({
 
 const router = useRouter()
 
+/* FULL INVITE LINK */
+const fullInviteLink = computed(() => {
+
+  if (!props.child?.invite_link) {
+    return ""
+  }
+
+  return `${window.location.origin}${props.child.invite_link}`
+})
+
+/* COPY */
+const copyInviteLink = async () => {
+
+  await navigator.clipboard.writeText(
+    fullInviteLink.value
+  )
+
+  alert("Invite link copied")
+}
+
+/* OPEN CHILD */
 const openChild = () => {
   router.push(`/children/${props.child.id}`)
 }

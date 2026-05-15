@@ -6,6 +6,7 @@ from django.db import models
 class User(AbstractUser):
     class Role(models.TextChoices):
         PARENT = "parent", "Parent"
+        CHILD = "child", "Child"
         TEACHER = "teacher", "Teacher"
         ADMIN = "admin", "Admin"
 

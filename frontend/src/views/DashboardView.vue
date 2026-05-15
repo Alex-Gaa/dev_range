@@ -138,7 +138,7 @@
               </h3>
 
               <p class="text-slate-500">
-                {{ child.age }} years old
+                {{ child.age }} лет в обед
               </p>
 
             </div>

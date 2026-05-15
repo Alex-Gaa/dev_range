@@ -1,3 +1,4 @@
+#C:\Users\Developer\PycharmProjects\devrange\children\models.py
 from uuid import uuid4
 from datetime import timedelta
 
@@ -25,6 +26,17 @@ class Child(models.Model):
 
     # BASIC INFO
     first_name = models.CharField(max_length=255)
+
+    last_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    email = models.EmailField(
+        blank=True,
+        null=True
+    )
 
     age = models.PositiveIntegerField()
 

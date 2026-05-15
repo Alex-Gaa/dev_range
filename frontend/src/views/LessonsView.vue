@@ -1,5 +1,3 @@
-<!-- C:\Users\Developer\PycharmProjects\devrange\frontend\src\views\LessonsView.vue -->
-<!-- src/views/LessonsView.vue -->
 <template>
   <AppLayout>
 
@@ -53,18 +51,21 @@
         <!-- TOP -->
         <div class="flex items-start justify-between">
 
-          <!-- LEFT (click to open) -->
+          <!-- LEFT -->
           <div
             class="cursor-pointer"
             @click="openLesson(lesson.id)"
           >
+
             <h2 class="text-xl font-semibold">
               {{ lesson.title }}
             </h2>
 
             <p class="text-slate-500 mt-1">
-              Child: {{ lesson.child_name }}
+              Child:
+              {{ lesson.child_name }}
             </p>
+
           </div>
 
           <!-- STATUS -->
@@ -72,8 +73,11 @@
             class="px-3 py-1 rounded-full text-sm font-medium"
             :class="statusClass(lesson.status)"
           >
+
             {{ formatStatus(lesson.status) }}
+
           </div>
+
         </div>
 
         <!-- CONTENT -->
@@ -81,9 +85,11 @@
           class="mt-5 cursor-pointer"
           @click="openLesson(lesson.id)"
         >
+
           <p class="text-slate-700 line-clamp-4">
             {{ lesson.content }}
           </p>
+
         </div>
 
         <!-- PROGRESS -->
@@ -101,10 +107,23 @@
 
           </div>
 
-          <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+          <div
+            class="
+              w-full
+              h-3
+              bg-slate-100
+              rounded-full
+              overflow-hidden
+            "
+          >
 
             <div
-              class="h-full bg-blue-600 rounded-full transition-all"
+              class="
+                h-full
+                bg-blue-600
+                rounded-full
+                transition-all
+              "
               :style="{ width: `${lesson.progress}%` }"
             />
 
@@ -113,11 +132,21 @@
         </div>
 
         <!-- ACTIONS -->
-        <div class="flex gap-3 mt-6">
+        <div
+          v-if="!isChild"
+          class="flex gap-3 mt-6"
+        >
 
           <!-- EDIT -->
           <button
-            class="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700"
+            class="
+              px-4
+              py-2
+              rounded-xl
+              bg-blue-600
+              text-white
+              hover:bg-blue-700
+            "
             @click.stop="editLesson(lesson.id)"
           >
             Edit
@@ -125,7 +154,14 @@
 
           <!-- DELETE -->
           <button
-            class="px-4 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700"
+            class="
+              px-4
+              py-2
+              rounded-xl
+              bg-red-600
+              text-white
+              hover:bg-red-700
+            "
             @click.stop="deleteLesson(lesson.id)"
           >
             Delete
@@ -141,14 +177,23 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue"
+import { computed, onMounted } from "vue"
 import { useRouter } from "vue-router"
 
 import AppLayout from "@/layouts/AppLayout.vue"
+
 import { useLessonsStore } from "@/stores/lessons"
+import { useAuthStore } from "@/stores/auth"
 
 const router = useRouter()
+
 const lessonsStore = useLessonsStore()
+const authStore = useAuthStore()
+
+/* ROLE */
+const isChild = computed(() => {
+  return authStore.user?.role === "child"
+})
 
 onMounted(() => {
   lessonsStore.fetchAllLessons()
@@ -166,6 +211,7 @@ const editLesson = (id) => {
 
 /* DELETE */
 const deleteLesson = async (id) => {
+
   if (!confirm("Delete this lesson?")) return
 
   await lessonsStore.deleteLesson(id)
@@ -173,22 +219,30 @@ const deleteLesson = async (id) => {
 
 /* STATUS */
 const formatStatus = (status) => {
+
   switch (status) {
+
     case "completed":
       return "Completed"
+
     case "in_progress":
       return "In Progress"
+
     default:
       return "Draft"
   }
 }
 
 const statusClass = (status) => {
+
   switch (status) {
+
     case "completed":
       return "bg-green-100 text-green-700"
+
     case "in_progress":
       return "bg-blue-100 text-blue-700"
+
     default:
       return "bg-slate-100 text-slate-700"
   }

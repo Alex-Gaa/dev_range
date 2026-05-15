@@ -1,9 +1,12 @@
+//C:\Users\Developer\PycharmProjects\devrange\frontend\src\router\index.js
 import { createRouter, createWebHistory } from "vue-router";
 
 import LandingView from "@/views/LandingView.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import ChildrenView from "@/views/ChildrenView.vue"
 import LessonsView from "@/views/LessonsView.vue"
+import ChildInviteView from "@/views/ChildInviteView.vue"
+
 const routes = [
   {
     path: "/",
@@ -36,6 +39,12 @@ const routes = [
     path: "/lessons/:id",
     name: "lesson-detail",
     component: () => import("@/views/LessonDetailView.vue"),
+  },
+
+  {
+    path: "/child-invite/:token",
+    name: "child-invite",
+    component: ChildInviteView,
   },
 
 ];
