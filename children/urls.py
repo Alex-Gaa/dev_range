@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import (
     ChildListCreateView,
-    AcceptInviteView, ChildInviteDetailView,
+    AcceptInviteView, ChildInviteDetailView, ChildDetailView,
 )
 
 urlpatterns = [
@@ -21,4 +21,5 @@ urlpatterns = [
         "accept-invite/",
         AcceptInviteView.as_view()
     ),
+    path("<int:pk>/", ChildDetailView.as_view()),
 ]

@@ -109,3 +109,11 @@ class AcceptInviteView(generics.CreateAPIView):
             },
             status=status.HTTP_201_CREATED
         )
+
+# 🔥 NEW
+class ChildDetailView(generics.RetrieveAPIView):
+    serializer_class = ChildSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Child.objects.filter(parent=self.request.user)

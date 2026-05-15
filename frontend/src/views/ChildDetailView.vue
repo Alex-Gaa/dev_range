@@ -223,6 +223,8 @@ import { useRoute, useRouter } from "vue-router"
 
 import AppLayout from "@/layouts/AppLayout.vue"
 
+import api from "@/api/axios"
+
 import { useChildrenStore } from "@/stores/children"
 import { useLessonsStore } from "@/stores/lessons"
 
@@ -248,10 +250,24 @@ onMounted(async () => {
 
   const id = Number(route.params.id)
 
-  child.value = childrenStore.children.find(
+  // 1. TRY FROM STORE (fast path)
+  let found = childrenStore.children.find(
     c => c.id === id
   )
 
+  // 2. IF NOT FOUND → FETCH FROM API (refresh safe)
+  if (!found) {
+    try {
+      const res = await api.get(`/children/${id}/`)
+      found = res.data
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  child.value = found
+
+  // lessons always reload
   await lessonsStore.fetchLessons(id)
 })
 
@@ -268,11 +284,8 @@ const addLesson = async () => {
   await lessonsStore.addLesson(child.value.id, {
 
     title: newLesson.value.title,
-
     content: newLesson.value.content,
-
     status: "in_progress",
-
     progress: 10,
   })
 
@@ -294,38 +307,28 @@ const generateLesson = async () => {
     `,
 
     status: "in_progress",
-
     progress: 15,
   })
 }
 
 /* STATUS */
-
 const formatStatus = (status) => {
-
   switch (status) {
-
     case "completed":
       return "Completed"
-
     case "in_progress":
       return "In Progress"
-
     default:
       return "Draft"
   }
 }
 
 const statusClass = (status) => {
-
   switch (status) {
-
     case "completed":
       return "bg-green-100 text-green-700"
-
     case "in_progress":
       return "bg-blue-100 text-blue-700"
-
     default:
       return "bg-slate-100 text-slate-700"
   }
