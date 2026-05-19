@@ -1,3 +1,4 @@
+<!-- LessonsView.vue -->
 <template>
   <AppLayout>
 
@@ -16,7 +17,7 @@
 
     <!-- EMPTY -->
     <div
-      v-if="!lessonsStore.lessons.length"
+      v-if="!lessonsStore.lessons?.length"
       class="bg-white border rounded-2xl p-10 text-center"
     >
       <h2 class="text-2xl font-semibold">
@@ -63,7 +64,7 @@
 
             <p class="text-slate-500 mt-1">
               Child:
-              {{ lesson.child_name }}
+              {{ lesson.child_name || "Unknown" }}
             </p>
 
           </div>
@@ -73,21 +74,19 @@
             class="px-3 py-1 rounded-full text-sm font-medium"
             :class="statusClass(lesson.status)"
           >
-
             {{ formatStatus(lesson.status) }}
-
           </div>
 
         </div>
 
-        <!-- CONTENT -->
+        <!-- CONTENT PREVIEW -->
         <div
           class="mt-5 cursor-pointer"
           @click="openLesson(lesson.id)"
         >
 
           <p class="text-slate-700 line-clamp-4">
-            {{ lesson.content }}
+            {{ formatContent(lesson.content) }}
           </p>
 
         </div>
@@ -107,23 +106,10 @@
 
           </div>
 
-          <div
-            class="
-              w-full
-              h-3
-              bg-slate-100
-              rounded-full
-              overflow-hidden
-            "
-          >
+          <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
 
             <div
-              class="
-                h-full
-                bg-blue-600
-                rounded-full
-                transition-all
-              "
+              class="h-full bg-blue-600 rounded-full transition-all"
               :style="{ width: `${lesson.progress}%` }"
             />
 
@@ -139,14 +125,7 @@
 
           <!-- EDIT -->
           <button
-            class="
-              px-4
-              py-2
-              rounded-xl
-              bg-blue-600
-              text-white
-              hover:bg-blue-700
-            "
+            class="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700"
             @click.stop="editLesson(lesson.id)"
           >
             Edit
@@ -154,14 +133,7 @@
 
           <!-- DELETE -->
           <button
-            class="
-              px-4
-              py-2
-              rounded-xl
-              bg-red-600
-              text-white
-              hover:bg-red-700
-            "
+            class="px-4 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700"
             @click.stop="deleteLesson(lesson.id)"
           >
             Delete
@@ -195,8 +167,8 @@ const isChild = computed(() => {
   return authStore.user?.role === "child"
 })
 
-onMounted(() => {
-  lessonsStore.fetchAllLessons()
+onMounted(async () => {
+  await lessonsStore.fetchAllLessons()
 })
 
 /* OPEN */
@@ -217,17 +189,48 @@ const deleteLesson = async (id) => {
   await lessonsStore.deleteLesson(id)
 }
 
+/* FORMAT CONTENT (SAFE for AI JSON) */
+const formatContent = (content) => {
+
+  if (!content) return ""
+
+  if (typeof content === "string") {
+
+    try {
+      const parsed = JSON.parse(content)
+
+      return (
+        parsed.introduction ||
+        parsed.theory ||
+        parsed.title ||
+        JSON.stringify(parsed).slice(0, 200)
+      )
+
+    } catch {
+      return content
+    }
+  }
+
+  if (typeof content === "object") {
+    return (
+      content.introduction ||
+      content.theory ||
+      content.title ||
+      ""
+    )
+  }
+
+  return ""
+}
+
 /* STATUS */
 const formatStatus = (status) => {
 
   switch (status) {
-
     case "completed":
       return "Completed"
-
     case "in_progress":
       return "In Progress"
-
     default:
       return "Draft"
   }
@@ -236,13 +239,10 @@ const formatStatus = (status) => {
 const statusClass = (status) => {
 
   switch (status) {
-
     case "completed":
       return "bg-green-100 text-green-700"
-
     case "in_progress":
       return "bg-blue-100 text-blue-700"
-
     default:
       return "bg-slate-100 text-slate-700"
   }
