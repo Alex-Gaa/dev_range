@@ -1,17 +1,32 @@
-//C:\Users\Developer\PycharmProjects\devrange\frontend\src\router\index.js
-import { createRouter, createWebHistory } from "vue-router";
+// C:\Users\Developer\PycharmProjects\devrange\frontend\src\router\index.js
 
-import LandingView from "@/views/LandingView.vue";
-import DashboardView from "@/views/DashboardView.vue";
+import {
+  createRouter,
+  createWebHistory,
+} from "vue-router"
+
+import LandingView from "@/views/LandingView.vue"
+import DashboardView from "@/views/DashboardView.vue"
+
 import ChildrenView from "@/views/ChildrenView.vue"
+
 import LessonsView from "@/views/LessonsView.vue"
+
 import ChildInviteView from "@/views/ChildInviteView.vue"
+
+import ChildProgressView from "@/views/ChildProgressView.vue"
+
+import ChildAchievementsView from "@/views/ChildAchievementsView.vue"
+
+import ChildGoalsView from "@/views/ChildGoalsView.vue"
 
 const routes = [
   {
     path: "/",
     component: LandingView,
   },
+
+  /* DASHBOARD */
 
   {
     path: "/dashboard",
@@ -20,26 +35,50 @@ const routes = [
       requiresAuth: true,
     },
   },
+
+  /* CHILDREN */
+
   {
     path: "/children",
     component: ChildrenView,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+    },
   },
+
   {
     path: "/children/:id",
-    component: () => import("@/views/ChildDetailView.vue"),
-    meta: { requiresAuth: true },
+    component: () =>
+      import("@/views/ChildDetailView.vue"),
+
+    meta: {
+      requiresAuth: true,
+    },
   },
+
+  /* LESSONS */
+
   {
     path: "/lessons",
     component: LessonsView,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+    },
   },
+
   {
     path: "/lessons/:id",
     name: "lesson-detail",
-    component: () => import("@/views/LessonDetailView.vue"),
+
+    component: () =>
+      import("@/views/LessonDetailView.vue"),
+
+    meta: {
+      requiresAuth: true,
+    },
   },
+
+  /* CHILD INVITE */
 
   {
     path: "/child-invite/:token",
@@ -47,21 +86,59 @@ const routes = [
     component: ChildInviteView,
   },
 
-];
+  /* CHILD PROGRESS */
+
+  {
+    path: "/progress",
+    component: ChildProgressView,
+
+    meta: {
+      requiresAuth: true,
+    },
+  },
+
+  /* ACHIEVEMENTS */
+
+  {
+    path: "/achievements",
+    component: ChildAchievementsView,
+
+    meta: {
+      requiresAuth: true,
+    },
+  },
+
+  /* DAILY GOALS */
+
+  {
+    path: "/goals",
+    component: ChildGoalsView,
+
+    meta: {
+      requiresAuth: true,
+    },
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+})
+
+/* AUTH GUARD */
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem("access");
+
+  const token = localStorage.getItem("access")
 
   if (to.meta.requiresAuth && !token) {
-    next("/");
-  } else {
-    next();
-  }
-});
 
-export default router;
+    next("/")
+
+  } else {
+
+    next()
+  }
+})
+
+export default router

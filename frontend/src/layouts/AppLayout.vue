@@ -18,12 +18,22 @@
     >
 
       <!-- LOGO -->
+      <!-- LOGO -->
       <div class="p-6 border-b">
 
-        <h1 class="text-2xl font-bold text-blue-600">
+        <router-link
+          to="/dashboard"
+          class="
+            text-2xl
+            font-bold
+            text-blue-600
+            hover:text-blue-700
+            transition
+            inline-block
+          "
+        >
           AI Learning
-        </h1>
-
+        </router-link>
       </div>
 
       <!-- NAVIGATION -->

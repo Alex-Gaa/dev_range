@@ -19,7 +19,7 @@ class Lesson(models.Model):
 
     title = models.CharField(max_length=255)
 
-    content = models.TextField()
+    content = models.JSONField(default=dict)
 
     status = models.CharField(
         max_length=20,

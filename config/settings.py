@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure-_%ep@fo-i$zs(fve6@no04=3*-k6y#whvzxemx4t*m7zwuc(#2
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'salutatory-marylouise-snugly.ngrok-free.dev']
-
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Application definition
 
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # third-party
     'rest_framework',
     'corsheaders',
+    "generate",
 
     # local
     'users',

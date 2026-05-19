@@ -10,6 +10,7 @@ urlpatterns = [
     path("api/auth/", include("users.urls")),
     path("api/children/", include("children.urls")),
     path("api/lessons/", include("lessons.urls")),
+    path("api/generate/", include("generate.urls")),
 ]
 
 # ПРЯМАЯ ОТДАЧА ФАЙЛОВ ИЗ ПАПКИ assets (с правильными MIME-типами)
