@@ -1,3 +1,4 @@
+#C:\Users\Developer\PycharmProjects\devrange\generate\services\ai_lesson_service.py
 import hashlib
 import json
 
@@ -12,6 +13,10 @@ from generate.models import (
 )
 
 from lessons.models import Lesson
+from billing.services import (
+    can_generate_lesson,
+    increment_lessons_usage,
+)
 
 
 def generate_lesson(child, subject, topic, ai_client):
@@ -68,8 +73,19 @@ def generate_lesson(child, subject, topic, ai_client):
             f"Prompt rendering error: {str(e)}"
         )
 
+
+    # CHECK SUBSCRIPTION LIMIT
+
+    if not can_generate_lesson(
+        child.parent
+    ):
+
+        raise Exception(
+            "Monthly lessons limit reached"
+        )
     # 5. AI CALL
     ai_response_raw = ai_client.generate(prompt)
+
 
     # 6. SAFE JSON PARSING
     if isinstance(ai_response_raw, dict):
@@ -103,6 +119,9 @@ def generate_lesson(child, subject, topic, ai_client):
         content=ai_response,
         status="draft",
         progress=0
+    )
+    increment_lessons_usage(
+        child.parent
     )
 
     # 9. SAVE MEMORY

@@ -1,3 +1,4 @@
+#C:\Users\Developer\PycharmProjects\devrange\config\urls.py
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
@@ -11,6 +12,7 @@ urlpatterns = [
     path("api/children/", include("children.urls")),
     path("api/lessons/", include("lessons.urls")),
     path("api/generate/", include("generate.urls")),
+    path("api/billing/", include("billing.urls")),
 ]
 
 # ПРЯМАЯ ОТДАЧА ФАЙЛОВ ИЗ ПАПКИ assets (с правильными MIME-типами)

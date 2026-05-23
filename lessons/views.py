@@ -1,10 +1,11 @@
+#C:\Users\Developer\PycharmProjects\devrange\lessons\views.py
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
-
-from .models import Lesson
-from .serializers import LessonSerializer
-
+from django.db.models import Q
+from .models import Lesson, Topic, Subject
+from .serializers import LessonSerializer, TopicSerializer, SubjectSerializer
+from django.utils.text import slugify
 
 class LessonViewSet(viewsets.ModelViewSet):
 
@@ -86,3 +87,46 @@ class LessonViewSet(viewsets.ModelViewSet):
             )
 
         return super().destroy(request, *args, **kwargs)
+
+class SubjectViewSet(viewsets.ModelViewSet):
+    serializer_class = SubjectSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        return Subject.objects.filter(
+            Q(is_global=True) |
+            Q(parent=user)
+        )
+
+    def perform_create(self, serializer):
+
+        name = serializer.validated_data["name"]
+
+        serializer.save(
+            parent=self.request.user,
+            slug=slugify(name)
+        )
+
+
+class TopicViewSet(viewsets.ModelViewSet):
+
+    serializer_class = TopicSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+
+        user = self.request.user
+
+        queryset = Topic.objects.filter(
+            Q(subject__is_global=True) |
+            Q(subject__parent=user)
+        )
+
+        subject_id = self.request.query_params.get("subject")
+
+        if subject_id:
+            queryset = queryset.filter(subject_id=subject_id)
+
+        return queryset

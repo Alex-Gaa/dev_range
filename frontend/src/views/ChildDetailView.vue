@@ -1,13 +1,11 @@
-<!-- ChildDetailView.vue -->
+<!-- C:\Users\Developer\PycharmProjects\devrange\frontend\src\views\ChildDetailView.vue -->
 <!-- ChildDetailView.vue -->
 <template>
   <AppLayout>
-
     <div v-if="child" class="space-y-6">
 
       <!-- HEADER -->
       <div class="bg-white border rounded-2xl p-6">
-
         <h1 class="text-3xl font-bold">
           {{ child.first_name }}
         </h1>
@@ -15,27 +13,33 @@
         <p class="text-slate-500 mt-2">
           {{ child.age }} years old • Grade {{ child.grade }}
         </p>
-
       </div>
 
       <!-- ACTIONS -->
       <div class="flex gap-4">
-
         <button
           class="border px-6 py-3 rounded-xl hover:bg-slate-50 transition"
           @click="goToProgress"
         >
           View progress
         </button>
-
       </div>
 
       <!-- AI GENERATOR -->
       <div class="bg-white border rounded-2xl p-6">
 
-        <h2 class="text-xl font-semibold mb-5">
-          Generate AI Lesson
-        </h2>
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-xl font-semibold">
+            Generate AI Lesson
+          </h2>
+
+          <div v-if="subscription" class="text-sm text-slate-500">
+            AI lessons:
+            <span class="font-semibold">{{ subscription.lessons_used }}</span>
+            /
+            <span class="font-semibold">{{ subscription.lessons_limit }}</span>
+          </div>
+        </div>
 
         <div class="space-y-4">
 
@@ -45,18 +49,31 @@
             class="w-full border rounded-xl px-4 py-3"
           >
             <option value="">Select subject</option>
-            <option value="math">Mathematics</option>
-            <option value="english">English</option>
-            <option value="science">Science</option>
-            <option value="history">History</option>
+
+            <option
+              v-for="subject in subjects"
+              :key="subject.id"
+              :value="subject.id"
+            >
+              {{ subject.name }}
+            </option>
           </select>
 
           <!-- TOPIC -->
-          <input
+          <select
             v-model="aiForm.topic"
-            placeholder="Lesson topic (example: fractions)"
             class="w-full border rounded-xl px-4 py-3"
-          />
+          >
+            <option value="">Select topic</option>
+
+            <option
+              v-for="topic in topics"
+              :key="topic.id"
+              :value="topic.name"
+            >
+              {{ topic.name }}
+            </option>
+          </select>
 
           <!-- CHILD INFO -->
           <div class="bg-slate-50 border rounded-xl p-4 text-sm text-slate-600">
@@ -86,12 +103,10 @@
           </button>
 
         </div>
-
       </div>
 
       <!-- CREATE LESSON -->
       <div class="bg-white border rounded-2xl p-6">
-
         <h2 class="text-xl font-semibold mb-4">
           Create lesson manually
         </h2>
@@ -115,7 +130,6 @@
         >
           Save lesson
         </button>
-
       </div>
 
       <!-- LESSONS LIST -->
@@ -133,7 +147,7 @@
           v-if="lessons.length === 0"
           class="text-slate-500 text-center py-10"
         >
-          No lessons yet. Create or generate first lesson.
+          No lessons yet.
         </div>
 
         <div v-else class="space-y-4">
@@ -144,79 +158,30 @@
             class="border rounded-xl p-5 hover:shadow-md cursor-pointer"
             @click="openLesson(lesson.id)"
           >
+            <h3 class="font-semibold text-lg">
+              {{ lesson.title }}
+            </h3>
 
-            <div class="flex items-start justify-between gap-4">
-
-              <div class="flex-1">
-
-                <h3 class="font-semibold text-lg">
-                  {{ lesson.title }}
-                </h3>
-
-                <!-- SMART PREVIEW -->
-                <p class="text-slate-500 text-sm mt-2 line-clamp-3">
-
-                  <template v-if="lesson.parsedContent">
-
-                    {{ lesson.parsedContent.introduction ||
-                       lesson.parsedContent.theory ||
-                       lesson.parsedContent.summary ||
-                       lesson.title }}
-
-                  </template>
-
-                  <template v-else>
-                    {{ lesson.content }}
-                  </template>
-
-                </p>
-
-              </div>
-
-              <div
-                class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap"
-                :class="statusClass(lesson.status)"
-              >
-                {{ formatStatus(lesson.status) }}
-              </div>
-
-            </div>
-
-            <!-- PROGRESS -->
-            <div class="mt-5">
-
-              <div class="flex justify-between text-sm mb-2">
-                <span class="text-slate-500">Progress</span>
-                <span class="font-medium">{{ lesson.progress }}%</span>
-              </div>
-
-              <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                <div
-                  class="h-full bg-blue-600 rounded-full transition-all"
-                  :style="{ width: `${lesson.progress}%` }"
-                />
-              </div>
-
-            </div>
+            <p class="text-slate-500 text-sm mt-2 line-clamp-3">
+              {{ lesson.title }}
+            </p>
 
           </div>
 
         </div>
-
       </div>
 
     </div>
-
   </AppLayout>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, onMounted, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
 import AppLayout from "@/layouts/AppLayout.vue"
-
 import api from "@/api/axios"
+
 import { useChildrenStore } from "@/stores/children"
 import { useLessonsStore } from "@/stores/lessons"
 
@@ -228,13 +193,14 @@ const lessonsStore = useLessonsStore()
 
 const child = ref(null)
 
+const subjects = ref([])
+const topics = ref([])
+const subscription = ref(null)
+
 const loadingAI = ref(false)
 const aiError = ref("")
 
-const newLesson = ref({
-  title: "",
-  content: "",
-})
+const newLesson = ref({ title: "", content: "" })
 
 const aiForm = ref({
   subject: "",
@@ -243,28 +209,26 @@ const aiForm = ref({
 
 const lessons = computed(() => lessonsStore.lessons)
 
-/* 🔥 FIX: parsed lessons */
-const parsedLessons = computed(() => {
-  return lessons.value.map((lesson) => {
-    let parsed = null
+/* PARSE */
+const parsedLessons = computed(() =>
+  lessons.value.map(l => ({ ...l }))
+)
 
-    try {
-      parsed =
-        typeof lesson.content === "string"
-          ? JSON.parse(lesson.content)
-          : lesson.content
-    } catch (e) {
-      parsed = null
-    }
+/* LOAD TOPICS WHEN SUBJECT CHANGES */
+watch(() => aiForm.value.subject, async (val) => {
+  if (!val) {
+    topics.value = []
+    return
+  }
 
-    return {
-      ...lesson,
-      parsedContent: parsed,
-    }
-  })
+  try {
+    const res = await api.get(`/lessons/topics/?subject=${val}`)
+    topics.value = res.data
+  } catch (e) {
+    console.error(e)
+  }
 })
 
-/* INIT */
 onMounted(async () => {
 
   const id = Number(route.params.id)
@@ -272,56 +236,38 @@ onMounted(async () => {
   let found = childrenStore.children.find(c => c.id === id)
 
   if (!found) {
-    try {
-      const res = await api.get(`/children/${id}/`)
-      found = res.data
-    } catch (e) {
-      console.error(e)
-    }
+    const res = await api.get(`/children/${id}/`)
+    found = res.data
   }
 
   child.value = found
 
   if (child.value) {
     await lessonsStore.fetchLessons(child.value.id)
+
+    subjects.value = (await api.get("/lessons/subjects/")).data
+    subscription.value = (await api.get("/billing/subscription/")).data
   }
 })
 
-/* OPEN */
-const openLesson = (id) => {
-  router.push(`/lessons/${id}`)
-}
+const openLesson = (id) => router.push(`/lessons/${id}`)
+const goToProgress = () => router.push("/progress")
 
-/* PROGRESS */
-const goToProgress = () => {
-  router.push("/progress")
-}
-
-/* MANUAL LESSON */
 const addLesson = async () => {
-
   if (!child.value || !newLesson.value.title) return
 
-  await lessonsStore.addLesson(child.value.id, {
-    title: newLesson.value.title,
-    content: newLesson.value.content,
-    status: "in_progress",
-    progress: 10,
-  })
+  await lessonsStore.addLesson(child.value.id, newLesson.value)
 
-  newLesson.value.title = ""
-  newLesson.value.content = ""
+  newLesson.value = { title: "", content: "" }
 
   await lessonsStore.fetchLessons(child.value.id)
 }
 
-/* AI GENERATION */
 const generateLesson = async () => {
-
   if (!child.value) return
 
   if (!aiForm.value.subject || !aiForm.value.topic) {
-    aiError.value = "Please select subject and topic"
+    aiError.value = "Select subject and topic"
     return
   }
 
@@ -329,42 +275,21 @@ const generateLesson = async () => {
   aiError.value = ""
 
   try {
-
-    await api.post("/generate/lesson/", {
+    await api.post("/lessons/generate/lesson/", {
       child_id: child.value.id,
-      subject: aiForm.value.subject,
+      subject_id: aiForm.value.subject,
       topic: aiForm.value.topic,
     })
 
     await lessonsStore.fetchLessons(child.value.id)
 
-    aiForm.value.subject = ""
-    aiForm.value.topic = ""
-
   } catch (e) {
-
-    aiError.value =
-      e.response?.data?.error || "AI generation failed"
-
+    aiError.value = e.response?.data?.error || "AI error"
   } finally {
     loadingAI.value = false
   }
 }
 
-/* STATUS */
-const formatStatus = (status) => {
-  switch (status) {
-    case "completed": return "Completed"
-    case "in_progress": return "In Progress"
-    default: return "Draft"
-  }
-}
-
-const statusClass = (status) => {
-  switch (status) {
-    case "completed": return "bg-green-100 text-green-700"
-    case "in_progress": return "bg-blue-100 text-blue-700"
-    default: return "bg-slate-100 text-slate-700"
-  }
-}
+const formatStatus = s => s
+const statusClass = () => ""
 </script>

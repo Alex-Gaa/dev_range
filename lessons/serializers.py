@@ -1,7 +1,7 @@
 #C:\Users\Developer\PycharmProjects\devrange\lessons\serializers.py
 
 from rest_framework import serializers
-from .models import Lesson
+from .models import Lesson, Subject, Topic
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -23,4 +23,38 @@ class LessonSerializer(serializers.ModelSerializer):
             "status",
             "progress",
             "created_at",
+        ]
+
+# lessons/serializers.py
+
+class SubjectSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Subject
+
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "is_global",
+        ]
+
+        read_only_fields = [
+            "slug",
+            "is_global",
+        ]
+class TopicSerializer(serializers.ModelSerializer):
+
+    subject_name = serializers.CharField(
+        source="subject.name",
+        read_only=True
+    )
+
+    class Meta:
+        model = Topic
+        fields = [
+            "id",
+            "name",
+            "subject",
+            "subject_name",
         ]

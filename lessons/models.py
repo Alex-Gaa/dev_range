@@ -1,5 +1,5 @@
 #C:\Users\Developer\PycharmProjects\devrange\lessons\models.py
-
+from django.conf import settings
 from django.db import models
 from children.models import Child
 
@@ -33,3 +33,52 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.child.first_name})"
+
+class Subject(models.Model):
+
+    name = models.CharField(
+        max_length=255
+    )
+
+    slug = models.SlugField(
+        unique=True
+    )
+
+    parent = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="subjects"
+    )
+
+    is_global = models.BooleanField(
+        default=False
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return self.name
+
+class Topic(models.Model):
+
+    subject = models.ForeignKey(
+        Subject,
+        related_name="topics",
+        on_delete=models.CASCADE
+    )
+
+    name = models.CharField(
+        max_length=255
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return self.name
+

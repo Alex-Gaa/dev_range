@@ -15,6 +15,11 @@ export const sidebarConfig = {
       path: "/children",
       icon: "👨‍👩‍👧",
     },
+    {
+      label: "Subjects",
+      path: "/subjects",
+      icon: "📖",
+    },
 
     {
       label: "Lessons",
@@ -27,6 +32,7 @@ export const sidebarConfig = {
       path: "/billing",
       icon: "💳",
     },
+
   ],
 
   child: [

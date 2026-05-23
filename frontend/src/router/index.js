@@ -19,7 +19,8 @@ import ChildProgressView from "@/views/ChildProgressView.vue"
 import ChildAchievementsView from "@/views/ChildAchievementsView.vue"
 
 import ChildGoalsView from "@/views/ChildGoalsView.vue"
-
+import SubjectsView from "@/views/SubjectsView.vue"
+import BillingView from "@/views/BillingView.vue"
 const routes = [
   {
     path: "/",
@@ -54,6 +55,12 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+  },
+
+  {
+    path: "/subjects",
+    name: "subjects",
+    component: () => import("@/views/SubjectsView.vue"),
   },
 
   /* LESSONS */
@@ -117,6 +124,11 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+  },
+
+  {
+    path: "/billing",
+    component: BillingView,
   },
 ]
 
