@@ -11,6 +11,28 @@ class LessonSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
+    subject = serializers.PrimaryKeyRelatedField(
+        queryset=Subject.objects.all(),
+        required=False,
+        allow_null=True
+    )
+
+    topic = serializers.PrimaryKeyRelatedField(
+        queryset=Topic.objects.all(),
+        required=False,
+        allow_null=True
+    )
+
+    subject_name = serializers.CharField(
+        source="subject.name",
+        read_only=True
+    )
+
+    topic_name = serializers.CharField(
+        source="topic.name",
+        read_only=True
+    )
+
     class Meta:
         model = Lesson
 
@@ -18,13 +40,19 @@ class LessonSerializer(serializers.ModelSerializer):
             "id",
             "child",
             "child_name",
+
+            "subject",
+            "subject_name",
+
+            "topic",
+            "topic_name",
+
             "title",
             "content",
             "status",
             "progress",
             "created_at",
         ]
-
 # lessons/serializers.py
 
 class SubjectSerializer(serializers.ModelSerializer):

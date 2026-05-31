@@ -101,12 +101,20 @@ class SubjectViewSet(viewsets.ModelViewSet):
         )
 
     def perform_create(self, serializer):
-
         name = serializer.validated_data["name"]
+        base_slug = slugify(name)
+
+        slug = base_slug
+        counter = 1
+
+        # делаем уникальный slug
+        while Subject.objects.filter(slug=slug).exists():
+            slug = f"{base_slug}-{counter}"
+            counter += 1
 
         serializer.save(
             parent=self.request.user,
-            slug=slugify(name)
+            slug=slug
         )
 
 

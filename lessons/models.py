@@ -4,36 +4,6 @@ from django.db import models
 from children.models import Child
 
 
-class Lesson(models.Model):
-
-    class Status(models.TextChoices):
-        DRAFT = "draft", "Draft"
-        IN_PROGRESS = "in_progress", "In Progress"
-        COMPLETED = "completed", "Completed"
-
-    child = models.ForeignKey(
-        Child,
-        on_delete=models.CASCADE,
-        related_name="lessons"
-    )
-
-    title = models.CharField(max_length=255)
-
-    content = models.JSONField(default=dict)
-
-    status = models.CharField(
-        max_length=20,
-        choices=Status.choices,
-        default=Status.DRAFT
-    )
-
-    progress = models.PositiveIntegerField(default=0)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.title} ({self.child.first_name})"
-
 class Subject(models.Model):
 
     name = models.CharField(
@@ -81,4 +51,51 @@ class Topic(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Lesson(models.Model):
+
+    class Status(models.TextChoices):
+        DRAFT = "draft", "Draft"
+        IN_PROGRESS = "in_progress", "In Progress"
+        COMPLETED = "completed", "Completed"
+
+    child = models.ForeignKey(
+        Child,
+        on_delete=models.CASCADE,
+        related_name="lessons"
+    )
+
+    title = models.CharField(max_length=255)
+
+    content = models.JSONField(default=dict)
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.DRAFT
+    )
+    subject = models.ForeignKey(
+        Subject,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="lessons"
+    )
+
+    topic = models.ForeignKey(
+        Topic,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="lessons"
+    )
+
+    progress = models.PositiveIntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.child.first_name})"
+
 

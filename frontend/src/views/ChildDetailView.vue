@@ -111,6 +111,42 @@
           Create lesson manually
         </h2>
 
+        <!-- SUBJECT -->
+        <select
+          v-model="newLesson.subject"
+          class="w-full border rounded-xl px-4 py-3 mb-3"
+        >
+          <option value="">
+            Select subject
+          </option>
+
+          <option
+            v-for="subject in subjects"
+            :key="subject.id"
+            :value="subject.id"
+          >
+            {{ subject.name }}
+          </option>
+        </select>
+
+        <!-- TOPIC -->
+        <select
+          v-model="newLesson.topic"
+          class="w-full border rounded-xl px-4 py-3 mb-3"
+        >
+          <option value="">
+            Select topic
+          </option>
+
+          <option
+            v-for="topic in manualTopics"
+            :key="topic.id"
+            :value="topic.id"
+          >
+            {{ topic.name }}
+          </option>
+        </select>
+
         <input
           v-model="newLesson.title"
           placeholder="Lesson title"
@@ -195,12 +231,18 @@ const child = ref(null)
 
 const subjects = ref([])
 const topics = ref([])
+const manualTopics = ref([])
 const subscription = ref(null)
 
 const loadingAI = ref(false)
 const aiError = ref("")
 
-const newLesson = ref({ title: "", content: "" })
+const newLesson = ref({
+  subject: "",
+  topic: "",
+  title: "",
+  content: ""
+})
 
 const aiForm = ref({
   subject: "",
@@ -228,6 +270,23 @@ watch(() => aiForm.value.subject, async (val) => {
     console.error(e)
   }
 })
+
+
+watch(() => newLesson.value.subject, async (val) => {
+
+  if (!val) {
+    manualTopics.value = []
+    return
+  }
+
+  try {
+    const res = await api.get(`/lessons/topics/?subject=${val}`)
+    manualTopics.value = res.data
+  } catch (e) {
+    console.error(e)
+  }
+})
+
 
 onMounted(async () => {
 
