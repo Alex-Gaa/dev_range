@@ -16,27 +16,122 @@ class LessonViewSet(viewsets.ModelViewSet):
 
         user = self.request.user
 
-        # PARENT
+        # BASE QUERYSET
+        queryset = Lesson.objects.select_related(
+            "child",
+            "subject",
+            "topic"
+        )
+
         if user.role == "parent":
 
-            queryset = Lesson.objects.filter(
+            queryset = queryset.filter(
                 child__parent=user
             )
 
-        # CHILD ACCOUNT
         elif user.role == "child":
 
-            queryset = Lesson.objects.filter(
+            queryset = queryset.filter(
                 child__linked_user=user
             )
 
         else:
-            queryset = Lesson.objects.none()
 
+            return Lesson.objects.none()
+
+        # SINGLE CHILD
         child_id = self.request.query_params.get("child")
 
         if child_id:
-            queryset = queryset.filter(child_id=child_id)
+            queryset = queryset.filter(
+                child_id=child_id
+            )
+
+        # MULTIPLE CHILDREN
+        children = self.request.query_params.get("children")
+
+        if children:
+            ids = [
+                child_id.strip()
+                for child_id in children.split(",")
+                if child_id.strip()
+            ]
+
+            queryset = queryset.filter(
+                child_id__in=ids
+            )
+
+        # STATUS
+        status = self.request.query_params.get("status")
+
+        if status:
+            queryset = queryset.filter(
+                status=status
+            )
+
+        # SUBJECT
+        subject = self.request.query_params.get("subject")
+
+        if subject:
+            queryset = queryset.filter(
+                subject_id=subject
+            )
+
+        # TOPIC
+        topic = self.request.query_params.get("topic")
+
+        if topic:
+            queryset = queryset.filter(
+                topic_id=topic
+            )
+
+        # SEARCH
+        search = self.request.query_params.get("search")
+
+        if search:
+            queryset = queryset.filter(
+                Q(title__icontains=search) |
+                Q(child__first_name__icontains=search) |
+                Q(subject__name__icontains=search) |
+                Q(topic__name__icontains=search)
+            )
+
+        # DATE RANGE
+        date_from = self.request.query_params.get("date_from")
+
+        if date_from:
+            queryset = queryset.filter(
+                created_at__date__gte=date_from
+            )
+
+        date_to = self.request.query_params.get("date_to")
+
+        if date_to:
+            queryset = queryset.filter(
+                created_at__date__lte=date_to
+            )
+
+        # ORDERING
+        ordering = self.request.query_params.get(
+            "ordering",
+            "-created_at"
+        )
+
+        allowed_ordering = [
+            "created_at",
+            "-created_at",
+            "title",
+            "-title",
+            "status",
+            "-status",
+            "progress",
+            "-progress",
+        ]
+
+        if ordering in allowed_ordering:
+            queryset = queryset.order_by(
+                ordering
+            )
 
         return queryset
 

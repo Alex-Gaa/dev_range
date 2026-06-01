@@ -46,6 +46,159 @@
 
 
     </div>
+    <!-- FILTERS -->
+    <div
+      class="
+        bg-white
+        border
+        rounded-2xl
+        p-5
+        mb-6
+      "
+    >
+
+      <div
+        class="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          lg:grid-cols-5
+          gap-4
+        "
+      >
+
+        <!-- SEARCH -->
+        <input
+          v-model="filters.search"
+          placeholder="Search lessons..."
+          class="border rounded-xl px-4 py-3"
+        />
+
+        <!-- CHILD -->
+        <select
+          v-model="filters.child"
+          class="border rounded-xl px-4 py-3"
+        >
+          <option value="">
+            All children
+          </option>
+
+          <option
+            v-for="child in children"
+            :key="child.id"
+            :value="child.id"
+          >
+            {{ child.first_name }}
+          </option>
+
+        </select>
+
+        <!-- STATUS -->
+        <select
+          v-model="filters.status"
+          class="border rounded-xl px-4 py-3"
+        >
+          <option value="">
+            All statuses
+          </option>
+
+          <option value="draft">
+            Draft
+          </option>
+
+          <option value="in_progress">
+            In Progress
+          </option>
+
+          <option value="completed">
+            Completed
+          </option>
+
+        </select>
+
+        <!-- SUBJECT -->
+        <select
+          v-model="filters.subject"
+          class="border rounded-xl px-4 py-3"
+        >
+          <option value="">
+            All subjects
+          </option>
+
+          <option
+            v-for="subject in subjects"
+            :key="subject.id"
+            :value="subject.id"
+          >
+            {{ subject.name }}
+          </option>
+
+        </select>
+
+        <!-- ORDER -->
+        <select
+          v-model="filters.ordering"
+          class="border rounded-xl px-4 py-3"
+        >
+          <option value="-created_at">
+            Newest
+          </option>
+
+          <option value="created_at">
+            Oldest
+          </option>
+
+          <option value="title">
+            Title A-Z
+          </option>
+
+          <option value="-title">
+            Title Z-A
+          </option>
+
+          <option value="-progress">
+            Progress ↓
+          </option>
+
+          <option value="progress">
+            Progress ↑
+          </option>
+
+        </select>
+
+      </div>
+
+      <div class="flex gap-3 mt-4">
+
+        <button
+          @click="applyFilters"
+          class="
+            bg-blue-600
+            text-white
+            px-4
+            py-2
+            rounded-xl
+          "
+        >
+          Apply
+        </button>
+
+        <button
+          @click="resetFilters"
+          class="
+            border
+            px-4
+            py-2
+            rounded-xl
+          "
+        >
+          Reset
+        </button>
+
+      </div>
+
+    </div>
+
 
     <!-- LESSONS TAB -->
     <div v-if="activeTab === 'lessons'">
@@ -650,6 +803,15 @@ import { useAuthStore } from "@/stores/auth"
 
 const activeTab = ref("lessons")
 
+/* FILTERS */
+const filters = ref({
+  search: "",
+  child: "",
+  status: "",
+  subject: "",
+  ordering: "-created_at",
+})
+
 /* CREATE LESSON */
 const children = ref([])
 
@@ -662,7 +824,7 @@ const lessonForm = ref({
 })
 
 const createTopics = ref([])
-
+const filterTopics = ref([])
 /* SUBJECTS */
 const subjects = ref([])
 
@@ -715,6 +877,37 @@ watch(
     }
   }
 )
+watch(
+  () => filters.value.subject,
+  async (subjectId) => {
+
+    if (!subjectId) {
+
+      filterTopics.value = []
+
+      return
+    }
+
+    try {
+
+      const res = await api.get(
+        `/lessons/topics/?subject=${subjectId}`
+      )
+
+      filterTopics.value = res.data
+
+    } catch (error) {
+
+      console.error(error)
+
+      filterTopics.value = []
+
+    }
+
+  }
+)
+
+
 
 /* LOAD */
 onMounted(async () => {
@@ -788,6 +981,67 @@ const selectAllChildren = () => {
 
 const clearChildren = () => {
   lessonForm.value.children = []
+}
+
+/* LESSON FILTERS */
+const applyFilters = async () => {
+
+  try {
+
+    const params = {}
+
+    if (filters.value.search) {
+      params.search = filters.value.search
+    }
+
+    if (filters.value.child) {
+      params.child = filters.value.child
+    }
+
+    if (filters.value.status) {
+      params.status = filters.value.status
+    }
+
+    if (filters.value.subject) {
+      params.subject = filters.value.subject
+    }
+
+    if (filters.value.ordering) {
+      params.ordering = filters.value.ordering
+    }
+
+    const res = await api.get(
+      "/lessons/",
+      {
+        params
+      }
+    )
+
+    lessonsStore.lessons = res.data
+
+  } catch (error) {
+
+    console.error(
+      "Filter error:",
+      error
+    )
+
+  }
+}
+
+const resetFilters = async () => {
+
+  filters.value = {
+    search: "",
+    child: "",
+    status: "",
+    subject: "",
+    ordering: "-created_at",
+  }
+
+  filterTopics.value = []
+
+  await lessonsStore.fetchAllLessons()
 }
 
 /* OPEN */
@@ -1010,4 +1264,17 @@ const deleteTopic = async (id) => {
 
   await loadSubjects()
 }
+
+/* AUTO FILTER */
+watch(
+  filters,
+  async () => {
+
+    await applyFilters()
+
+  },
+  {
+    deep: true
+  }
+)
 </script>
