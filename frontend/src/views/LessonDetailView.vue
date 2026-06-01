@@ -30,13 +30,46 @@
             <!-- VIEW MODE -->
             <div v-else>
 
-              <h1 class="text-3xl font-bold">
-                {{ lesson.title }}
-              </h1>
+                <h1 class="text-3xl font-bold">
+                  {{ lesson.title }}
+                </h1>
 
-              <p class="text-slate-500 mt-2">
-                {{ lesson.child_name || "Child" }}
-              </p>
+                <p class="text-slate-500 mt-2">
+                  {{ lesson.child_name || "Child" }}
+                </p>
+
+                <!-- SUBJECT / TOPIC -->
+                <div class="flex gap-2 mt-4 flex-wrap">
+
+                  <span
+                    v-if="lesson.subject_name"
+                    class="
+                      bg-slate-100
+                      text-slate-700
+                      px-3
+                      py-1
+                      rounded-full
+                      text-sm
+                    "
+                  >
+                    {{ lesson.subject_name }}
+                  </span>
+
+                  <span
+                    v-if="lesson.topic_name"
+                    class="
+                      bg-blue-100
+                      text-blue-700
+                      px-3
+                      py-1
+                      rounded-full
+                      text-sm
+                    "
+                  >
+                    {{ lesson.topic_name }}
+                  </span>
+
+                </div>
 
             </div>
 

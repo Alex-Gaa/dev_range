@@ -31,7 +31,19 @@
             Subjects & Topics
           </button>
 
-        </div>
+
+          <button
+            @click="activeTab = 'create'"
+            class="px-4 py-2 rounded-xl border"
+            :class="activeTab === 'create'
+              ? 'bg-blue-600 text-white'
+              : ''"
+          >
+            Create Lesson
+          </button>
+
+      </div>
+
 
     </div>
 
@@ -195,6 +207,222 @@
           </div>
 
         </div>
+
+      </div>
+
+    </div>
+
+
+
+
+
+    <!-- CREATE LESSON TAB -->
+    <div
+      v-if="activeTab === 'create'"
+      class="max-w-4xl mx-auto"
+    >
+
+      <div class="bg-white border rounded-2xl p-6">
+
+        <h2 class="text-2xl font-semibold mb-6">
+          Create Lesson
+        </h2>
+
+        <!-- CHILD -->
+        <!-- CHILDREN -->
+        <div class="mb-4">
+
+          <label class="block text-sm font-medium mb-2">
+            Children
+          </label>
+
+          <!-- DROPDOWN BUTTON -->
+          <button
+            type="button"
+            @click="showChildren = !showChildren"
+            class="
+              w-full
+              border
+              rounded-xl
+              px-4
+              py-3
+              bg-white
+              flex
+              items-center
+              justify-between
+              hover:border-blue-400
+            "
+          >
+            <div class="text-left">
+
+              <div
+                v-if="lessonForm.children.length"
+                class="font-medium"
+              >
+                {{ lessonForm.children.length }}
+                selected
+              </div>
+
+              <div
+                v-if="selectedChildrenNames"
+                class="text-sm text-slate-500 truncate"
+              >
+                {{ selectedChildrenNames }}
+              </div>
+
+              <div
+                v-else
+                class="text-slate-400"
+              >
+                Select children
+              </div>
+
+            </div>
+
+            <span>
+              {{ showChildren ? "▲" : "▼" }}
+            </span>
+
+          </button>
+
+          <!-- DROPDOWN CONTENT -->
+          <div
+            v-if="showChildren"
+            class="
+              mt-2
+              border
+              rounded-xl
+              bg-white
+              p-4
+              shadow-lg
+            "
+          >
+
+            <div
+              class="
+                flex
+                justify-between
+                mb-4
+                text-sm
+              "
+            >
+
+              <button
+                type="button"
+                @click="selectAllChildren"
+                class="text-blue-600 hover:underline"
+              >
+                Select all
+              </button>
+
+              <button
+                type="button"
+                @click="clearChildren"
+                class="text-red-500 hover:underline"
+              >
+                Clear
+              </button>
+
+            </div>
+
+            <div
+              class="
+                max-h-60
+                overflow-y-auto
+                space-y-2
+              "
+            >
+
+              <label
+                v-for="child in children"
+                :key="child.id"
+                class="
+                  flex
+                  items-center
+                  gap-3
+                  p-2
+                  rounded-lg
+                  hover:bg-slate-50
+                  cursor-pointer
+                "
+              >
+
+                <input
+                  type="checkbox"
+                  :value="child.id"
+                  v-model="lessonForm.children"
+                />
+
+                <span>
+                  {{ child.first_name }}
+                </span>
+
+              </label>
+
+            </div>
+
+          </div>
+
+        </div>
+        <!-- SUBJECT -->
+        <select
+          v-model="lessonForm.subject"
+          class="w-full border rounded-xl px-4 py-3 mb-4"
+        >
+          <option value="">
+            Select subject
+          </option>
+
+          <option
+            v-for="subject in subjects"
+            :key="subject.id"
+            :value="subject.id"
+          >
+            {{ subject.name }}
+          </option>
+
+        </select>
+
+        <!-- TOPIC -->
+        <select
+          v-model="lessonForm.topic"
+          class="w-full border rounded-xl px-4 py-3 mb-4"
+        >
+          <option value="">
+            Select topic
+          </option>
+
+          <option
+            v-for="topic in createTopics"
+            :key="topic.id"
+            :value="topic.id"
+          >
+            {{ topic.name }}
+          </option>
+
+        </select>
+
+        <!-- TITLE -->
+        <input
+          v-model="lessonForm.title"
+          placeholder="Lesson title"
+          class="w-full border rounded-xl px-4 py-3 mb-4"
+        />
+
+        <!-- CONTENT -->
+        <textarea
+          v-model="lessonForm.content"
+          rows="8"
+          placeholder="Lesson content..."
+          class="w-full border rounded-xl px-4 py-3 mb-4"
+        />
+
+        <button
+          @click="createLesson"
+          class="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700"
+        >
+          Create Lesson
+        </button>
 
       </div>
 
@@ -412,7 +640,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, onMounted, watch } from "vue"
 import { useRouter } from "vue-router"
 
 import AppLayout from "@/layouts/AppLayout.vue"
@@ -421,6 +649,21 @@ import { useLessonsStore } from "@/stores/lessons"
 import { useAuthStore } from "@/stores/auth"
 
 const activeTab = ref("lessons")
+
+/* CREATE LESSON */
+const children = ref([])
+
+const lessonForm = ref({
+  children: [],
+  subject: "",
+  topic: "",
+  title: "",
+  content: "",
+})
+
+const createTopics = ref([])
+
+/* SUBJECTS */
 const subjects = ref([])
 
 const creating = ref(false)
@@ -434,7 +677,6 @@ const openSubjects = ref([])
 const addingTopicFor = ref(null)
 const newTopic = ref("")
 
-
 const router = useRouter()
 
 const lessonsStore = useLessonsStore()
@@ -445,13 +687,108 @@ const isChild = computed(() => {
   return authStore.user?.role === "child"
 })
 
+/* LOAD TOPICS FOR CREATE LESSON */
+watch(
+  () => lessonForm.value.subject,
+  async (subjectId) => {
+
+    if (!subjectId) {
+      createTopics.value = []
+      lessonForm.value.topic = ""
+      return
+    }
+
+    try {
+
+      const res = await api.get(
+        `/lessons/topics/?subject=${subjectId}`
+      )
+
+      createTopics.value = res.data
+
+    } catch (error) {
+
+      console.error(error)
+
+      createTopics.value = []
+
+    }
+  }
+)
+
+/* LOAD */
 onMounted(async () => {
 
   await lessonsStore.fetchAllLessons()
 
   await loadSubjects()
 
+  const childrenRes = await api.get("/children/")
+
+  children.value = childrenRes.data
+
 })
+
+
+/* CREATE LESSON */
+const createLesson = async () => {
+
+  if (
+    !lessonForm.value.children.length ||
+    !lessonForm.value.title
+  ) {
+    alert("Select at least one child and enter title")
+    return
+  }
+
+  try {
+
+    for (const childId of lessonForm.value.children) {
+
+      await lessonsStore.addLesson(
+        childId,
+        {
+          subject: lessonForm.value.subject || null,
+          topic: lessonForm.value.topic || null,
+          title: lessonForm.value.title,
+          content: lessonForm.value.content,
+        }
+      )
+
+    }
+
+    lessonForm.value = {
+      children: [],
+      subject: "",
+      topic: "",
+      title: "",
+      content: "",
+    }
+
+    createTopics.value = []
+
+    await lessonsStore.fetchAllLessons()
+
+    activeTab.value = "lessons"
+
+  } catch (error) {
+
+    console.error(error)
+
+    alert("Failed to create lesson")
+
+  }
+}
+const showChildren = ref(false)
+
+const selectAllChildren = () => {
+  lessonForm.value.children =
+    children.value.map(child => child.id)
+}
+
+const clearChildren = () => {
+  lessonForm.value.children = []
+}
 
 /* OPEN */
 const openLesson = (id) => {
@@ -471,7 +808,7 @@ const deleteLesson = async (id) => {
   await lessonsStore.deleteLesson(id)
 }
 
-/* FORMAT CONTENT (SAFE for AI JSON) */
+/* FORMAT CONTENT */
 const formatContent = (content) => {
 
   if (!content) return ""
@@ -479,6 +816,7 @@ const formatContent = (content) => {
   if (typeof content === "string") {
 
     try {
+
       const parsed = JSON.parse(content)
 
       return (
@@ -489,17 +827,21 @@ const formatContent = (content) => {
       )
 
     } catch {
+
       return content
+
     }
   }
 
   if (typeof content === "object") {
+
     return (
       content.introduction ||
       content.theory ||
       content.title ||
       ""
     )
+
   }
 
   return ""
@@ -511,13 +853,29 @@ const formatStatus = (status) => {
   switch (status) {
     case "completed":
       return "Completed"
+
     case "in_progress":
       return "In Progress"
+
     default:
       return "Draft"
   }
 }
 
+const statusClass = (status) => {
+
+  switch (status) {
+
+    case "completed":
+      return "bg-green-100 text-green-700"
+
+    case "in_progress":
+      return "bg-blue-100 text-blue-700"
+
+    default:
+      return "bg-slate-100 text-slate-700"
+  }
+}
 
 /* LOAD SUBJECTS */
 const loadSubjects = async () => {
@@ -549,13 +907,12 @@ const loadSubjects = async () => {
       })
 
     }
-
   }
 
   subjects.value = enriched
 }
 
-/* SUBJECTS */
+/* SUBJECTS CRUD */
 const createSubject = async () => {
 
   await api.post(
@@ -564,6 +921,7 @@ const createSubject = async () => {
   )
 
   form.value.name = ""
+
   creating.value = false
 
   await loadSubjects()
@@ -603,6 +961,7 @@ const saveEdit = async (id) => {
   await loadSubjects()
 }
 
+/* TREE */
 const toggle = (id) => {
 
   if (openSubjects.value.includes(id)) {
@@ -650,18 +1009,5 @@ const deleteTopic = async (id) => {
   )
 
   await loadSubjects()
-}
-
-
-const statusClass = (status) => {
-
-  switch (status) {
-    case "completed":
-      return "bg-green-100 text-green-700"
-    case "in_progress":
-      return "bg-blue-100 text-blue-700"
-    default:
-      return "bg-slate-100 text-slate-700"
-  }
 }
 </script>
