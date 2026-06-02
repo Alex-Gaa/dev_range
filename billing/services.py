@@ -1,10 +1,12 @@
-# C:\Users\Developer\PycharmProjects\devrange\billing\services.py
+# billing/services.py
 
 from datetime import timedelta
 
 from django.utils import timezone
+from django.db import transaction
 
 from billing.models import Subscription
+from billing.constants import PLANS
 
 
 def get_or_create_subscription(user):
@@ -17,6 +19,11 @@ def get_or_create_subscription(user):
 
 
 def activate_subscription(user, plan):
+
+    if plan not in PLANS:
+        raise ValueError(
+            f"Unknown plan: {plan}"
+        )
 
     subscription = get_or_create_subscription(user)
 
@@ -34,21 +41,85 @@ def activate_subscription(user, plan):
     return subscription
 
 
+def is_subscription_active(user):
+
+    subscription = get_or_create_subscription(user)
+
+    if subscription.status != "active":
+        return False
+
+    if (
+        subscription.expires_at
+        and subscription.expires_at < timezone.now()
+    ):
+        return False
+
+    return True
+
+
 def can_generate_lesson(user):
 
     subscription = get_or_create_subscription(user)
 
-    from billing.constants import PLANS
+    if not is_subscription_active(user):
+        return False
 
-    limit = PLANS[subscription.plan]["lessons_limit"]
+    limit = PLANS[
+        subscription.plan
+    ]["lessons_limit"]
 
-    return subscription.lessons_used < limit
+    return (
+        subscription.lessons_used < limit
+    )
 
 
-def increment_lessons_usage(user):
+@transaction.atomic
+def reserve_lesson(user):
 
-    subscription = get_or_create_subscription(user)
+    subscription = (
+        Subscription.objects
+        .select_for_update()
+        .get(user=user)
+    )
+
+    if subscription.status != "active":
+        return False
+
+    if (
+        subscription.expires_at
+        and subscription.expires_at < timezone.now()
+    ):
+        return False
+
+    limit = PLANS[
+        subscription.plan
+    ]["lessons_limit"]
+
+    if subscription.lessons_used >= limit:
+        return False
 
     subscription.lessons_used += 1
 
-    subscription.save()
+    subscription.save(
+        update_fields=["lessons_used"]
+    )
+
+    return True
+
+@transaction.atomic
+def increment_lessons_usage(user):
+
+    subscription = (
+        Subscription.objects
+        .select_for_update()
+        .get(user=user)
+    )
+
+    subscription.lessons_used += 1
+
+    subscription.save(
+        update_fields=["lessons_used"]
+    )
+
+    return subscription
+

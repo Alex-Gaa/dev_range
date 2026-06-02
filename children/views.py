@@ -14,6 +14,17 @@ from .serializers import (
     AcceptInviteSerializer,
 )
 
+from rest_framework.exceptions import ValidationError
+
+from billing.services import (
+    get_or_create_subscription,
+    is_subscription_active,
+)
+
+from billing.constants import PLANS
+
+
+
 
 # =========================================
 # CHILDREN LIST / CREATE
@@ -32,6 +43,32 @@ class ChildListCreateView(generics.ListCreateAPIView):
         ).order_by("-created_at")
 
     def perform_create(self, serializer):
+
+        if not is_subscription_active(
+                self.request.user
+        ):
+            raise ValidationError({
+                "detail":
+                    "Subscription is inactive or expired."
+            })
+
+        subscription = get_or_create_subscription(
+            self.request.user
+        )
+
+        limit = PLANS[
+            subscription.plan
+        ]["children_limit"]
+
+        current_count = Child.objects.filter(
+            parent=self.request.user
+        ).count()
+
+        if current_count >= limit:
+            raise ValidationError({
+                "detail":
+                    f"Your {subscription.plan} plan allows only {limit} children."
+            })
 
         serializer.save(
             parent=self.request.user
