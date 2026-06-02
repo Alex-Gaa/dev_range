@@ -7,7 +7,7 @@ from django.db import transaction
 
 from billing.models import Subscription
 from billing.constants import PLANS
-
+from django.db.models import F
 
 def get_or_create_subscription(user):
 
@@ -57,31 +57,19 @@ def is_subscription_active(user):
     return True
 
 
-def can_generate_lesson(user):
-
-    subscription = get_or_create_subscription(user)
-
-    if not is_subscription_active(user):
-        return False
-
-    limit = PLANS[
-        subscription.plan
-    ]["lessons_limit"]
-
-    return (
-        subscription.lessons_used < limit
-    )
-
 
 @transaction.atomic
 def reserve_lesson(user):
 
+    subscription = get_or_create_subscription(user)
+
     subscription = (
         Subscription.objects
         .select_for_update()
-        .get(user=user)
+        .get(pk=subscription.pk)
     )
 
+    # check active
     if subscription.status != "active":
         return False
 
@@ -91,35 +79,18 @@ def reserve_lesson(user):
     ):
         return False
 
-    limit = PLANS[
-        subscription.plan
-    ]["lessons_limit"]
+    limit = PLANS[subscription.plan]["lessons_limit"]
 
+    # 🔥 IMPORTANT: atomic check + increment safe
     if subscription.lessons_used >= limit:
         return False
 
-    subscription.lessons_used += 1
-
-    subscription.save(
-        update_fields=["lessons_used"]
+    Subscription.objects.filter(
+        id=subscription.id
+    ).update(
+        lessons_used=F("lessons_used") + 1
     )
 
     return True
 
-@transaction.atomic
-def increment_lessons_usage(user):
-
-    subscription = (
-        Subscription.objects
-        .select_for_update()
-        .get(user=user)
-    )
-
-    subscription.lessons_used += 1
-
-    subscription.save(
-        update_fields=["lessons_used"]
-    )
-
-    return subscription
 

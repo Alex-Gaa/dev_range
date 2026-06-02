@@ -10,11 +10,7 @@ from .serializers import LessonSerializer, TopicSerializer, SubjectSerializer
 from django.utils.text import slugify
 from rest_framework.exceptions import ValidationError
 
-from billing.services import (
-    reserve_lesson,
-    get_or_create_subscription,
-    is_subscription_active,
-)
+from billing.services import reserve_lesson, get_or_create_subscription
 
 
 class LessonViewSet(viewsets.ModelViewSet):
@@ -202,13 +198,7 @@ class LessonViewSet(viewsets.ModelViewSet):
                 "Only parents can create lessons."
             )
 
-        if not reserve_lesson(user):
-            raise ValidationError({
-                "detail":
-                    "Lesson limit reached or subscription expired."
-            })
-
-        return serializer.save()
+        serializer.save()
 
 
 
@@ -226,32 +216,18 @@ class SubjectViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
 
-        # Проверка активности подписки
-        if not is_subscription_active(
-            self.request.user
-        ):
-            raise ValidationError({
-                "detail":
-                    "Subscription is inactive or expired."
-            })
+        user = self.request.user
 
-        subscription = get_or_create_subscription(
-            self.request.user
-        )
+        subscription = get_or_create_subscription(user)
+        from billing.constants import PLANS
 
-        limit = PLANS[
-            subscription.plan
-        ]["subjects_limit"]
+        limit = PLANS[subscription.plan]["subjects_limit"]
 
-        current_count = Subject.objects.filter(
-            parent=self.request.user
-        ).count()
+        current_count = Subject.objects.filter(parent=user).count()
 
         if current_count >= limit:
-
             raise ValidationError({
-                "detail":
-                    f"Your {subscription.plan} plan allows only {limit} subjects."
+                "detail": f"Your {subscription.plan} plan allows only {limit} subjects."
             })
 
         name = serializer.validated_data["name"]
@@ -261,19 +237,14 @@ class SubjectViewSet(viewsets.ModelViewSet):
         slug = base_slug
         counter = 1
 
-        while Subject.objects.filter(
-            slug=slug
-        ).exists():
-
+        while Subject.objects.filter(slug=slug).exists():
             slug = f"{base_slug}-{counter}"
-
             counter += 1
 
         serializer.save(
-            parent=self.request.user,
+            parent=user,
             slug=slug
         )
-
 
 
 class TopicViewSet(viewsets.ModelViewSet):

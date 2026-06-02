@@ -16,10 +16,7 @@ from .serializers import (
 
 from rest_framework.exceptions import ValidationError
 
-from billing.services import (
-    get_or_create_subscription,
-    is_subscription_active,
-)
+from billing.services import reserve_lesson, get_or_create_subscription, is_subscription_active
 
 from billing.constants import PLANS
 

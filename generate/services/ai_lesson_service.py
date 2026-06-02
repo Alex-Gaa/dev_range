@@ -7,16 +7,16 @@ from django.conf import settings
 
 from openai import OpenAI
 
+from billing.services import reserve_lesson
+
+
 from generate.models import (
     AIPromptTemplate,
     GeneratedLessonMemory
 )
 
 from lessons.models import Lesson
-from billing.services import (
-    can_generate_lesson,
-    increment_lessons_usage,
-)
+
 
 
 def generate_lesson(child, subject, topic, ai_client):
@@ -73,16 +73,13 @@ def generate_lesson(child, subject, topic, ai_client):
             f"Prompt rendering error: {str(e)}"
         )
 
+    # CHECK + RESERVE LESSON SLOT
 
-    # CHECK SUBSCRIPTION LIMIT
-
-    if not can_generate_lesson(
-        child.parent
-    ):
-
+    if not reserve_lesson(child.parent):
         raise Exception(
             "Monthly lessons limit reached"
         )
+
     # 5. AI CALL
     ai_response_raw = ai_client.generate(prompt)
 
@@ -120,9 +117,7 @@ def generate_lesson(child, subject, topic, ai_client):
         status="draft",
         progress=0
     )
-    increment_lessons_usage(
-        child.parent
-    )
+
 
     # 9. SAVE MEMORY
     GeneratedLessonMemory.objects.create(
