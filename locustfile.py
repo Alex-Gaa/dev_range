@@ -3,56 +3,78 @@ import random
 
 
 class SaaSUser(HttpUser):
-    wait_time = between(2, 5)
+    wait_time = between(2, 4)
 
+    # ======================
+    # INIT
+    # ======================
     def on_start(self):
-        """Init user safely"""
-
-        # 🔥 SAFE DEFAULTS (важно)
         self.token = None
-        self.logged_in = False
         self.children = []
+        self.logged_in = False
 
-        # ======================
-        # LOGIN
-        # ======================
-        login = self.client.post(
+        self.login()
+        if not self.logged_in:
+            return
+
+        self.load_children()
+
+    # ======================
+    # LOGIN (safe + measured)
+    # ======================
+    def login(self):
+        with self.client.post(
             "/api/auth/login/",
             json={
                 "username": "test1@test.ru",
                 "password": "Asdf2020"
             },
-            name="/api/auth/login/"
-        )
+            name="/api/auth/login/",
+            catch_response=True
+        ) as response:
 
-        if login.status_code != 200:
-            print("LOGIN FAILED:", login.status_code, login.text)
-            return
+            if response.status_code != 200:
+                response.failure(f"LOGIN FAILED {response.status_code}")
+                return
 
-        self.token = login.json().get("access")
-        self.logged_in = True
+            try:
+                self.token = response.json().get("access")
+                if not self.token:
+                    response.failure("NO TOKEN")
+                    return
 
-        # set auth header globally for user
-        self.client.headers.update({
-            "Authorization": f"Bearer {self.token}"
-        })
+                self.client.headers.update({
+                    "Authorization": f"Bearer {self.token}"
+                })
 
-        # ======================
-        # LOAD CHILDREN
-        # ======================
-        try:
-            children_resp = self.client.get(
-                "/api/children/",
-                name="/api/children/"
-            )
+                self.logged_in = True
+                response.success()
 
-            if children_resp.status_code == 200:
-                data = children_resp.json()
+            except Exception as e:
+                response.failure(str(e))
+
+    # ======================
+    # LOAD CHILDREN
+    # ======================
+    def load_children(self):
+        with self.client.get(
+            "/api/children/",
+            name="/api/children/",
+            catch_response=True
+        ) as response:
+
+            if response.status_code != 200:
+                response.failure("FAILED LOAD CHILDREN")
+                return
+
+            try:
+                data = response.json()
                 if isinstance(data, list):
                     self.children = data
+                response.success()
 
-        except Exception as e:
-            print("CHILD LOAD ERROR:", e)
+            except Exception as e:
+                response.failure(str(e))
 
     # ======================
     # HELPERS
@@ -60,16 +82,15 @@ class SaaSUser(HttpUser):
     def pick_child(self):
         if not self.children:
             return None
-        return random.choice(self.children)["id"]
+        return random.choice(self.children).get("id")
 
     def safe(self):
-        return getattr(self, "logged_in", False) and self.token
+        return self.logged_in and self.token is not None
 
     # ======================
-    # REAL USER SCENARIOS
+    # SCENARIO 1: READ HEAVY (real users)
     # ======================
-
-    @task(4)
+    @task(5)
     def get_lessons(self):
         if not self.safe():
             return
@@ -79,7 +100,10 @@ class SaaSUser(HttpUser):
             name="/api/lessons/"
         )
 
-    @task(3)
+    # ======================
+    # SCENARIO 2: CREATE LESSON (low frequency)
+    # ======================
+    @task(2)
     def create_lesson(self):
         if not self.safe():
             return
@@ -88,7 +112,7 @@ class SaaSUser(HttpUser):
         if not child_id:
             return
 
-        response = self.client.post(
+        with self.client.post(
             "/api/lessons/",
             json={
                 "child": child_id,
@@ -97,13 +121,19 @@ class SaaSUser(HttpUser):
                     "theory": "test"
                 }
             },
-            name="/api/lessons/"
-        )
+            name="/api/lessons/",
+            catch_response=True
+        ) as response:
 
-        if response.status_code >= 400:
-            print("CREATE LESSON ERROR:", response.status_code, response.text)
+            if response.status_code >= 400:
+                response.failure(response.text)
+            else:
+                response.success()
 
-    @task(2)
+    # ======================
+    # SCENARIO 3: SUBSCRIPTION CHECK (light)
+    # ======================
+    @task(1)
     def check_subscription(self):
         if not self.safe():
             return
@@ -112,3 +142,16 @@ class SaaSUser(HttpUser):
             "/api/billing/subscription/",
             name="/api/billing/subscription/"
         )
+
+    # ======================
+    # OPTIONAL STRESS ENDPOINT (uncomment if needed)
+    # ======================
+    # @task(1)
+    # def stress_lessons_read(self):
+    #     if not self.safe():
+    #         return
+    #
+    #     self.client.get(
+    #         "/api/lessons/?limit=50",
+    #         name="/api/lessons?limit=50"
+    #     )

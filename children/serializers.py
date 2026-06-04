@@ -1,4 +1,5 @@
 #C:\Users\Developer\PycharmProjects\devrange\children\serializers.py
+from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -55,6 +56,8 @@ class AcceptInviteSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 "Passwords do not match"
             )
+
+        validate_password(attrs["password"])
 
         # INVITE CHECK
         try:

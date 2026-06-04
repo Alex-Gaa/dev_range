@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
+from django.contrib.auth.password_validation import validate_password
 from .models import Profile
 
 User = get_user_model()
@@ -26,8 +26,14 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs["password"] != attrs["password2"]:
-            raise serializers.ValidationError("Passwords do not match")
+            raise serializers.ValidationError(
+                "Passwords do not match"
+            )
+
+        validate_password(attrs["password"])
+
         return attrs
+
 
     def create(self, validated_data):
         validated_data.pop("password2")
