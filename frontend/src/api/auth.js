@@ -1,3 +1,4 @@
+//C:\Users\Developer\PycharmProjects\devrange\frontend\src\api\auth.js
 import api from "./axios";
 
 export const registerUser = async (data) => {

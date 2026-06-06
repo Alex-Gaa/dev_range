@@ -1,3 +1,4 @@
+//C:\Users\Developer\PycharmProjects\devrange\frontend\src\stores\auth.js
 import { defineStore } from "pinia";
 
 import {
@@ -5,7 +6,7 @@ import {
   registerUser,
   getMe,
 } from "@/api/auth";
-
+import api from "@/api/axios"; // 🔥 ДОБАВЬ ЭТОТ ИМПОРТ
 export const useAuthStore = defineStore("auth", {
 
   state: () => ({
@@ -83,6 +84,34 @@ export const useAuthStore = defineStore("auth", {
 
         this.logout()
       }
+    },
+
+    async verifyEmail(email, code) {
+
+      const response = await api.post(
+        "/auth/verify-email/",
+        {
+          email,
+          code,
+        }
+      )
+
+      this.access = response.data.access
+      this.refresh = response.data.refresh
+
+      localStorage.setItem(
+        "access",
+        response.data.access
+      )
+
+      localStorage.setItem(
+        "refresh",
+        response.data.refresh
+      )
+
+      this.user = response.data.user
+
+      return response
     },
 
     logout() {

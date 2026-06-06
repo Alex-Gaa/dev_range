@@ -23,6 +23,7 @@ import ChildGoalsView from "@/views/ChildGoalsView.vue"
 import BillingView from "@/views/BillingView.vue"
 import ForgotPasswordView from "@/views/ForgotPasswordView.vue"
 import ResetPasswordView from "@/views/ResetPasswordView.vue"
+import VerifyEmailView from  "@/views/VerifyEmailView.vue"
 const routes = [
   {
     path: "/",
@@ -37,6 +38,10 @@ const routes = [
     path: "/reset-password",
     name: "reset-password",
     component: ResetPasswordView,
+  },
+  {
+    path: "/verify-email",
+    component: () => import("@/views/VerifyEmailView.vue")
   },
 
   /* DASHBOARD */

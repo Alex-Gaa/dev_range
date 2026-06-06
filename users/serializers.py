@@ -59,11 +59,22 @@ class RegisterSerializer(serializers.ModelSerializer):
             last_name=validated_data["last_name"],
             role=validated_data.get("role", "parent")
         )
+        user.is_verified = False
+        user.save()
         return user
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
+        user = User.objects.filter(
+            email=attrs["username"]
+        ).first()
+
+        if user and not user.is_verified:
+            raise serializers.ValidationError({
+                "detail": "Email is not verified"
+            })
+
         data = super().validate(attrs)
 
         user = self.user
@@ -128,3 +139,11 @@ class PasswordResetConfirmSerializer(
             })
 
         return attrs
+
+class VerifyEmailSerializer(
+    serializers.Serializer
+):
+
+    email = serializers.EmailField()
+
+    code = serializers.CharField()

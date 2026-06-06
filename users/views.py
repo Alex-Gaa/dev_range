@@ -6,17 +6,73 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
-from .models import PasswordResetCode
+
 from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer, ProfileSerializer, \
-    PasswordResetRequestSerializer, PasswordResetConfirmSerializer
+    PasswordResetRequestSerializer, PasswordResetConfirmSerializer, VerifyEmailSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.conf import settings
 
-class RegisterView(generics.CreateAPIView):
-    serializer_class = RegisterSerializer
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+from .models import (
+    PasswordResetCode,
+    EmailVerificationCode
+)
+
+from django.core.mail import send_mail
+
+
+class RegisterView(generics.CreateAPIView):
+
+    serializer_class = RegisterSerializer
+
+    def create(self, request, *args, **kwargs):
+
+        serializer = self.get_serializer(
+            data=request.data
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        user = serializer.save()
+
+        code = (
+            EmailVerificationCode
+            .generate_code()
+        )
+
+        EmailVerificationCode.objects.create(
+            user=user,
+            code=code
+        )
+        verify_link = (
+            f"{settings.FRONTEND_URL}"
+            f"/verify-email"
+            f"?email={user.email}"
+            f"&code={code}"
+        )
+
+        send_mail(
+            subject="Verify your email",
+            message=(
+                f"Verification code: {code}\n\n"
+                f"Or open:\n{verify_link}"
+            ),
+            from_email=None,
+            recipient_list=[user.email]
+        )
+
+        return Response(
+            {
+                "detail":
+                "Account created. Check your email."
+            },
+            status=201
+        )
+
 
 
 class MeView(APIView):
@@ -210,4 +266,75 @@ class PasswordResetConfirmView(APIView):
         return Response({
             "detail":
             "Password changed successfully"
+        })
+
+class VerifyEmailView(APIView):
+
+    permission_classes = []
+
+    def post(self, request):
+
+        serializer = VerifyEmailSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        data = serializer.validated_data
+
+        try:
+            user = User.objects.get(email=data["email"])
+        except User.DoesNotExist:
+            return Response({"detail": "Invalid code"}, status=400)
+
+        verification = (
+            EmailVerificationCode.objects
+            .filter(user=user, code=data["code"], is_used=False)
+            .order_by("-created_at")
+            .first()
+        )
+
+        if not verification:
+            return Response({"detail": "Invalid code"}, status=400)
+
+        if verification.is_expired:
+            return Response({"detail": "Code expired"}, status=400)
+
+        # 🔥 если уже верифицирован — просто логиним снова (НЕ ошибка)
+        if user.is_verified:
+            EmailVerificationCode.objects.filter(
+                user=user,
+                is_used=False
+            ).update(is_used=True)
+
+            refresh = RefreshToken.for_user(user)
+
+            return Response({
+                "detail": "Email already verified",
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+                "user": {
+                    "id": user.id,
+                    "email": user.email,
+                    "role": user.role,
+                    "first_name": user.first_name,
+                }
+            })
+
+        # verify user
+        user.is_verified = True
+        user.save()
+
+        verification.is_used = True
+        verification.save()
+
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            "detail": "Email verified successfully",
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "role": user.role,
+                "first_name": user.first_name,
+            }
         })
