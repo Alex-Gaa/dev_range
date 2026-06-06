@@ -117,7 +117,10 @@ class LogoutView(APIView):
             token.blacklist()
             return Response({"message": "logged out"})
         except Exception:
-            return Response({"error": "invalid token"}, status=400)
+            return Response(
+                {"detail": "Invalid token"},
+                status=400
+            )
 
 class UpdateProfileView(APIView):
     permission_classes = [IsAuthenticated]

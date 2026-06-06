@@ -1,3 +1,4 @@
+#C:\Users\Developer\PycharmProjects\devrange\users\validators.py
 import re
 
 from django.core.exceptions import ValidationError
@@ -29,7 +30,7 @@ class CustomPasswordValidator:
 
         if not re.search(r"[!@#$%^&*()_+=\-]", password):
             raise ValidationError(
-                "Password must contain at least one special character."
+                "Пароль должен содержать хотя бы один специальный символ."
             )
 
     def get_help_text(self):

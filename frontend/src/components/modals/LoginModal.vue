@@ -1,19 +1,22 @@
+<!--C:\Users\Developer\PycharmProjects\devrange\frontend\src\components\modals\LoginModal.vue-->
 <script setup>
 import { ref } from "vue"
 import { useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
-
+import { getErrorMessage } from "@/utils/errorHandler"
 const authStore = useAuthStore()
 const router = useRouter()
 
 const email = ref("")
 const password = ref("")
 const showPassword = ref(false)
-
+const errorMessage = ref("")
 const emit = defineEmits(["close", "switch"])
 
 const handleLogin = async () => {
   try {
+    errorMessage.value = ""
+
     await authStore.login({
       username: email.value,
       password: password.value,
@@ -22,8 +25,8 @@ const handleLogin = async () => {
     emit("close")
     router.push("/dashboard")
 
-  } catch (e) {
-    alert("Login failed")
+  } catch (error) {
+    errorMessage.value = getErrorMessage(error)
   }
 }
 </script>
@@ -35,6 +38,12 @@ const handleLogin = async () => {
     <h2 class="text-3xl font-bold mb-6">
       Login
     </h2>
+    <div
+      v-if="errorMessage"
+      class="mb-4 rounded-xl border border-red-300 bg-red-50 p-3 text-red-700"
+    >
+      {{ errorMessage }}
+    </div>
 
     <div class="space-y-4">
 

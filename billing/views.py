@@ -21,7 +21,7 @@ class TestUpgradeView(APIView):
         )
 
         return Response({
-            "success": True,
+            "detail": "Subscription activated",
             "plan": subscription.plan,
             "expires_at": subscription.expires_at,
         })

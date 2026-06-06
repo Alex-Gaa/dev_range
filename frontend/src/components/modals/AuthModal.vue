@@ -1,3 +1,4 @@
+<!--C:\Users\Developer\PycharmProjects\devrange\frontend\src\components\modals\AuthModal.vue-->
 <script setup>
 defineProps({
   isOpen: Boolean,

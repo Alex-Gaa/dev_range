@@ -22,12 +22,12 @@ def generate_lesson_view(request):
     # VALIDATION
 
     if not all([child_id, subject, topic]):
-
         return Response(
             {
-                "error": "child_id, subject and topic are required"
+                "detail":
+                    "child_id, subject and topic are required"
             },
-            status=status.HTTP_400_BAD_REQUEST
+            status=400
         )
 
     # CHILD
@@ -37,12 +37,11 @@ def generate_lesson_view(request):
     ).first()
 
     if not child:
-
         return Response(
             {
-                "error": "Child not found"
+                "detail": "Child not found"
             },
-            status=status.HTTP_404_NOT_FOUND
+            status=404
         )
 
     # GENERATION
@@ -68,7 +67,7 @@ def generate_lesson_view(request):
 
         return Response(
             {
-                "error": str(e)
+                "detail": str(e)
             },
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            status=500
         )

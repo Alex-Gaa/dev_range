@@ -8,7 +8,7 @@ from django.db import transaction
 from billing.models import Subscription
 from billing.constants import PLANS
 from django.db.models import F
-
+from rest_framework.exceptions import ValidationError
 def get_or_create_subscription(user):
 
     subscription, _ = Subscription.objects.get_or_create(
@@ -21,9 +21,9 @@ def get_or_create_subscription(user):
 def activate_subscription(user, plan):
 
     if plan not in PLANS:
-        raise ValueError(
-            f"Unknown plan: {plan}"
-        )
+        raise ValidationError({
+            "detail": f"Unknown plan: {plan}"
+        })
 
     subscription = get_or_create_subscription(user)
 

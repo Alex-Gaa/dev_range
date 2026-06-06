@@ -53,9 +53,11 @@ class AcceptInviteSerializer(serializers.Serializer):
 
         # PASSWORD CHECK
         if attrs["password"] != attrs["password2"]:
-            raise serializers.ValidationError(
-                "Passwords do not match"
-            )
+            raise serializers.ValidationError({
+                "non_field_errors": [
+                    "Passwords do not match"
+                ]
+            })
 
         validate_password(attrs["password"])
 
@@ -65,21 +67,22 @@ class AcceptInviteSerializer(serializers.Serializer):
                 invite_token=attrs["token"]
             )
         except Child.DoesNotExist:
-            raise serializers.ValidationError(
-                "Invalid invite token"
-            )
+            raise serializers.ValidationError({
+                "detail": "Invalid invite token"
+            })
 
         # EXPIRED CHECK
         if not child.is_invite_valid:
-            raise serializers.ValidationError(
-                "Invite link expired"
-            )
+            raise serializers.ValidationError({
+                "detail": "Invite link expired"
+            })
 
         # ALREADY LINKED
         if child.linked_user:
-            raise serializers.ValidationError(
-                "Child already linked"
-            )
+            raise serializers.ValidationError({
+                "detail": "Child already linked"
+            })
+
 
         attrs["child"] = child
 

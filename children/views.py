@@ -16,7 +16,7 @@ from .serializers import (
 
 from rest_framework.exceptions import ValidationError
 
-from billing.services import reserve_lesson, get_or_create_subscription, is_subscription_active
+from billing.services import get_or_create_subscription, is_subscription_active
 
 from billing.constants import PLANS
 
@@ -96,18 +96,17 @@ class ChildInviteDetailView(APIView):
 
             return Response(
                 {
-                    "error": "Invalid invite"
+                    "detail": "Invalid invite"
                 },
-                status=status.HTTP_404_NOT_FOUND
+                status=404
             )
 
         if not child.is_invite_valid:
-
             return Response(
                 {
-                    "error": "Invite expired"
+                    "detail": "Invite expired"
                 },
-                status=status.HTTP_400_BAD_REQUEST
+                status=400
             )
 
         return Response({
@@ -142,10 +141,10 @@ class AcceptInviteView(generics.CreateAPIView):
 
         return Response(
             {
-                "message": "Child account created",
+                "detail": "Child account created",
                 "email": user.email,
             },
-            status=status.HTTP_201_CREATED
+            status=201
         )
 
 # 🔥 NEW

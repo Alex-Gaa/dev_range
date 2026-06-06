@@ -2,12 +2,19 @@
 <script setup>
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
-
+import {
+  getErrorMessage,
+  getFieldErrors,
+  hasFieldError,
+  getFieldError
+} from "@/utils/errorHandler"
 const authStore = useAuthStore()
 
 const emit = defineEmits(["close", "switch"])
 
 const showPassword = ref(false)
+
+const fieldErrors = ref({})
 
 const form = ref({
   first_name: "",
@@ -26,9 +33,10 @@ const handleRegister = async () => {
 
     emit("switch")
 
-  } catch (e) {
-    alert("Registration failed")
-  }
+    } catch (error) {
+
+      fieldErrors.value = getFieldErrors(error)
+    }
 }
 </script>
 
@@ -40,6 +48,7 @@ const handleRegister = async () => {
       Register
     </h2>
 
+
     <div class="space-y-4">
 
       <input
@@ -48,6 +57,12 @@ const handleRegister = async () => {
         placeholder="First name"
         class="w-full border p-3 rounded-xl"
       />
+      <p
+        v-if="hasFieldError(fieldErrors, 'first_name')"
+        class="text-sm text-red-500"
+      >
+        {{ getFieldError(fieldErrors, 'first_name') }}
+      </p>
 
       <input
         v-model="form.last_name"
@@ -55,6 +70,12 @@ const handleRegister = async () => {
         placeholder="Last name"
         class="w-full border p-3 rounded-xl"
       />
+      <p
+        v-if="hasFieldError(fieldErrors, 'last_name')"
+        class="text-sm text-red-500"
+      >
+        {{ getFieldError(fieldErrors, 'last_name') }}
+      </p>
 
       <input
         v-model="form.email"
@@ -62,6 +83,12 @@ const handleRegister = async () => {
         placeholder="Email"
         class="w-full border p-3 rounded-xl"
       />
+      <p
+        v-if="hasFieldError(fieldErrors, 'email')"
+        class="text-sm text-red-500"
+      >
+        {{ getFieldError(fieldErrors, 'email') }}
+      </p>
 
       <div class="relative">
 
@@ -71,6 +98,13 @@ const handleRegister = async () => {
           placeholder="Password"
           class="w-full border p-3 rounded-xl pr-12"
         />
+        <p
+          v-if="hasFieldError(fieldErrors, 'password')"
+          class="text-sm text-red-500"
+        >
+          {{ getFieldError(fieldErrors, 'password') }}
+        </p>
+
 
         <button
           @click="showPassword = !showPassword"
@@ -87,6 +121,12 @@ const handleRegister = async () => {
         placeholder="Confirm password"
         class="w-full border p-3 rounded-xl"
       />
+      <p
+        v-if="fieldErrors.non_field_errors"
+        class="text-sm text-red-500"
+      >
+        {{ fieldErrors.non_field_errors[0] }}
+      </p>
 
       <button
         @click="handleRegister"
@@ -94,6 +134,9 @@ const handleRegister = async () => {
       >
         Register
       </button>
+
+
+
 
       <p class="text-center text-slate-500">
 
@@ -107,6 +150,20 @@ const handleRegister = async () => {
         </button>
 
       </p>
+
+
+
+      <p class="text-xs text-slate-500">
+        Password must contain:
+      </p>
+
+      <ul class="text-xs text-slate-500 list-disc ml-5 space-y-1">
+        <li>At least 8 characters</li>
+        <li>One uppercase letter (A-Z)</li>
+        <li>One lowercase letter (a-z)</li>
+        <li>One number (0-9)</li>
+        <li>One special character (!@#$%^&*)</li>
+      </ul>
 
     </div>
 

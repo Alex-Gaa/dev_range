@@ -33,9 +33,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs["password"] != attrs["password2"]:
-            raise serializers.ValidationError(
-                "Passwords do not match"
-            )
+            raise serializers.ValidationError({
+                "non_field_errors": ["Пароли не совпадают"]
+            })
 
         try:
             validate_password(attrs["password"])
@@ -123,9 +123,9 @@ class PasswordResetConfirmSerializer(
     def validate(self, attrs):
 
         if attrs["password"] != attrs["password2"]:
-            raise serializers.ValidationError(
-                "Passwords do not match"
-            )
+            raise serializers.ValidationError({
+                "non_field_errors": ["Пароли не совпадают111"]
+            })
 
         try:
             validate_password(
