@@ -1,8 +1,12 @@
+#C:\Users\Developer\PycharmProjects\devrange\children\urls.py
 from django.urls import path
 
 from .views import (
     ChildListCreateView,
-    AcceptInviteView, ChildInviteDetailView, ChildDetailView,
+    AcceptInviteView,
+    ChildInviteDetailView,
+    ChildDetailView,
+    ResetChildPasswordView,
 )
 
 urlpatterns = [
@@ -22,4 +26,8 @@ urlpatterns = [
         AcceptInviteView.as_view()
     ),
     path("<int:pk>/", ChildDetailView.as_view()),
+    path(
+        "<int:pk>/reset-password/",
+        ResetChildPasswordView.as_view()
+    ),
 ]

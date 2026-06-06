@@ -20,7 +20,11 @@ from billing.services import reserve_lesson, get_or_create_subscription, is_subs
 
 from billing.constants import PLANS
 
-
+from django.contrib.auth.password_validation import (
+    validate_password
+)
+import secrets
+import string
 
 
 # =========================================
@@ -151,3 +155,70 @@ class ChildDetailView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         return Child.objects.filter(parent=self.request.user)
+
+class ResetChildPasswordView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+
+        try:
+
+            child = Child.objects.get(
+                id=pk,
+                parent=request.user
+            )
+
+        except Child.DoesNotExist:
+
+            return Response(
+                {
+                    "detail": "Child not found"
+                },
+                status=404
+            )
+
+        if not child.linked_user:
+
+            return Response(
+                {
+                    "detail":
+                    "Child has no account"
+                },
+                status=400
+            )
+
+        alphabet = (
+            string.ascii_letters +
+            string.digits +
+            "!@#$%^&*"
+        )
+
+        while True:
+
+            password = "".join(
+                secrets.choice(alphabet)
+                for _ in range(12)
+            )
+
+            try:
+
+                validate_password(
+                    password,
+                    child.linked_user
+                )
+
+                break
+
+            except Exception:
+                continue
+
+        child.linked_user.set_password(
+            password
+        )
+
+        child.linked_user.save()
+
+        return Response({
+            "new_password": password
+        })

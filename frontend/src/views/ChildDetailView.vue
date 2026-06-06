@@ -17,13 +17,50 @@
 
       <!-- ACTIONS -->
       <div class="flex gap-4">
+
         <button
           class="border px-6 py-3 rounded-xl hover:bg-slate-50 transition"
           @click="goToProgress"
         >
           View progress
         </button>
+
+        <button
+          @click="resetChildPassword"
+          class="
+            bg-amber-600
+            hover:bg-amber-700
+            text-white
+            px-6
+            py-3
+            rounded-xl
+          "
+        >
+          Reset Password
+        </button>
+
       </div>
+      <div
+        v-if="generatedPassword"
+        class="
+          bg-green-50
+          border
+          border-green-200
+          rounded-xl
+          p-4
+        "
+      >
+
+        <p class="font-semibold text-green-700">
+          New child password
+        </p>
+
+        <div class="mt-2 font-mono text-lg">
+          {{ generatedPassword }}
+        </div>
+
+      </div>
+
 
       <!-- AI GENERATOR -->
       <div class="bg-white border rounded-2xl p-6">
@@ -223,7 +260,7 @@ import { useLessonsStore } from "@/stores/lessons"
 
 const route = useRoute()
 const router = useRouter()
-
+const generatedPassword = ref("")
 const childrenStore = useChildrenStore()
 const lessonsStore = useLessonsStore()
 
@@ -236,6 +273,34 @@ const subscription = ref(null)
 
 const loadingAI = ref(false)
 const aiError = ref("")
+
+const resetChildPassword = async () => {
+
+  if (!confirm(
+    `Reset password for ${child.value.first_name}?`
+  )) {
+    return
+  }
+
+  try {
+
+    const res = await api.post(
+      `/children/${child.value.id}/reset-password/`
+    )
+
+    generatedPassword.value =
+      res.data.new_password
+
+  } catch (e) {
+
+    alert(
+      e.response?.data?.detail ||
+      "Failed to reset password"
+    )
+
+  }
+}
+
 
 const newLesson = ref({
   subject: "",
