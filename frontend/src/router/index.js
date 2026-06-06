@@ -19,12 +19,24 @@ import ChildProgressView from "@/views/ChildProgressView.vue"
 import ChildAchievementsView from "@/views/ChildAchievementsView.vue"
 
 import ChildGoalsView from "@/views/ChildGoalsView.vue"
-//import SubjectsView from "@/views/SubjectsView.vue"
+
 import BillingView from "@/views/BillingView.vue"
+import ForgotPasswordView from "@/views/ForgotPasswordView.vue"
+import ResetPasswordView from "@/views/ResetPasswordView.vue"
 const routes = [
   {
     path: "/",
     component: LandingView,
+  },
+  {
+    path: "/forgot-password",
+    name: "forgot-password",
+    component: ForgotPasswordView,
+  },
+  {
+    path: "/reset-password",
+    name: "reset-password",
+    component: ResetPasswordView,
   },
 
   /* DASHBOARD */

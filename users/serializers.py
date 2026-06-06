@@ -4,6 +4,13 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.password_validation import validate_password
 from .models import Profile
+from django.contrib.auth.password_validation import (
+    validate_password
+)
+from django.core.exceptions import (
+    ValidationError as DjangoValidationError
+)
+
 
 User = get_user_model()
 
@@ -30,7 +37,13 @@ class RegisterSerializer(serializers.ModelSerializer):
                 "Passwords do not match"
             )
 
-        validate_password(attrs["password"])
+        try:
+            validate_password(attrs["password"])
+
+        except DjangoValidationError as e:
+            raise serializers.ValidationError({
+                "password": list(e.messages)
+            })
 
         return attrs
 
@@ -78,3 +91,40 @@ class ProfileSerializer(serializers.ModelSerializer):
             "telegram_url",
             "portfolio_url",
         )
+
+
+class PasswordResetRequestSerializer(
+    serializers.Serializer
+):
+    email = serializers.EmailField()
+
+class PasswordResetConfirmSerializer(
+    serializers.Serializer
+):
+    email = serializers.EmailField()
+
+    code = serializers.CharField()
+
+    password = serializers.CharField()
+
+    password2 = serializers.CharField()
+
+    def validate(self, attrs):
+
+        if attrs["password"] != attrs["password2"]:
+            raise serializers.ValidationError(
+                "Passwords do not match"
+            )
+
+        try:
+            validate_password(
+                attrs["password"]
+            )
+
+        except DjangoValidationError as e:
+
+            raise serializers.ValidationError({
+                "password": list(e.messages)
+            })
+
+        return attrs

@@ -1,6 +1,7 @@
 #C:\Users\Developer\PycharmProjects\devrange\users\urls.py
 from django.urls import path
-from .views import RegisterView, CustomTokenObtainPairView, MeView, UpdateProfileView
+from .views import RegisterView, CustomTokenObtainPairView, MeView, UpdateProfileView, PasswordResetRequestView, \
+    PasswordResetConfirmView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
@@ -10,4 +11,14 @@ urlpatterns = [
 
     path("me/", MeView.as_view()),
     path("profile/", UpdateProfileView.as_view()),
+
+    path(
+        "password-reset/request/",
+        PasswordResetRequestView.as_view()
+    ),
+
+    path(
+        "password-reset/confirm/",
+        PasswordResetConfirmView.as_view()
+    ),
 ]

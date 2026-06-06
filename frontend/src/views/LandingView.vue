@@ -1,3 +1,4 @@
+<!-- C:\Users\Developer\PycharmProjects\devrange\frontend\src\views\LandingView.vue -->
 <template>
   <div class="min-h-screen flex flex-col bg-slate-50">
 

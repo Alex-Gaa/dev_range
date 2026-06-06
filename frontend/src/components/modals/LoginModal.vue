@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
+import { ref } from "vue"
+import { useRouter } from "vue-router"
+import { useAuthStore } from "@/stores/auth"
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -56,10 +56,25 @@ const handleLogin = async () => {
         />
 
         <button
+          type="button"
           @click="showPassword = !showPassword"
           class="absolute right-4 top-3 text-slate-500"
         >
-          {{ showPassword ? '🙈' : '👁️' }}
+          {{ showPassword ? "🙈" : "👁️" }}
+        </button>
+
+      </div>
+
+      <!-- FORGOT PASSWORD -->
+
+      <div class="text-right">
+
+        <button
+          type="button"
+          @click="router.push('/forgot-password')"
+          class="text-sm text-blue-600 hover:underline"
+        >
+          Forgot password?
         </button>
 
       </div>
