@@ -1,6 +1,6 @@
 <!--C:\Users\Developer\PycharmProjects\devrange\frontend\src\components\modals\RegisterModal.vue-->
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import {
   getErrorMessage,
@@ -24,6 +24,21 @@ const form = ref({
   password2: "",
 
 })
+const passwordRules = computed(() => ({
+  length: form.value.password.length >= 8,
+  uppercase: /[A-Z]/.test(form.value.password),
+  lowercase: /[a-z]/.test(form.value.password),
+  number: /\d/.test(form.value.password),
+  special: /[^A-Za-z0-9]/.test(form.value.password),
+  match:
+    form.value.password &&
+    form.value.password === form.value.password2,
+}))
+
+const passwordValid = computed(() =>
+  Object.values(passwordRules.value).every(Boolean)
+)
+
 const successMessage = ref("")
 
 const handleRegister = async () => {
@@ -143,7 +158,17 @@ const handleRegister = async () => {
 
       <button
         @click="handleRegister"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl"
+        :disabled="!passwordValid"
+        class="
+          w-full
+          bg-blue-600
+          hover:bg-blue-700
+          disabled:bg-slate-300
+          disabled:cursor-not-allowed
+          text-white
+          p-3
+          rounded-xl
+        "
       >
         Register
       </button>
@@ -164,19 +189,50 @@ const handleRegister = async () => {
 
       </p>
 
+      <div
+        class="
+          bg-slate-50
+          border
+          rounded-xl
+          p-4
+          text-sm
+          text-slate-600
+        "
+      >
+        <p class="font-semibold mb-2">
+          Password requirements:
+        </p>
 
+        <p>
+          {{ passwordRules.length ? "✅" : "❌" }}
+          Minimum 8 characters
+        </p>
 
-      <p class="text-xs text-slate-500">
-        Password must contain:
-      </p>
+        <p>
+          {{ passwordRules.uppercase ? "✅" : "❌" }}
+          One uppercase letter
+        </p>
 
-      <ul class="text-xs text-slate-500 list-disc ml-5 space-y-1">
-        <li>At least 8 characters</li>
-        <li>One uppercase letter (A-Z)</li>
-        <li>One lowercase letter (a-z)</li>
-        <li>One number (0-9)</li>
-        <li>One special character (!@#$%^&*)</li>
-      </ul>
+        <p>
+          {{ passwordRules.lowercase ? "✅" : "❌" }}
+          One lowercase letter
+        </p>
+
+        <p>
+          {{ passwordRules.number ? "✅" : "❌" }}
+          One number
+        </p>
+
+        <p>
+          {{ passwordRules.special ? "✅" : "❌" }}
+          One special character
+        </p>
+
+        <p>
+          {{ passwordRules.match ? "✅" : "❌" }}
+          Passwords match
+        </p>
+      </div>
 
     </div>
 

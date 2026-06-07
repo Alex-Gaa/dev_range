@@ -1,3 +1,4 @@
+<!--C:\Users\Developer\PycharmProjects\devrange\frontend\src\views\VerifyEmailView.vue-->
 <template>
   <div class="min-h-screen flex items-center justify-center bg-slate-50 px-6">
     <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow">
@@ -36,15 +37,36 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
-import { useRouter } from "vue-router"
+import {
+  ref,
+  onMounted
+} from "vue"
+
+import {
+  useRouter,
+  useRoute
+} from "vue-router"
 import { useAuthStore } from "@/stores/auth"
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 
 const email = ref("")
 const code = ref("")
+
+onMounted(() => {
+
+  if (route.query.email) {
+    email.value = route.query.email
+  }
+
+  if (route.query.code) {
+    code.value = route.query.code
+  }
+
+})
+
 const error = ref("")
 
 const submit = async () => {
