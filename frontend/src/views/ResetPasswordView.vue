@@ -121,17 +121,30 @@
             New Password
           </label>
 
-          <input
-            v-model="password"
-            type="password"
-            required
-            class="
-              w-full
-              border
-              p-3
-              rounded-xl
-            "
-          />
+            <div class="relative">
+
+              <input
+                v-model="password"
+                :type="showPassword ? 'text' : 'password'"
+                required
+                class="
+                  w-full
+                  border
+                  p-3
+                  rounded-xl
+                  pr-12
+                "
+              />
+
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="absolute right-4 top-3 text-slate-500"
+              >
+                {{ showPassword ? "🙈" : "👁️" }}
+              </button>
+
+            </div>
 
         </div>
 
@@ -149,17 +162,30 @@
             Confirm Password
           </label>
 
-          <input
-            v-model="password2"
-            type="password"
-            required
-            class="
-              w-full
-              border
-              p-3
-              rounded-xl
-            "
-          />
+            <div class="relative">
+
+              <input
+                v-model="password2"
+                :type="showPassword2 ? 'text' : 'password'"
+                required
+                class="
+                  w-full
+                  border
+                  p-3
+                  rounded-xl
+                  pr-12
+                "
+              />
+
+              <button
+                type="button"
+                @click="showPassword2 = !showPassword2"
+                class="absolute right-4 top-3 text-slate-500"
+              >
+                {{ showPassword2 ? "🙈" : "👁️" }}
+              </button>
+
+            </div>
 
         </div>
 
@@ -178,12 +204,35 @@
             Password requirements:
           </p>
 
-          <p>• minimum 8 characters</p>
-          <p>• one uppercase letter</p>
-          <p>• one lowercase letter</p>
-          <p>• one number</p>
-          <p>• one special character</p>
+          <p>
+            {{ hasMinLength ? "✅" : "❌" }}
+            Minimum 8 characters
+          </p>
 
+          <p>
+            {{ hasUppercase ? "✅" : "❌" }}
+            One uppercase letter
+          </p>
+
+          <p>
+            {{ hasLowercase ? "✅" : "❌" }}
+            One lowercase letter
+          </p>
+
+          <p>
+            {{ hasNumber ? "✅" : "❌" }}
+            One number
+          </p>
+
+          <p>
+            {{ hasSpecial ? "✅" : "❌" }}
+            One special character
+          </p>
+
+          <p>
+            {{ passwordsMatch ? "✅" : "❌" }}
+            Passwords match
+          </p>
         </div>
 
         <div
@@ -216,11 +265,13 @@
 
         <button
           type="submit"
-          :disabled="loading"
+          :disabled="loading || !formValid"
           class="
             w-full
             bg-green-600
             hover:bg-green-700
+            disabled:bg-slate-300
+            disabled:cursor-not-allowed
             text-white
             p-3
             rounded-xl
@@ -239,18 +290,87 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
-import axios from "axios"
+import {
+  ref,
+  computed,
+  onMounted
+} from "vue"
+
+import {
+  useRouter,
+  useRoute
+} from "vue-router"
+
+import api from "@/api/axios"
+
+import {
+  getErrorMessage
+} from "@/utils/errorHandler"
+
+const router = useRouter()
+const route = useRoute()
 
 const email = ref("")
 const code = ref("")
+
 const password = ref("")
 const password2 = ref("")
+
+const showPassword = ref(false)
+const showPassword2 = ref(false)
 
 const loading = ref(false)
 
 const error = ref("")
 const message = ref("")
+
+onMounted(() => {
+  email.value = route.query.email || ""
+  code.value = route.query.code || ""
+})
+
+const hasMinLength = computed(
+  () => password.value.length >= 8
+)
+
+const hasUppercase = computed(
+  () => /[A-Z]/.test(password.value)
+)
+
+const hasLowercase = computed(
+  () => /[a-z]/.test(password.value)
+)
+
+const hasNumber = computed(
+  () => /\d/.test(password.value)
+)
+
+const hasSpecial = computed(
+  () => /[!@#$%^&*()_+=\-]/.test(password.value)
+)
+
+const passwordsMatch = computed(() => {
+  if (!password2.value) return true
+
+  return password.value === password2.value
+})
+
+const passwordValid = computed(() => {
+  return (
+    hasMinLength.value &&
+    hasUppercase.value &&
+    hasLowercase.value &&
+    hasNumber.value &&
+    hasSpecial.value
+  )
+})
+
+const formValid = computed(() => {
+  return (
+    passwordValid.value &&
+    passwordsMatch.value
+  )
+})
 
 const submit = async () => {
 
@@ -261,8 +381,8 @@ const submit = async () => {
 
   try {
 
-    const response = await axios.post(
-      "http://127.0.0.1:8000/api/auth/password-reset/confirm/",
+    const response = await api.post(
+      "/auth/password-reset/confirm/",
       {
         email: email.value,
         code: code.value,
@@ -278,20 +398,13 @@ const submit = async () => {
     password.value = ""
     password2.value = ""
 
+    setTimeout(() => {
+      router.push("/")
+    }, 5000)
+
   } catch (err) {
 
-    const data = err.response?.data
-
-    if (typeof data === "object") {
-
-      error.value = Object.values(data)
-        .flat()
-        .join(", ")
-
-    } else {
-
-      error.value = "Password reset failed"
-    }
+    error.value = getErrorMessage(err)
 
   } finally {
 

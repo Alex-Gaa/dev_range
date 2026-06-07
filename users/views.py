@@ -165,7 +165,7 @@ class PasswordResetRequestView(APIView):
             return Response(
                 {
                     "detail":
-                    "If account exists, email was sent."
+                    "Если такой пользователь существует, письмо отправлено на почту."
                 }
             )
 
@@ -194,7 +194,7 @@ class PasswordResetRequestView(APIView):
 
         return Response({
             "detail":
-            "If account exists, email was sent."
+            "Если такой пользователь существует, письмо отправлено на почту."
         })
 
 class PasswordResetConfirmView(APIView):
@@ -268,7 +268,7 @@ class PasswordResetConfirmView(APIView):
 
         return Response({
             "detail":
-            "Password changed successfully"
+            "Пароль изменен успешно. Перенаправление на главную страницу  через 5 секунд..."
         })
 
 class VerifyEmailView(APIView):

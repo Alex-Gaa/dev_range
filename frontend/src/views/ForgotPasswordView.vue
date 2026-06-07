@@ -133,7 +133,9 @@
 
 <script setup>
 import { ref } from "vue"
-import axios from "axios"
+import api from "@/api/axios"
+import { getErrorMessage } from "@/utils/errorHandler"
+
 
 const email = ref("")
 const loading = ref(false)
@@ -146,26 +148,24 @@ const submit = async () => {
   error.value = ""
   message.value = ""
 
-  try {
+    try {
 
-    const response = await axios.post(
-      "http://127.0.0.1:8000/api/auth/password-reset/request/",
-      {
-        email: email.value
-      }
-    )
+      const response = await api.post(
+        "/auth/password-reset/request/",
+        {
+          email: email.value
+        }
+      )
 
-    message.value = response.data.detail
+      message.value = response.data.detail
 
-  } catch (err) {
+    } catch (err) {
 
-    error.value =
-      err.response?.data?.detail ||
-      "Failed to send reset code"
+      error.value = getErrorMessage(err)
 
-  } finally {
+    } finally {
 
-    loading.value = false
-  }
+      loading.value = false
+    }
 }
 </script>
