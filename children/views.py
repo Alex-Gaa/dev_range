@@ -68,7 +68,7 @@ class ChildListCreateView(generics.ListCreateAPIView):
         if current_count >= limit:
             raise ValidationError({
                 "detail":
-                    f"Your {subscription.plan} plan allows only {limit} children."
+                    f"Ваш {subscription.plan} план поддерживает создание только {limit} ребенка."
             })
 
         serializer.save(

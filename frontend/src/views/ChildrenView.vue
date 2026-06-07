@@ -17,7 +17,7 @@
       </div>
 
       <button
-        @click="modalOpen = true"
+        @click="createError = ''; modalOpen = true"
         class="
           bg-blue-600
           hover:bg-blue-700
@@ -67,10 +67,11 @@
       "
     >
 
-      <AddChildModal
-        @close="modalOpen = false"
-        @submit="handleCreate"
-      />
+    <AddChildModal
+      :error="createError"
+      @close="modalOpen = false"
+      @submit="handleCreate"
+    />
 
     </div>
 
@@ -81,6 +82,7 @@
 import { ref, onMounted } from "vue"
 
 import AppLayout from "@/layouts/AppLayout.vue"
+import { getErrorMessage } from "@/utils/errorHandler"
 
 import ChildCard from "@/components/children/ChildCard.vue"
 import AddChildModal from "@/components/children/AddChildModal.vue"
@@ -90,6 +92,7 @@ import { useChildrenStore } from "@/stores/children"
 const childrenStore = useChildrenStore()
 
 const modalOpen = ref(false)
+const createError = ref("")
 
 onMounted(() => {
   childrenStore.fetchChildren()
@@ -97,8 +100,21 @@ onMounted(() => {
 
 const handleCreate = async (data) => {
 
-  await childrenStore.addChild(data)
+  createError.value = ""
 
-  modalOpen.value = false
+  try {
+
+    await childrenStore.addChild(data)
+
+    modalOpen.value = false
+
+  } catch (error) {
+
+    console.log("HANDLE CREATE ERROR:", error)
+
+    createError.value = getErrorMessage(error)
+
+    console.log("CREATE ERROR VALUE:", createError.value)
+  }
 }
 </script>

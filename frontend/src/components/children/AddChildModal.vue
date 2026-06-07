@@ -1,4 +1,5 @@
 <!-- C:\Users\Developer\PycharmProjects\devrange\frontend\src\components\children\AddChildModal.vue -->
+
 <template>
   <div class="bg-white rounded-2xl p-8 w-full max-w-lg">
 
@@ -28,6 +29,7 @@
         placeholder="Child name"
         class="w-full border rounded-xl px-4 py-3"
       />
+
       <input
         v-model="form.last_name"
         type="text"
@@ -48,6 +50,7 @@
         placeholder="Grade"
         class="w-full border rounded-xl px-4 py-3"
       />
+
       <input
         v-model="form.email"
         type="email"
@@ -74,6 +77,20 @@
 
       </label>
 
+      <div
+        v-if="error"
+        class="
+          bg-red-50
+          border
+          border-red-200
+          text-red-700
+          p-3
+          rounded-xl
+        "
+      >
+        {{ error }}
+      </div>
+
       <button
         class="
           w-full
@@ -99,6 +116,13 @@ const emit = defineEmits([
   "submit",
   "close",
 ])
+
+const { error } = defineProps({
+  error: {
+    type: String,
+    default: "",
+  },
+})
 
 const form = reactive({
   first_name: "",

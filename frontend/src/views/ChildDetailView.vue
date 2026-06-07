@@ -26,7 +26,7 @@
         </button>
 
         <button
-          @click="resetChildPassword"
+          @click="showResetModal = true"
           class="
             bg-amber-600
             hover:bg-amber-700
@@ -50,6 +50,8 @@
           p-4
         "
       >
+
+
 
         <p class="font-semibold text-green-700">
           New child password
@@ -245,6 +247,61 @@
       </div>
 
     </div>
+
+    <!-- RESET PASSWORD MODAL -->
+    <div
+      v-if="showResetModal"
+      class="
+        fixed
+        inset-0
+        bg-black/40
+        flex
+        items-center
+        justify-center
+        z-50
+      "
+    >
+      <div class="bg-white rounded-2xl p-6 w-full max-w-md">
+
+        <h3 class="text-xl font-bold mb-3">
+          Reset Password
+        </h3>
+
+        <p class="text-slate-600 mb-5">
+          Reset password for
+          <strong>{{ child.first_name }}</strong>?
+        </p>
+
+        <div v-if="resetError" class="bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl mb-4">
+          {{ resetError }}
+        </div>
+
+        <div v-if="resetSuccess" class="bg-green-50 border border-green-200 text-green-700 p-3 rounded-xl mb-4">
+          {{ resetSuccess }}
+        </div>
+
+        <div class="flex justify-end gap-3">
+
+          <button
+            @click="showResetModal = false"
+            class="border px-4 py-2 rounded-xl"
+          >
+            Cancel
+          </button>
+
+          <button
+            @click="resetChildPassword"
+            class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+          >
+            Reset
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+
+
   </AppLayout>
 </template>
 
@@ -254,13 +311,21 @@ import { useRoute, useRouter } from "vue-router"
 
 import AppLayout from "@/layouts/AppLayout.vue"
 import api from "@/api/axios"
+import { getErrorMessage } from "@/utils/errorHandler"
 
 import { useChildrenStore } from "@/stores/children"
 import { useLessonsStore } from "@/stores/lessons"
 
 const route = useRoute()
 const router = useRouter()
+
 const generatedPassword = ref("")
+
+const showResetModal = ref(false)
+const resetError = ref("")
+
+const resetSuccess = ref("")
+
 const childrenStore = useChildrenStore()
 const lessonsStore = useLessonsStore()
 
@@ -276,11 +341,35 @@ const aiError = ref("")
 
 const resetChildPassword = async () => {
 
-  if (!confirm(
-    `Reset password for ${child.value.first_name}?`
-  )) {
-    return
+  resetError.value = ""
+  resetSuccess.value = ""
+
+  try {
+
+    const res = await api.post(
+      `/children/${child.value.id}/reset-password/`
+    )
+
+    generatedPassword.value = res.data.new_password
+
+    resetSuccess.value = "Password reset successfully"
+
+    // закрываем модалку через небольшую паузу
+    setTimeout(() => {
+      showResetModal.value = false
+    }, 800)
+
+  } catch (e) {
+
+    resetError.value =
+      e.response?.data?.detail ||
+      "Failed to reset password"
   }
+}
+
+const confirmResetPassword = async () => {
+
+  resetError.value = ""
 
   try {
 
@@ -291,16 +380,14 @@ const resetChildPassword = async () => {
     generatedPassword.value =
       res.data.new_password
 
+    showResetModal.value = false
+
   } catch (e) {
 
-    alert(
-      e.response?.data?.detail ||
-      "Failed to reset password"
-    )
-
+    resetError.value =
+      getErrorMessage(e)
   }
 }
-
 
 const newLesson = ref({
   subject: "",
@@ -323,19 +410,25 @@ const parsedLessons = computed(() =>
 
 /* LOAD TOPICS WHEN SUBJECT CHANGES */
 watch(() => aiForm.value.subject, async (val) => {
+
   if (!val) {
     topics.value = []
     return
   }
 
   try {
-    const res = await api.get(`/lessons/topics/?subject=${val}`)
+
+    const res = await api.get(
+      `/lessons/topics/?subject=${val}`
+    )
+
     topics.value = res.data
+
   } catch (e) {
+
     console.error(e)
   }
 })
-
 
 watch(() => newLesson.value.subject, async (val) => {
 
@@ -345,53 +438,96 @@ watch(() => newLesson.value.subject, async (val) => {
   }
 
   try {
-    const res = await api.get(`/lessons/topics/?subject=${val}`)
+
+    const res = await api.get(
+      `/lessons/topics/?subject=${val}`
+    )
+
     manualTopics.value = res.data
+
   } catch (e) {
+
     console.error(e)
   }
 })
-
 
 onMounted(async () => {
 
   const id = Number(route.params.id)
 
-  let found = childrenStore.children.find(c => c.id === id)
+  let found = childrenStore.children.find(
+    c => c.id === id
+  )
 
   if (!found) {
-    const res = await api.get(`/children/${id}/`)
+
+    const res = await api.get(
+      `/children/${id}/`
+    )
+
     found = res.data
   }
 
   child.value = found
 
   if (child.value) {
-    await lessonsStore.fetchLessons(child.value.id)
 
-    subjects.value = (await api.get("/lessons/subjects/")).data
-    subscription.value = (await api.get("/billing/subscription/")).data
+    await lessonsStore.fetchLessons(
+      child.value.id
+    )
+
+    subjects.value = (
+      await api.get("/lessons/subjects/")
+    ).data
+
+    subscription.value = (
+      await api.get("/billing/subscription/")
+    ).data
   }
 })
 
-const openLesson = (id) => router.push(`/lessons/${id}`)
-const goToProgress = () => router.push("/progress")
+const openLesson = (id) =>
+  router.push(`/lessons/${id}`)
+
+const goToProgress = () =>
+  router.push("/progress")
 
 const addLesson = async () => {
-  if (!child.value || !newLesson.value.title) return
 
-  await lessonsStore.addLesson(child.value.id, newLesson.value)
+  if (
+    !child.value ||
+    !newLesson.value.title
+  ) {
+    return
+  }
 
-  newLesson.value = { title: "", content: "" }
+  await lessonsStore.addLesson(
+    child.value.id,
+    newLesson.value
+  )
 
-  await lessonsStore.fetchLessons(child.value.id)
+  newLesson.value = {
+    title: "",
+    content: ""
+  }
+
+  await lessonsStore.fetchLessons(
+    child.value.id
+  )
 }
 
 const generateLesson = async () => {
+
   if (!child.value) return
 
-  if (!aiForm.value.subject || !aiForm.value.topic) {
-    aiError.value = "Select subject and topic"
+  if (
+    !aiForm.value.subject ||
+    !aiForm.value.topic
+  ) {
+
+    aiError.value =
+      "Select subject and topic"
+
     return
   }
 
@@ -399,17 +535,28 @@ const generateLesson = async () => {
   aiError.value = ""
 
   try {
-    await api.post("/lessons/generate/lesson/", {
-      child_id: child.value.id,
-      subject_id: aiForm.value.subject,
-      topic: aiForm.value.topic,
-    })
 
-    await lessonsStore.fetchLessons(child.value.id)
+    await api.post(
+      "/lessons/generate/lesson/",
+      {
+        child_id: child.value.id,
+        subject_id: aiForm.value.subject,
+        topic: aiForm.value.topic,
+      }
+    )
+
+    await lessonsStore.fetchLessons(
+      child.value.id
+    )
 
   } catch (e) {
-    aiError.value = e.response?.data?.error || "AI error"
+
+    aiError.value =
+      e.response?.data?.error ||
+      "AI error"
+
   } finally {
+
     loadingAI.value = false
   }
 }

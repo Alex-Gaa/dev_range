@@ -1,3 +1,4 @@
+//C:\Users\Developer\PycharmProjects\devrange\frontend\src\stores\children.js
 import { defineStore } from "pinia"
 
 import {
@@ -42,9 +43,13 @@ export const useChildrenStore = defineStore("children", {
 
         this.children.unshift(response.data)
 
+        return response.data
+
       } catch (e) {
 
         console.error("CREATE CHILD ERROR:", e)
+
+        throw e
       }
     },
   },
