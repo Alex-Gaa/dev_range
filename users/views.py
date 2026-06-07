@@ -225,7 +225,7 @@ class PasswordResetConfirmView(APIView):
 
             return Response(
                 {
-                    "detail": "Invalid code"
+                    "detail": "Неверный код"
                 },
                 status=400
             )
@@ -244,7 +244,7 @@ class PasswordResetConfirmView(APIView):
         if not reset:
             return Response(
                 {
-                    "detail": "Invalid code"
+                    "detail": "Неверный код"
                 },
                 status=400
             )
@@ -285,7 +285,7 @@ class VerifyEmailView(APIView):
         try:
             user = User.objects.get(email=data["email"])
         except User.DoesNotExist:
-            return Response({"detail": "Invalid code"}, status=400)
+            return Response({"detail": "Неверный код"}, status=400)
 
         verification = (
             EmailVerificationCode.objects
@@ -295,7 +295,7 @@ class VerifyEmailView(APIView):
         )
 
         if not verification:
-            return Response({"detail": "Invalid code"}, status=400)
+            return Response({"detail": "Неверный код"}, status=400)
 
         if verification.is_expired:
             return Response({"detail": "Code expired"}, status=400)

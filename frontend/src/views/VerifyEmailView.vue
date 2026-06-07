@@ -54,7 +54,7 @@ const submit = async () => {
     await authStore.verifyEmail(email.value, code.value)
     router.push("/dashboard")
   } catch (e) {
-    error.value = e.response?.data?.detail || "Verification failed"
+    error.value = e.response?.data?.detail || "Неверная верефикация, проверьте данные"
   }
 }
 </script>

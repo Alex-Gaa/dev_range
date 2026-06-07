@@ -10,7 +10,7 @@ from django.contrib.auth.password_validation import (
 from django.core.exceptions import (
     ValidationError as DjangoValidationError
 )
-
+from rest_framework.exceptions import AuthenticationFailed
 
 User = get_user_model()
 
@@ -63,9 +63,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+class CustomTokenObtainPairSerializer(
+    TokenObtainPairSerializer
+):
 
     def validate(self, attrs):
+
         user = User.objects.filter(
             email=attrs["username"]
         ).first()
@@ -75,7 +78,13 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 "detail": "Адрес электронной почты еще не подтвержден"
             })
 
-        data = super().validate(attrs)
+        try:
+            data = super().validate(attrs)
+
+        except AuthenticationFailed:
+            raise serializers.ValidationError({
+                "detail": "Неверный пароль или логин."
+            })
 
         user = self.user
 
@@ -147,3 +156,5 @@ class VerifyEmailSerializer(
     email = serializers.EmailField()
 
     code = serializers.CharField()
+
+
