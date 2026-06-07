@@ -72,7 +72,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         if user and not user.is_verified:
             raise serializers.ValidationError({
-                "detail": "Email is not verified"
+                "detail": "Адрес электронной почты еще не подтвержден"
             })
 
         data = super().validate(attrs)
@@ -124,7 +124,7 @@ class PasswordResetConfirmSerializer(
 
         if attrs["password"] != attrs["password2"]:
             raise serializers.ValidationError({
-                "non_field_errors": ["Пароли не совпадают111"]
+                "non_field_errors": ["Пароли не совпадают"]
             })
 
         try:

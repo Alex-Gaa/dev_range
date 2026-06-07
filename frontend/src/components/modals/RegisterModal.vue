@@ -24,19 +24,26 @@ const form = ref({
   password2: "",
 
 })
+const successMessage = ref("")
 
 const handleRegister = async () => {
   try {
+    fieldErrors.value = {}
+    successMessage.value = ""
+
     await authStore.register(form.value)
 
-    alert("Registration successful")
+    successMessage.value =
+      "Аккаунт создан. Письмо для подтверждения отправлено на почту, указанную при регистрации ."
 
-    emit("switch")
+    setTimeout(() => {
+      successMessage.value = ""
+      emit("switch")
+    }, 2500)
 
-    } catch (error) {
-
-      fieldErrors.value = getFieldErrors(error)
-    }
+  } catch (error) {
+    fieldErrors.value = getFieldErrors(error)
+  }
 }
 </script>
 
@@ -47,6 +54,12 @@ const handleRegister = async () => {
     <h2 class="text-3xl font-bold mb-6">
       Register
     </h2>
+    <div
+      v-if="successMessage"
+      class="mb-4 rounded-xl border border-green-300 bg-green-50 p-3 text-green-700"
+    >
+      {{ successMessage }}
+    </div>
 
 
     <div class="space-y-4">

@@ -68,7 +68,7 @@ class RegisterView(generics.CreateAPIView):
         return Response(
             {
                 "detail":
-                "Account created. Check your email."
+                "Аккаунт создан. Письмо для подтверждения отправлено на почту, указанную при регистрации."
             },
             status=201
         )
