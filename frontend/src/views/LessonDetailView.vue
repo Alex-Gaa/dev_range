@@ -291,11 +291,19 @@
       </div>
 
     </div>
+    <ConfirmModal
+      :show="showDeleteModal"
+      title="Delete Lesson"
+      message="Are you sure you want to delete this lesson?"
+      @cancel="showDeleteModal = false"
+      @confirm="confirmDeleteLesson"
+    />
 
   </AppLayout>
 </template>
 
 <script setup>
+import ConfirmModal from "@/components/common/ConfirmModal.vue"
 import { ref, computed, onMounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
@@ -317,6 +325,11 @@ const form = ref({
   title: "",
   content: "",
 })
+const showDeleteModal = ref(false)
+
+const errorMessage = ref("")
+const successMessage = ref("")
+
 
 /* LOAD */
 onMounted(async () => {
@@ -390,12 +403,36 @@ const saveLesson = async () => {
 }
 
 /* DELETE */
-const removeLesson = async () => {
+const removeLesson = () => {
 
-  if (!confirm("Delete this lesson?")) return
+  showDeleteModal.value = true
+}
+/*Confirm delete*/
+const confirmDeleteLesson = async () => {
 
-  await lessonsStore.deleteLesson(lesson.value.id)
-  router.push("/lessons")
+  errorMessage.value = ""
+
+  try {
+
+    await lessonsStore.deleteLesson(
+      lesson.value.id
+    )
+
+    successMessage.value =
+      "Lesson deleted successfully"
+
+    router.push("/lessons")
+
+  } catch (e) {
+
+    errorMessage.value =
+      e.response?.data?.detail ||
+      "Failed to delete lesson"
+
+  } finally {
+
+    showDeleteModal.value = false
+  }
 }
 
 /* COMPLETE */
