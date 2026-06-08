@@ -66,6 +66,7 @@ class AcceptInviteSerializer(serializers.Serializer):
             child = Child.objects.get(
                 invite_token=attrs["token"]
             )
+
         except Child.DoesNotExist:
             raise serializers.ValidationError({
                 "detail": "Invalid invite token"
@@ -83,7 +84,6 @@ class AcceptInviteSerializer(serializers.Serializer):
                 "detail": "Child already linked"
             })
 
-
         attrs["child"] = child
 
         return attrs
@@ -100,6 +100,7 @@ class AcceptInviteSerializer(serializers.Serializer):
             first_name=validated_data["first_name"],
             last_name=validated_data["last_name"],
             role=User.Role.CHILD,
+            is_verified=True,  # ← автоматически подтверждаем email
         )
 
         # LINK USER TO CHILD

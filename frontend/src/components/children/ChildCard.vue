@@ -121,13 +121,33 @@
       </a>
 
     </div>
+    <!-- COPY SUCCESS -->
+    <div
+      v-if="successMessage"
+      class="
+        mt-4
+        bg-green-50
+        border
+        border-green-200
+        text-green-700
+        p-3
+        rounded-xl
+        text-sm
+      "
+    >
+      {{ successMessage }}
+    </div>
 
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue"
+
 import { useRouter } from "vue-router"
+
+import { computed, ref } from "vue"
+
+const successMessage = ref("")
 
 const props = defineProps({
   child: Object,
@@ -148,11 +168,24 @@ const fullInviteLink = computed(() => {
 /* COPY */
 const copyInviteLink = async () => {
 
-  await navigator.clipboard.writeText(
-    fullInviteLink.value
-  )
+  try {
 
-  alert("Invite link copied")
+    await navigator.clipboard.writeText(
+      fullInviteLink.value
+    )
+
+    successMessage.value =
+      "Invite link copied"
+
+    setTimeout(() => {
+      successMessage.value = ""
+    }, 3000)
+
+  } catch {
+
+    successMessage.value =
+      "Failed to copy invite link"
+  }
 }
 
 /* OPEN CHILD */

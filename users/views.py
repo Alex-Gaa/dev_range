@@ -73,8 +73,6 @@ class RegisterView(generics.CreateAPIView):
             status=201
         )
 
-
-
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
