@@ -616,7 +616,20 @@
         />
 
         <div class="flex gap-2">
-
+            <div
+              v-if="subjectSuccess"
+              class="
+                bg-green-50
+                border
+                border-green-200
+                text-green-700
+                p-3
+                rounded-xl
+                mb-3
+              "
+            >
+              {{ subjectSuccess }}
+            </div>
           <button
             @click="createSubject"
             class="bg-green-600 text-white px-4 py-2 rounded-lg"
@@ -631,6 +644,21 @@
             Cancel
           </button>
 
+
+        </div>
+        <div
+          v-if="subjectError"
+          class="
+            bg-red-50
+            border
+            border-red-200
+            text-red-700
+            p-3
+            rounded-xl
+            mb-3
+          "
+        >
+          {{ subjectError }}
         </div>
 
       </div>
@@ -788,11 +816,18 @@
     </div>
 
 
-
+    <ConfirmModal
+      :show="showDeleteModal"
+      title="Delete Lesson"
+      message="Are you sure you want to delete this lesson?"
+      @cancel="showDeleteModal = false"
+      @confirm="confirmDeleteLesson"
+    />
    </AppLayout>
 </template>
 
 <script setup>
+import ConfirmModal from "@/components/common/ConfirmModal.vue"
 import { ref, computed, onMounted, watch } from "vue"
 import { useRouter } from "vue-router"
 
@@ -800,6 +835,8 @@ import AppLayout from "@/layouts/AppLayout.vue"
 import api from "@/api/axios"
 import { useLessonsStore } from "@/stores/lessons"
 import { useAuthStore } from "@/stores/auth"
+
+
 
 const activeTab = ref("lessons")
 
@@ -830,7 +867,16 @@ const subjects = ref([])
 
 const creating = ref(false)
 const form = ref({ name: "" })
+const subjectError = ref("")
+const subjectSuccess = ref("")
+const errorMessage = ref("")
+const successMessage = ref("")
 
+const showDeleteModal = ref(false)
+const deleteSubjectId = ref(null)
+
+
+const lessonToDelete = ref(null)
 const editingId = ref(null)
 const editForm = ref({ name: "" })
 
@@ -930,7 +976,8 @@ const createLesson = async () => {
     !lessonForm.value.children.length ||
     !lessonForm.value.title
   ) {
-    alert("Select at least one child and enter title")
+    errorMessage.value =
+        "Select at least one child and enter title"
     return
   }
 
@@ -968,7 +1015,9 @@ const createLesson = async () => {
 
     console.error(error)
 
-    alert("Failed to create lesson")
+    errorMessage.value =
+      error.response?.data?.detail ||
+      "Failed to create lesson"
 
   }
 }
@@ -1055,12 +1104,43 @@ const editLesson = (id) => {
 }
 
 /* DELETE */
-const deleteLesson = async (id) => {
+const deleteLesson = (id) => {
 
-  if (!confirm("Delete this lesson?")) return
+  lessonToDelete.value = id
 
-  await lessonsStore.deleteLesson(id)
+  showDeleteModal.value = true
 }
+/*Confirm delete*/
+
+const confirmDeleteLesson = async () => {
+
+  if (!lessonToDelete.value) {
+    return
+  }
+
+  try {
+
+    await lessonsStore.deleteLesson(
+      lessonToDelete.value
+    )
+
+    successMessage.value =
+      "Lesson deleted successfully"
+
+  } catch (e) {
+
+    errorMessage.value =
+      e.response?.data?.detail ||
+      "Failed to delete lesson"
+
+  } finally {
+
+    showDeleteModal.value = false
+
+    lessonToDelete.value = null
+  }
+}
+
 
 /* FORMAT CONTENT */
 const formatContent = (content) => {
@@ -1169,16 +1249,52 @@ const loadSubjects = async () => {
 /* SUBJECTS CRUD */
 const createSubject = async () => {
 
-  await api.post(
-    "/lessons/subjects/",
-    form.value
-  )
+  subjectError.value = ""
+  subjectSuccess.value = ""
 
-  form.value.name = ""
+  try {
 
-  creating.value = false
+    await api.post(
+      "/lessons/subjects/",
+      form.value
+    )
 
-  await loadSubjects()
+    form.value.name = ""
+
+    creating.value = false
+
+    subjectSuccess.value =
+      "Subject created successfully"
+
+    await loadSubjects()
+
+  } catch (error) {
+
+    console.error(
+      "CREATE SUBJECT ERROR:",
+      error
+    )
+
+    const data =
+      error.response?.data
+
+    if (data?.detail) {
+
+      subjectError.value =
+        data.detail
+
+    } else if (data?.name?.length) {
+
+      subjectError.value =
+        data.name[0]
+
+    } else {
+
+      subjectError.value =
+        "Failed to create subject"
+
+    }
+  }
 }
 
 const deleteSubject = async (id) => {
@@ -1205,14 +1321,29 @@ const cancelEdit = () => {
 
 const saveEdit = async (id) => {
 
-  await api.patch(
-    `/lessons/subjects/${id}/`,
-    editForm.value
-  )
+  errorMessage.value = ""
 
-  editingId.value = null
+  try {
 
-  await loadSubjects()
+    await api.patch(
+      `/lessons/subjects/${id}/`,
+      editForm.value
+    )
+
+    editingId.value = null
+
+    successMessage.value =
+      "Subject updated"
+
+    await loadSubjects()
+
+  } catch (e) {
+
+    errorMessage.value =
+      e.response?.data?.detail ||
+      e.response?.data?.name?.[0] ||
+      "Failed to update subject"
+  }
 }
 
 /* TREE */
@@ -1237,19 +1368,34 @@ const saveTopic = async (subjectId) => {
 
   if (!newTopic.value.trim()) return
 
-  await api.post(
-    "/lessons/topics/",
-    {
-      subject: subjectId,
-      name: newTopic.value
-    }
-  )
+  errorMessage.value = ""
 
-  newTopic.value = ""
+  try {
 
-  addingTopicFor.value = null
+    await api.post(
+      "/lessons/topics/",
+      {
+        subject: subjectId,
+        name: newTopic.value
+      }
+    )
 
-  await loadSubjects()
+    newTopic.value = ""
+
+    addingTopicFor.value = null
+
+    successMessage.value =
+      "Topic created"
+
+    await loadSubjects()
+
+  } catch (e) {
+
+    errorMessage.value =
+      e.response?.data?.detail ||
+      e.response?.data?.name?.[0] ||
+      "Failed to create topic"
+  }
 }
 
 const cancelTopic = () => {

@@ -227,7 +227,7 @@ class SubjectViewSet(viewsets.ModelViewSet):
 
         if current_count >= limit:
             raise ValidationError({
-                "detail": f"Your {subscription.plan} plan allows only {limit} subjects."
+                "detail": f"Ваш {subscription.plan} план поддерживает создание только {limit} предмета."
             })
 
         name = serializer.validated_data["name"]
