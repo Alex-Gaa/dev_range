@@ -16,6 +16,7 @@
       <div class="flex gap-3 mt-6">
 
           <button
+            v-if="!isChild"
             @click="activeTab = 'lessons'"
             class="px-4 py-2 rounded-xl border"
             :class="activeTab === 'lessons' ? 'bg-blue-600 text-white' : ''"
@@ -24,6 +25,7 @@
           </button>
 
           <button
+            v-if="!isChild"
             @click="activeTab = 'subjects'"
             class="px-4 py-2 rounded-xl border"
             :class="activeTab === 'subjects' ? 'bg-blue-600 text-white' : ''"
@@ -33,6 +35,7 @@
 
 
           <button
+            v-if="!isChild"
             @click="activeTab = 'create'"
             class="px-4 py-2 rounded-xl border"
             :class="activeTab === 'create'
@@ -58,13 +61,10 @@
     >
 
       <div
-        class="
-          grid
-          grid-cols-1
-          md:grid-cols-2
-          lg:grid-cols-5
-          gap-4
-        "
+      :class="[
+        'grid grid-cols-1 md:grid-cols-2 gap-4',
+        isChild ? 'lg:grid-cols-4' : 'lg:grid-cols-5'
+      ]"
       >
 
         <!-- SEARCH -->
@@ -76,6 +76,7 @@
 
         <!-- CHILD -->
         <select
+          v-if="!isChild"
           v-model="filters.child"
           class="border rounded-xl px-4 py-3"
         >
@@ -201,6 +202,7 @@
 
 
     <!-- LESSONS TAB -->
+
     <div v-if="activeTab === 'lessons'">
 
       <!-- EMPTY -->
@@ -371,7 +373,10 @@
 
     <!-- CREATE LESSON TAB -->
     <div
-      v-if="activeTab === 'create'"
+      v-if="
+        activeTab === 'create' &&
+        !isChild
+      "
       class="max-w-4xl mx-auto"
     >
 
@@ -583,7 +588,10 @@
 
     <!-- SUBJECTS TAB -->
     <div
-      v-if="activeTab === 'subjects'"
+      v-if="
+        activeTab === 'subjects' &&
+        !isChild
+      "
       class="max-w-4xl mx-auto p-6 space-y-6"
     >
 

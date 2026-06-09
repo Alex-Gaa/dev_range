@@ -142,7 +142,7 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
-
+import { getErrorMessage } from "@/utils/errorHandler"
 import api from "@/api/axios"
 import { acceptInvite } from "@/api/children"
 
@@ -183,10 +183,12 @@ onMounted(async () => {
 
 /* SUBMIT */
 const submitInvite = async () => {
+
   error.value = ""
   loading.value = true
 
   try {
+
     await acceptInvite({
       token: route.params.token,
       ...form.value,
@@ -199,15 +201,16 @@ const submitInvite = async () => {
     }, 1500)
 
   } catch (e) {
-    console.log(e)
 
-    error.value =
-      e.response?.data?.detail ||
-      JSON.stringify(e.response?.data) ||
-      "Failed to create account"
+    console.error(e)
+
+    error.value = getErrorMessage(e)
 
   } finally {
+
     loading.value = false
+
   }
+
 }
 </script>

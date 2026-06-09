@@ -55,7 +55,7 @@ class AcceptInviteSerializer(serializers.Serializer):
         if attrs["password"] != attrs["password2"]:
             raise serializers.ValidationError({
                 "non_field_errors": [
-                    "Passwords do not match"
+                    "Пароль не совпадает"
                 ]
             })
 
