@@ -202,6 +202,8 @@ class LessonViewSet(viewsets.ModelViewSet):
 
 
 
+# SUBJECTS
+
 class SubjectViewSet(viewsets.ModelViewSet):
     serializer_class = SubjectSerializer
     permission_classes = [IsAuthenticated]
@@ -218,16 +220,25 @@ class SubjectViewSet(viewsets.ModelViewSet):
 
         user = self.request.user
 
+        if user.role != "parent":
+            raise PermissionDenied(
+                "Only parents can manage subjects."
+            )
+
         subscription = get_or_create_subscription(user)
-        from billing.constants import PLANS
 
-        limit = PLANS[subscription.plan]["subjects_limit"]
+        limit = PLANS[
+            subscription.plan
+        ]["subjects_limit"]
 
-        current_count = Subject.objects.filter(parent=user).count()
+        current_count = Subject.objects.filter(
+            parent=user
+        ).count()
 
         if current_count >= limit:
             raise ValidationError({
-                "detail": f"Ваш {subscription.plan} план поддерживает создание только {limit} предмета."
+                "detail":
+                    f"Ваш {subscription.plan} план поддерживает создание только {limit} предмета."
             })
 
         name = serializer.validated_data["name"]
@@ -237,7 +248,10 @@ class SubjectViewSet(viewsets.ModelViewSet):
         slug = base_slug
         counter = 1
 
-        while Subject.objects.filter(slug=slug).exists():
+        while Subject.objects.filter(
+            slug=slug
+        ).exists():
+
             slug = f"{base_slug}-{counter}"
             counter += 1
 
@@ -246,6 +260,46 @@ class SubjectViewSet(viewsets.ModelViewSet):
             slug=slug
         )
 
+    def update(self, request, *args, **kwargs):
+
+        if request.user.role != "parent":
+            raise PermissionDenied(
+                "Only parents can manage subjects."
+            )
+
+        return super().update(
+            request,
+            *args,
+            **kwargs
+        )
+
+    def partial_update(self, request, *args, **kwargs):
+
+        if request.user.role != "parent":
+            raise PermissionDenied(
+                "Only parents can manage subjects."
+            )
+
+        return super().partial_update(
+            request,
+            *args,
+            **kwargs
+        )
+
+    def destroy(self, request, *args, **kwargs):
+
+        if request.user.role != "parent":
+            raise PermissionDenied(
+                "Only parents can manage subjects."
+            )
+
+        return super().destroy(
+            request,
+            *args,
+            **kwargs
+        )
+
+# TOPICS
 
 class TopicViewSet(viewsets.ModelViewSet):
 
@@ -261,9 +315,61 @@ class TopicViewSet(viewsets.ModelViewSet):
             Q(subject__parent=user)
         )
 
-        subject_id = self.request.query_params.get("subject")
+        subject_id = self.request.query_params.get(
+            "subject"
+        )
 
         if subject_id:
-            queryset = queryset.filter(subject_id=subject_id)
+            queryset = queryset.filter(
+                subject_id=subject_id
+            )
 
         return queryset
+
+    def perform_create(self, serializer):
+
+        if self.request.user.role != "parent":
+            raise PermissionDenied(
+                "Only parents can manage topics."
+            )
+
+        serializer.save()
+
+    def update(self, request, *args, **kwargs):
+
+        if request.user.role != "parent":
+            raise PermissionDenied(
+                "Only parents can manage topics."
+            )
+
+        return super().update(
+            request,
+            *args,
+            **kwargs
+        )
+
+    def partial_update(self, request, *args, **kwargs):
+
+        if request.user.role != "parent":
+            raise PermissionDenied(
+                "Only parents can manage topics."
+            )
+
+        return super().partial_update(
+            request,
+            *args,
+            **kwargs
+        )
+
+    def destroy(self, request, *args, **kwargs):
+
+        if request.user.role != "parent":
+            raise PermissionDenied(
+                "Only parents can manage topics."
+            )
+
+        return super().destroy(
+            request,
+            *args,
+            **kwargs
+        )

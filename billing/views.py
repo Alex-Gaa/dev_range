@@ -2,7 +2,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.exceptions import PermissionDenied
 from billing.serializers import SubscriptionSerializer
 from billing.services import activate_subscription, get_or_create_subscription
 
@@ -13,6 +13,10 @@ class TestUpgradeView(APIView):
 
     def post(self, request):
 
+        if request.user.role != "parent":
+            raise PermissionDenied(
+                "Only parents can manage subscriptions."
+            )
         plan = request.data.get("plan")
 
         subscription = activate_subscription(
@@ -34,6 +38,10 @@ class SubscriptionView(APIView):
     ]
 
     def get(self, request):
+        if request.user.role != "parent":
+            raise PermissionDenied(
+                "Only parents can view subscription."
+            )
 
         subscription = (
             get_or_create_subscription(
@@ -50,11 +58,14 @@ class SubscriptionView(APIView):
 
 class ActivateSubscriptionView(APIView):
 
-    permission_classes = [
-        IsAuthenticated
-    ]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
+
+        if request.user.role != "parent":
+            raise PermissionDenied(
+                "Only parents can manage subscriptions."
+            )
 
         plan = request.data.get(
             "plan",

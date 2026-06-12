@@ -13,7 +13,7 @@ from .serializers import (
     ChildSerializer,
     AcceptInviteSerializer,
 )
-
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import ValidationError
 
 from billing.services import get_or_create_subscription, is_subscription_active
@@ -39,11 +39,19 @@ class ChildListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
 
+        if self.request.user.role != "parent":
+            return Child.objects.none()
+
         return Child.objects.filter(
             parent=self.request.user
         ).order_by("-created_at")
 
     def perform_create(self, serializer):
+
+        if self.request.user.role != "parent":
+            raise PermissionDenied(
+                "Only parents can create children."
+            )
 
         if not is_subscription_active(
                 self.request.user
