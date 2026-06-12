@@ -24,6 +24,9 @@ import BillingView from "@/views/BillingView.vue"
 import ForgotPasswordView from "@/views/ForgotPasswordView.vue"
 import ResetPasswordView from "@/views/ResetPasswordView.vue"
 import VerifyEmailView from  "@/views/VerifyEmailView.vue"
+
+import { useAuthStore } from "@/stores/auth"
+
 const routes = [
   {
     path: "/",
@@ -61,18 +64,20 @@ const routes = [
     component: ChildrenView,
     meta: {
       requiresAuth: true,
+      roles: ["parent"],
     },
   },
 
-  {
-    path: "/children/:id",
-    component: () =>
-      import("@/views/ChildDetailView.vue"),
+    {
+      path: "/children/:id",
+      component: () =>
+        import("@/views/ChildDetailView.vue"),
 
-    meta: {
-      requiresAuth: true,
+      meta: {
+        requiresAuth: true,
+        roles: ["parent"],
+      },
     },
-  },
 
 //  {
 //    path: "/subjects",
@@ -151,10 +156,14 @@ const routes = [
     },
   },
 
-  {
-    path: "/billing",
-    component: BillingView,
-  },
+    {
+      path: "/billing",
+      component: BillingView,
+      meta: {
+        requiresAuth: true,
+        roles: ["parent"],
+      },
+    },
 ]
 
 const router = createRouter({
@@ -164,18 +173,42 @@ const router = createRouter({
 
 /* AUTH GUARD */
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
 
-  const token = localStorage.getItem("access")
+  const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth && !token) {
-
-    next("/")
-
-  } else {
-
-    next()
+  // Загружаем пользователя после F5
+  if (
+    authStore.access &&
+    !authStore.initialized
+  ) {
+    await authStore.fetchMe()
   }
+
+  // Не авторизован
+  if (
+    to.meta.requiresAuth &&
+    !authStore.access
+  ) {
+    return next("/")
+  }
+
+  // Проверка ролей
+  if (to.meta.roles) {
+
+    const userRole =
+      authStore.user?.role
+
+    if (
+      !to.meta.roles.includes(
+        userRole
+      )
+    ) {
+      return next("/dashboard")
+    }
+  }
+
+  next()
 })
 
 export default router
