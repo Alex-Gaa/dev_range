@@ -897,11 +897,23 @@ const router = useRouter()
 
 const lessonsStore = useLessonsStore()
 const authStore = useAuthStore()
+const authReady = computed(
+  () => authStore.isReady
+)
+console.log("authReady =", authReady.value)
+console.log("initialized =", authStore.initialized)
+console.log("user =", authStore.user)
+
+console.log("user =", authStore.user)
+console.log("role =", authStore.user?.role)
+
 
 /* ROLE */
 const isChild = computed(() => {
   return authStore.user?.role === "child"
 })
+console.log("isChild =", isChild.value)
+
 
 /* LOAD TOPICS FOR CREATE LESSON */
 watch(

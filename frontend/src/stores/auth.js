@@ -16,13 +16,16 @@ export const useAuthStore = defineStore("auth", {
     refresh: localStorage.getItem("refresh") || null,
 
     loading: false,
+    initialized: false,
   }),
 
   getters: {
 
+    isReady: (state) => state.initialized,
+
     isAuthenticated: (state) => !!state.access,
 
-    role: (state) => state.user?.role || "parent",
+    role: (state) => state.user?.role || null,
 
     fullName: (state) => {
 
@@ -72,7 +75,10 @@ export const useAuthStore = defineStore("auth", {
 
     async fetchMe() {
 
-      if (!this.access) return
+      if (!this.access) {
+        this.initialized = true
+        return
+      }
 
       try {
 
@@ -83,6 +89,10 @@ export const useAuthStore = defineStore("auth", {
       } catch (e) {
 
         this.logout()
+
+      } finally {
+
+        this.initialized = true
       }
     },
 
@@ -120,6 +130,8 @@ export const useAuthStore = defineStore("auth", {
 
       this.access = null
       this.refresh = null
+
+      this.initialized = true
 
       localStorage.removeItem("access")
       localStorage.removeItem("refresh")
