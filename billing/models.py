@@ -23,34 +23,52 @@ class Subscription(models.Model):
         related_name="subscription"
     )
 
-    plan = models.CharField(
-        max_length=30,
-        choices=PLAN_CHOICES,
-        default="free"
-    )
+    plan = models.CharField(max_length=30, choices=PLAN_CHOICES, default="free")
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default="active")
+
+    lessons_used = models.IntegerField(default=0)
+
+    expires_at = models.DateTimeField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.plan}"
+
+
+
+class Payment(models.Model):
+
+    STATUS_PENDING = "pending"
+    STATUS_SUCCEEDED = "succeeded"
+    STATUS_FAILED = "failed"
+
+    STATUS_CHOICES = [
+        (STATUS_PENDING, "Pending"),
+        (STATUS_SUCCEEDED, "Succeeded"),
+        (STATUS_FAILED, "Failed"),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    plan = models.CharField(max_length=30)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
 
     status = models.CharField(
         max_length=30,
         choices=STATUS_CHOICES,
-        default="active"
+        default=STATUS_PENDING
     )
 
-    lessons_used = models.IntegerField(
-        default=0
+    provider_payment_id = models.CharField(
+        max_length=255,
+        unique=True,
+        db_index=True
     )
 
-    expires_at = models.DateTimeField(
-        null=True,
-        blank=True
-    )
+    # ✅ FIX 1: ИДЕМПОТЕНТНОСТЬ WEBHOOK
+    processed_at = models.DateTimeField(null=True, blank=True)
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
-
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
-
-    def __str__(self):
-        return f"{self.user.email} - {self.plan}"
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

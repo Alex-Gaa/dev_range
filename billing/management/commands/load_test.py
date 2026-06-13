@@ -1,3 +1,5 @@
+#
+#C:\Users\Developer\PycharmProjects\devrange\billing\management\commands\load_test.py
 import random
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -9,9 +11,7 @@ from faker import Faker
 
 from billing.services import (
     activate_subscription,
-    can_generate_lesson,
-    increment_lessons_usage,
-)
+    )
 
 from billing.constants import PLANS
 from children.models import Child
