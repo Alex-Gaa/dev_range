@@ -1,0 +1,7 @@
+-r requirements.txt
+
+locust==2.44.1
+pytest
+pytest-django
+Faker
+pywin32

@@ -30,9 +30,10 @@ mimetypes.add_type('application/javascript', '.js', True)
 SECRET_KEY = 'django-insecure-_%ep@fo-i$zs(fve6@no04=3*-k6y#whvzxemx4t*m7zwuc(#2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'salutatory-marylouise-snugly.ngrok-free.dev']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '72.56.34.59']
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Application definition
@@ -119,28 +120,28 @@ SIMPLE_JWT = {
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 #
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.getenv("DB_NAME"),
-#         "USER": os.getenv("DB_USER"),
-#         "PASSWORD": os.getenv("DB_PASSWORD"),
-#         "HOST": os.getenv("DB_HOST"),
-#         "PORT": os.getenv("DB_PORT"),
-#         "CONN_MAX_AGE": 10,
-#     }
-# }
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "devgrade",
-        "USER": "devgrade",
-        "PASSWORD": "Asdf2020",
-        "HOST": "localhost",
-        "PORT": "5432",
-        "CONN_MAX_AGE": 0,
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+        "CONN_MAX_AGE": 10,
     }
 }
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "devgrade",
+#         "USER": "devgrade",
+#         "PASSWORD": "Asdf2020",
+#         "HOST": "localhost",
+#         "PORT": "5432",
+#         "CONN_MAX_AGE": 0,
+#     }
+# }
 
 AUTH_USER_MODEL = "users.User"
 
