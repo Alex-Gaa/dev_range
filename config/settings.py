@@ -30,10 +30,9 @@ mimetypes.add_type('application/javascript', '.js', True)
 SECRET_KEY = 'django-insecure-_%ep@fo-i$zs(fve6@no04=3*-k6y#whvzxemx4t*m7zwuc(#2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-DEBUG = False
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '72.56.34.59']
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Application definition
@@ -80,9 +79,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app']
 
 # Говорим Django использовать безопасные куки
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 
 ROOT_URLCONF = 'config.urls'
