@@ -152,9 +152,7 @@ const successMessage = ref("")
 const props = defineProps({
   child: Object,
 })
-console.log("child:", props.child)
-console.log("invite_link:", props.child?.invite_link)
-console.log("fullInviteLink:", fullInviteLink.value)
+
 
 const router = useRouter()
 
