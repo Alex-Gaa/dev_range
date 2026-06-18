@@ -1,70 +1,41 @@
 services:
+  backend:
+    image: alexandrgrebennikov/dev-range-backend:latest
+    env_file:
+      - .env.production
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8000:8000"
+
+  celery:
+    image: alexandrgrebennikov/dev-range-backend:latest
+    command: celery -A config worker -l info
+    env_file:
+      - .env.production
+    depends_on:
+      - postgres
+      - redis
 
   postgres:
     image: postgres:17
-    restart: always
     environment:
       POSTGRES_DB: devgrade
       POSTGRES_USER: devgrade
       POSTGRES_PASSWORD: Asdf2020
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
   redis:
     image: redis:7-alpine
-    restart: always
-
-  backend:
-    build: .
-    restart: always
-    env_file:
-      - .env.production
-    depends_on:
-      - postgres
-      - redis
-    volumes:
-      - static_volume:/app/staticfiles
-    command: >
-      sh -c "
-      python manage.py migrate &&
-      python manage.py collectstatic --noinput &&
-      gunicorn config.wsgi:application
-      --bind 0.0.0.0:8000
-      --workers 4
-      "
-
-  celery:
-    build: .
-    restart: always
-    env_file:
-      - .env.production
-    depends_on:
-      - redis
-      - postgres
-    command: celery -A config worker -l info
 
   nginx:
     image: nginx:latest
-    restart: always
-    depends_on:
-      - backend
     ports:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - static_volume:/app/staticfiles
-
-  locust:
-    image: locustio/locust
-    ports:
-      - "8089:8089"
-    volumes:
-      - .:/mnt/locust
-    working_dir: /mnt/locust
-    command: -f billing/tests/billing_load_pro.py
 
 volumes:
   postgres_data:
-  static_volume:

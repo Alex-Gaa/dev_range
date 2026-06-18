@@ -1,22 +1,32 @@
-FROM python:3.12-slim
+# ========== FRONTEND BUILD ==========
+FROM node:20 AS frontend-build
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+WORKDIR /frontend
+COPY frontend/package*.json ./
+RUN npm install
+
+COPY frontend .
+RUN npm run build
+
+
+# ========== BACKEND ==========
+FROM python:3.12-slim
 
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
-    gcc \
-    libpq-dev \
+    gcc libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /app/
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+COPY . .
 
-COPY . /app/
+# 🔥 забираем собранный фронт
+COPY --from=frontend-build /frontend/dist /app/frontend/dist
 
-RUN mkdir -p /app/staticfiles
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
