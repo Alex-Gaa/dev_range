@@ -19,6 +19,8 @@ services:
     restart: always
     env_file:
       - .env.production
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.prod
     depends_on:
       - postgres
       - redis

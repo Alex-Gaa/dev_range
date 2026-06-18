@@ -1,3 +1,4 @@
+#C:\Users\Developer\PycharmProjects\devrange\config\settings\prod.py
 from .base import *
 
 DEBUG = False
