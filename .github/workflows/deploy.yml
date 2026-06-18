@@ -35,7 +35,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
-          username: root
+          username: admin_diego
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd /home/admin_diego/dev_range
