@@ -168,24 +168,22 @@ const fullInviteLink = computed(() => {
 
 /* COPY */
 const copyInviteLink = async () => {
+  const link = fullInviteLink.value
+
+  console.log("COPY LINK:", link)
+
+  if (!link) {
+    successMessage.value = "No invite link available"
+    return
+  }
 
   try {
+    await navigator.clipboard.writeText(link)
 
-    await navigator.clipboard.writeText(
-      fullInviteLink.value
-    )
-
-    successMessage.value =
-      "Invite link copied"
-
-    setTimeout(() => {
-      successMessage.value = ""
-    }, 3000)
-
-  } catch {
-
-    successMessage.value =
-      "Failed to copy invite link"
+    successMessage.value = "Copied: " + link
+  } catch (e) {
+    console.error("Clipboard error:", e)
+    successMessage.value = "Clipboard failed"
   }
 }
 
@@ -193,4 +191,5 @@ const copyInviteLink = async () => {
 const openChild = () => {
   router.push(`/children/${props.child.id}`)
 }
+console.log(props.child.invite_link)
 </script>
