@@ -2,13 +2,26 @@
 from pathlib import Path
 import os
 from datetime import timedelta
-from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-load_dotenv()
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# =========================
+# ENV SAFETY
+# =========================
+
+def env(name, default=None):
+    value = os.getenv(name, default)
+    if value is None:
+        raise RuntimeError(f"Missing required environment variable: {name}")
+    return value
+
+
+# =========================
+# CORE SETTINGS
+# =========================
+
+OPENAI_API_KEY = env("OPENAI_API_KEY", "")
 
 AUTH_USER_MODEL = "users.User"
 
@@ -19,6 +32,11 @@ USE_I18N = True
 USE_TZ = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# =========================
+# APPS
+# =========================
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -40,6 +58,11 @@ INSTALLED_APPS = [
     "generate",
 ]
 
+
+# =========================
+# MIDDLEWARE
+# =========================
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -50,6 +73,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+
+# =========================
+# REST
+# =========================
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -63,13 +91,18 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+
+# =========================
+# URLS / TEMPLATES
+# =========================
+
 ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            os.path.join(BASE_DIR, "frontend", "dist")
+            os.path.join(BASE_DIR, "frontend", "dist"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -84,36 +117,47 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+
+# =========================
+# DATABASE (FIXED)
+# =========================
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_PORT"),
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PASSWORD"),
+        "HOST": env("DB_HOST"),
+        "PORT": env("DB_PORT", "5432"),
         "CONN_MAX_AGE": 60,
     }
 }
+
+
+# =========================
+# STATIC
+# =========================
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
-CELERY_BROKER_URL = os.getenv(
+# =========================
+# CELERY
+# =========================
+
+CELERY_BROKER_URL = env(
     "CELERY_BROKER_URL",
-    "redis://localhost:6379/0"
+    "redis://redis:6379/0"
 )
 
-CELERY_RESULT_BACKEND = os.getenv(
+CELERY_RESULT_BACKEND = env(
     "CELERY_RESULT_BACKEND",
-    "redis://localhost:6379/0"
+    "redis://redis:6379/0"
 )
 
 CELERY_ACCEPT_CONTENT = ["json"]
-
 CELERY_TASK_SERIALIZER = "json"
-
 CELERY_RESULT_SERIALIZER = "json"
-
 CELERY_TIMEZONE = "UTC"
