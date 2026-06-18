@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from django.contrib.auth.password_validation import validate_password
+from billing.services import get_or_create_subscription
 from .models import Profile
 from django.contrib.auth.password_validation import (
     validate_password
@@ -47,20 +47,24 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         return attrs
 
-
     def create(self, validated_data):
         validated_data.pop("password2")
 
         user = User.objects.create_user(
-            username=validated_data["email"],  # внутренний username (не используем на фронте)
+            username=validated_data["email"],
             email=validated_data["email"],
             password=validated_data["password"],
             first_name=validated_data["first_name"],
             last_name=validated_data["last_name"],
             role=validated_data.get("role", "parent")
         )
+
         user.is_verified = False
         user.save()
+
+        # 🔥 создать Free подписку
+        get_or_create_subscription(user)
+
         return user
 
 class CustomTokenObtainPairSerializer(
