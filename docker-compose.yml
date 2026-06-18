@@ -17,17 +17,23 @@ services:
   backend:
     image: alexandrgrebennikov/dev-range-backend:latest
     restart: always
+
     env_file:
       - .env.production
+
     environment:
-      DJANGO_SETTINGS_MODULE: config.settings.prod
+      DJANGO_SETTINGS_MODULE: config.settings.prod   # 🔥 фиксируем явно
+
     depends_on:
       - postgres
       - redis
+
     ports:
       - "8000:8000"
+
     volumes:
       - static_volume:/app/staticfiles
+
     command: >
       sh -c "
       python manage.py migrate &&
@@ -40,11 +46,17 @@ services:
   celery:
     image: alexandrgrebennikov/dev-range-backend:latest
     restart: always
+
     env_file:
       - .env.production
+
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.prod   # 🔥 ВАЖНО ДЛЯ CELERY
+
     depends_on:
       - postgres
       - redis
+
     command: celery -A config worker -l info
 
   nginx:

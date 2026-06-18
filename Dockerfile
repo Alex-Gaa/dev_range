@@ -28,5 +28,6 @@ COPY --from=frontend-build /frontend/dist /app/frontend/dist
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=config.settings.prod
 
 CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]

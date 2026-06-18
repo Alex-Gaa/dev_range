@@ -39,11 +39,11 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd /home/admin_diego/dev_range
-          
+
             docker compose pull
-          
-            docker compose down
-          
-            docker compose up -d
-          
+
+            docker compose down --remove-orphans
+
+            docker compose up -d --force-recreate
+
             docker image prune -f
