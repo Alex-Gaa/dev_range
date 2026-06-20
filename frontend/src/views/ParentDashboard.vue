@@ -1,10 +1,11 @@
+<!-- C:\Users\Developer\PycharmProjects\devrange\frontend\src\views\ParentDashboard.vue -->
 <template>
 
   <div>
 
     <div class="mb-8">
 
-      <h1 class="text-3xl font-bold">
+      <h1 class="text-2xl md:text-3xl font-bold">
         Добро пожаловать,
         {{ authStore.user?.first_name }}
       </h1>
@@ -165,9 +166,9 @@
       </div>
 
       <div
-        v-else
-        class="bg-white border rounded-2xl p-10 text-center"
-      >
+          v-else
+          class="bg-white border rounded-2xl p-6 md:p-10 text-center"
+        >
 
         <h3 class="text-xl font-semibold">
           No children yet

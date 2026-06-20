@@ -24,22 +24,22 @@
 
     <div
       v-if="continueLesson"
-      class="
+        class="
         bg-gradient-to-r
         from-blue-600
         to-indigo-600
         rounded-3xl
-        p-8
+        p-5 md:p-8
         text-white
         mb-8
-      "
+        "
     >
 
       <p class="uppercase text-sm opacity-80">
         Continue learning
       </p>
 
-      <h2 class="text-3xl font-bold mt-3">
+      <h2 class="text-2xl md:text-3xl font-bold mt-3">
         {{ continueLesson.title }}
       </h2>
 
@@ -182,7 +182,7 @@
               Learning Streak
             </p>
 
-            <h3 class="text-5xl font-bold mt-2 text-orange-500">
+            <h3 class="text-4xl md:text-5xl font-bold mt-2 text-orange-500">
               🔥 {{ streak }}
             </h3>
 
@@ -236,7 +236,17 @@
 
     <div class="mt-10">
 
-      <div class="flex items-center justify-between mb-6">
+      <div
+          class="
+          flex
+          flex-col
+          sm:flex-row
+          sm:items-center
+          sm:justify-between
+          gap-3
+          mb-6
+          "
+        >
 
         <h2 class="text-2xl font-bold">
           Recent Lessons
@@ -275,7 +285,16 @@
           @click="openLesson(lesson.id)"
         >
 
-          <div class="flex items-start justify-between">
+          <div
+              class="
+              flex
+              flex-col
+              sm:flex-row
+              sm:items-start
+              sm:justify-between
+              gap-3
+              "
+            >
 
             <div>
 

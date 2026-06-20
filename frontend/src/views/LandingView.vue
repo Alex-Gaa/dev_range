@@ -3,7 +3,9 @@
   <div class="min-h-screen flex flex-col bg-slate-50">
 
     <!-- NAVBAR -->
-    <header class="flex justify-between items-center px-10 py-6 border-b bg-white">
+    <header
+      class="flex justify-between items-center px-4 sm:px-6 lg:px-10 py-4 lg:py-6 border-b bg-white"
+    >
 
       <div class="text-2xl font-bold text-slate-900">
         AI Learning
@@ -32,7 +34,9 @@
     <!-- HERO -->
     <main class="flex-1 flex flex-col items-center justify-center text-center px-6">
 
-      <h1 class="text-5xl font-bold max-w-3xl leading-tight text-slate-900">
+      <h1
+        class="text-3xl sm:text-4xl lg:text-5xl font-bold max-w-3xl leading-tight text-slate-900"
+      >
 
         AI объясняет школьные темы так,
         чтобы ребёнок понял за 10 минут!
@@ -47,18 +51,18 @@
 
       </p>
 
-      <div class="mt-10 flex gap-4">
+      <div class="mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
 
         <button
           @click="openRegister"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg transition shadow-lg"
+          class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg transition shadow-lg"
         >
           Попробовать бесплатно
         </button>
 
         <button
           @click="openLogin"
-          class="border border-slate-300 bg-white hover:bg-slate-100 px-8 py-4 rounded-2xl text-lg transition"
+          class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg transition shadow-lg""
         >
           Войти
         </button>

@@ -1,28 +1,31 @@
-<!-- C:\Users\Developer\PycharmProjects\devrange\frontend\src\layouts\AppLayout.vue -->
+<!-- src/layouts/AppLayout.vue -->
 
 <template>
   <div class="min-h-screen bg-slate-100 flex">
 
+    <!-- MOBILE OVERLAY -->
+    <div
+      v-if="sidebarOpen"
+      @click="sidebarOpen = false"
+      class="fixed inset-0 bg-black/40 z-40 lg:hidden"
+    />
+
     <!-- SIDEBAR -->
     <aside
-      class="
-        w-72
-        h-screen
-        sticky
-        top-0
-        bg-white
-        border-r
-        flex
-        flex-col
-      "
+      :class="[
+        sidebarOpen
+          ? 'translate-x-0'
+          : '-translate-x-full',
+        'fixed lg:sticky top-0 left-0 z-50 lg:z-auto h-screen w-72 bg-white border-r flex flex-col transition-transform duration-300 lg:translate-x-0'
+      ]"
     >
 
-      <!-- LOGO -->
       <!-- LOGO -->
       <div class="p-6 border-b">
 
         <router-link
           to="/dashboard"
+          @click="sidebarOpen = false"
           class="
             text-2xl
             font-bold
@@ -34,15 +37,16 @@
         >
           AI Learning
         </router-link>
+
       </div>
 
       <!-- NAVIGATION -->
       <nav
         class="
-            flex-1
-            p-4
-            space-y-2
-            overflow-y-auto
+          flex-1
+          p-4
+          space-y-2
+          overflow-y-auto
         "
       >
 
@@ -50,6 +54,7 @@
           v-for="item in menuItems"
           :key="item.path"
           :to="item.path"
+          @click="sidebarOpen = false"
           class="
             flex
             items-center
@@ -84,7 +89,6 @@
 
         <div class="flex items-center gap-3 mb-5">
 
-          <!-- AVATAR -->
           <div
             class="
               w-12
@@ -100,12 +104,9 @@
               shrink-0
             "
           >
-
             {{ authStore.user?.first_name?.charAt(0) || "U" }}
-
           </div>
 
-          <!-- USER INFO -->
           <div class="min-w-0">
 
             <p class="font-semibold truncate">
@@ -120,7 +121,6 @@
 
         </div>
 
-        <!-- LOGOUT -->
         <button
           @click="logout"
           class="
@@ -141,7 +141,7 @@
     </aside>
 
     <!-- MAIN -->
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col min-w-0">
 
       <!-- TOPBAR -->
       <header
@@ -151,13 +151,35 @@
           border-b
           flex
           items-center
-          px-8
+          px-4
+          md:px-6
+          lg:px-8
         "
       >
 
+        <!-- MOBILE MENU BUTTON -->
+        <button
+          @click="sidebarOpen = true"
+          class="
+            lg:hidden
+            mr-4
+            text-2xl
+            text-slate-700
+          "
+        >
+          ☰
+        </button>
+
         <div>
 
-          <h2 class="text-2xl font-semibold capitalize">
+          <h2
+            class="
+              text-xl
+              md:text-2xl
+              font-semibold
+              capitalize
+            "
+          >
             {{ userRole }} dashboard
           </h2>
 
@@ -170,7 +192,14 @@
       </header>
 
       <!-- PAGE CONTENT -->
-      <main class="flex-1 p-8">
+      <main
+        class="
+          flex-1
+          p-4
+          md:p-6
+          lg:p-8
+        "
+      >
 
         <slot />
 
@@ -185,6 +214,7 @@
 import {
   computed,
   onMounted,
+  ref,
 } from "vue"
 
 import {
@@ -193,20 +223,18 @@ import {
 } from "vue-router"
 
 import { useAuthStore } from "@/stores/auth"
-
 import { sidebarConfig } from "@/config/sidebar"
 
 const router = useRouter()
-
 const route = useRoute()
-
 const authStore = useAuthStore()
+
+const sidebarOpen = ref(false)
 
 /* LOAD USER */
 onMounted(async () => {
 
   if (!authStore.user) {
-
     await authStore.fetchMe()
   }
 })
@@ -240,7 +268,6 @@ const menuItems = computed(() => {
 const isActive = (path) => {
 
   if (path === "/dashboard") {
-
     return route.path === "/dashboard"
   }
 
