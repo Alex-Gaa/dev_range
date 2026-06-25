@@ -5,26 +5,26 @@ export const sidebarConfig = {
   parent: [
 
     {
-      label: "Dashboard",
+      label: "Панель управления",
       path: "/dashboard",
       icon: "🏠",
     },
 
     {
-      label: "Children",
+      label: "Ученики",
       path: "/children",
       icon: "👨‍👩‍👧",
     },
 
 
     {
-      label: "Lessons",
+      label: "Задания",
       path: "/lessons",
       icon: "📚",
     },
 
     {
-      label: "Billing",
+      label: "Тарифы и оплата",
       path: "/billing",
       icon: "💳",
     },
@@ -34,25 +34,25 @@ export const sidebarConfig = {
   child: [
 
     {
-      label: "My Lessons",
+      label: "Мои задания",
       path: "/lessons",
       icon: "📚",
     },
 
     {
-      label: "Progress",
+      label: "Мой прогресс",
       path: "/progress",
       icon: "📊",
     },
 
     {
-      label: "Achievements",
+      label: "Мои достижения",
       path: "/achievements",
       icon: "🏆",
     },
 
     {
-      label: "Daily Goal",
+      label: "Ежедневные цели",
       path: "/goals",
       icon: "🎯",
     },
@@ -61,19 +61,19 @@ export const sidebarConfig = {
   teacher: [
 
     {
-      label: "Dashboard",
+      label: "Панель управлени",
       path: "/dashboard",
       icon: "🏠",
     },
 
     {
-      label: "Students",
+      label: "Ученики",
       path: "/students",
       icon: "👨‍🎓",
     },
 
     {
-      label: "Groups",
+      label: "Группы",
       path: "/groups",
       icon: "👥",
     },
@@ -82,19 +82,19 @@ export const sidebarConfig = {
   admin: [
 
     {
-      label: "Dashboard",
+      label: "Панель управления",
       path: "/dashboard",
       icon: "🏠",
     },
 
     {
-      label: "Users",
+      label: "Пользователи",
       path: "/users",
       icon: "👤",
     },
 
     {
-      label: "Analytics",
+      label: "Аналитика",
       path: "/analytics",
       icon: "📈",
     },

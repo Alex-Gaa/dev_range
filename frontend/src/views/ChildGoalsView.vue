@@ -10,11 +10,11 @@
       <div>
 
         <h1 class="text-3xl font-bold">
-          Daily Goals 🎯
+          Ежедневные цели 🎯
         </h1>
 
         <p class="text-slate-500 mt-2">
-          Complete lessons every day and build your learning streak
+          Выполняй уроки каждый день и увеличивай свою серию обучения
         </p>
 
       </div>
@@ -28,7 +28,7 @@
           <div>
 
             <p class="text-slate-500">
-              Today's Goal
+              Цель на сегодня
             </p>
 
             <h2 class="text-5xl font-bold mt-2 text-blue-600">
@@ -72,7 +72,7 @@
         <div class="mt-4 flex justify-between text-sm">
 
           <span class="text-slate-500">
-            Daily completion progress
+            Прогресс выполнения цели
           </span>
 
           <span class="font-semibold">
@@ -103,11 +103,11 @@
             <div>
 
               <p class="text-slate-500">
-                Current Streak
+                Текущая серия
               </p>
 
               <h2 class="text-5xl font-bold mt-3 text-orange-500">
-                🔥 {{ currentStreak }}
+                🔥 {{ formatDays(currentStreak) }}
               </h2>
 
             </div>
@@ -119,7 +119,7 @@
           </div>
 
           <p class="text-slate-500 mt-5">
-            Keep learning daily to increase your streak
+            Занимайся каждый день, чтобы увеличить серию
           </p>
 
         </div>
@@ -133,11 +133,11 @@
             <div>
 
               <p class="text-slate-500">
-                Best Streak
+                Лучший результат
               </p>
 
               <h2 class="text-5xl font-bold mt-3 text-green-600">
-                🏆 {{ bestStreak }}
+                🏆 {{ formatDays(bestStreak) }}
               </h2>
 
             </div>
@@ -149,7 +149,7 @@
           </div>
 
           <p class="text-slate-500 mt-5">
-            Your personal learning record
+            Твой личный рекорд обучения
           </p>
 
         </div>
@@ -161,7 +161,7 @@
       <div class="bg-white border rounded-2xl p-6">
 
         <h2 class="text-2xl font-bold mb-6">
-          Today's Tasks
+          Задания на сегодня
         </h2>
 
         <div class="space-y-4">
@@ -231,7 +231,7 @@
               "
             >
 
-              {{ task.completed ? "Completed" : "Pending" }}
+              {{ task.completed ? "Готово" : "Не выполнено" }}
 
             </div>
 
@@ -255,11 +255,11 @@
       >
 
         <h2 class="text-2xl font-bold">
-          Keep Going 🚀
+          Так держать! 🚀
         </h2>
 
         <p class="mt-3 text-blue-100">
-          Small progress every day leads to big achievements.
+          Маленькие шаги каждый день приводят к большим достижениям.
         </p>
 
       </div>
@@ -288,7 +288,7 @@ const dailyGoal = 3
 
 /* STREAKS */
 
-const currentStreak = 5
+const currentStreak = 3
 
 const bestStreak = 12
 
@@ -317,26 +317,47 @@ const tasks = computed(() => [
 
   {
     id: 1,
-    title: "Complete 1 lesson",
-    description: "Finish at least one lesson today",
+    title: "Пройти 1 урок",
+    description: "Заверши хотя бы один урок сегодня",
     icon: "📚",
     completed: completedToday.value >= 1,
   },
 
   {
     id: 2,
-    title: "Reach daily goal",
-    description: `Complete ${dailyGoal} lessons`,
+    title: "Выполнить дневную цель",
+    description: `Пройди ${dailyGoal} урока`,
     icon: "🎯",
     completed: completedToday.value >= dailyGoal,
   },
 
   {
     id: 3,
-    title: "Keep your streak",
-    description: "Study every day without skipping",
+    title: "Сохранить серию",
+    description: "Занимайся каждый день без пропусков",
     icon: "🔥",
-    completed: currentStreak.value > 0,
+    completed: currentStreak > 0,
   },
 ])
+
+const formatDays = (days) => {
+
+  if (days % 100 >= 11 && days % 100 <= 14) {
+    return `${days} дней`
+  }
+
+  switch (days % 10) {
+
+    case 1:
+      return `${days} день`
+
+    case 2:
+    case 3:
+    case 4:
+      return `${days} дня`
+
+    default:
+      return `${days} дней`
+  }
+}
 </script>

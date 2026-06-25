@@ -11,7 +11,7 @@
       </h1>
 
       <p class="text-slate-500 mt-2">
-        Here is your learning platform overview
+        Обзор вашей образовательной платформы
       </p>
 
     </div>
@@ -33,7 +33,7 @@
       >
 
         <h3 class="text-lg font-semibold">
-          Children
+          Ученики
         </h3>
 
         <p class="text-4xl mt-4 font-bold text-blue-600">
@@ -41,7 +41,7 @@
         </p>
 
         <p class="text-slate-500 mt-2">
-          Active child profiles
+          Активных профилей учеников
         </p>
 
       </BaseCard>
@@ -59,7 +59,7 @@
       >
 
         <h3 class="text-lg font-semibold">
-          Lessons
+          Задания
         </h3>
 
         <p class="text-4xl mt-4 font-bold text-green-600">
@@ -67,36 +67,36 @@
         </p>
 
         <p class="text-slate-500 mt-2">
-          Completed / Total lessons
+          Завершено / Всего уроков
         </p>
 
       </BaseCard>
 
-      <!-- TOKENS -->
+<!--
+<BaseCard
+  class="
+    cursor-pointer
+    transition-all
+    hover:shadow-lg
+    hover:-translate-y-1
+  "
+  @click="goToBilling"
+>
 
-      <BaseCard
-        class="
-          cursor-pointer
-          transition-all
-          hover:shadow-lg
-          hover:-translate-y-1
-        "
-        @click="goToBilling"
-      >
+  <h3 class="text-lg font-semibold">
+    Лимит ИИ
+  </h3>
 
-        <h3 class="text-lg font-semibold">
-          AI Tokens
-        </h3>
+  <p class="text-4xl mt-4 font-bold text-purple-600">
+    1200
+  </p>
 
-        <p class="text-4xl mt-4 font-bold text-purple-600">
-          1200
-        </p>
+  <p class="text-slate-500 mt-2">
+    Remaining monthly balance
+  </p>
 
-        <p class="text-slate-500 mt-2">
-          Remaining monthly balance
-        </p>
-
-      </BaseCard>
+</BaseCard>
+-->
 
     </div>
 
@@ -105,7 +105,7 @@
     <div class="mt-10">
 
       <h2 class="text-2xl font-bold mb-6">
-        Recent children
+        Мои ученики
       </h2>
 
       <div
@@ -138,7 +138,7 @@
               </h3>
 
               <p class="text-slate-500">
-                {{ child.age }} years old
+                {{ formatAge(child.age) }}
               </p>
 
             </div>
@@ -171,11 +171,11 @@
         >
 
         <h3 class="text-xl font-semibold">
-          No children yet
+          Пока нет учеников
         </h3>
 
         <p class="text-slate-500 mt-2">
-          Create your first child profile to start learning
+          Создайте профиль ученика, чтобы начать обучение
         </p>
 
       </div>
@@ -240,4 +240,26 @@ const goToBilling = () => {
 const openChild = (id) => {
   router.push(`/children/${id}`)
 }
+
+const formatAge = (age) => {
+
+  if (age % 100 >= 11 && age % 100 <= 14) {
+    return `${age} лет`
+  }
+
+  switch (age % 10) {
+
+    case 1:
+      return `${age} год`
+
+    case 2:
+    case 3:
+    case 4:
+      return `${age} года`
+
+    default:
+      return `${age} лет`
+  }
+}
+
 </script>

@@ -35,7 +35,7 @@
             inline-block
           "
         >
-          AI Learning
+          Отличник
         </router-link>
 
       </div>
@@ -113,8 +113,8 @@
               {{ userName }}
             </p>
 
-            <p class="text-sm text-slate-500 capitalize">
-              {{ userRole }} account
+            <p class="text-sm text-slate-500">
+              {{ userRoleLabel }}
             </p>
 
           </div>
@@ -133,7 +133,7 @@
             transition
           "
         >
-          Logout
+          Выйти
         </button>
 
       </div>
@@ -177,14 +177,14 @@
               text-xl
               md:text-2xl
               font-semibold
-              capitalize
+
             "
           >
-            {{ userRole }} dashboard
+            {{ dashboardTitle }}
           </h2>
 
           <p class="text-sm text-slate-500 mt-1">
-            Welcome back to AI Learning
+            Добро пожаловать в систему обучения «Отличник»
           </p>
 
         </div>
@@ -244,7 +244,7 @@ onMounted(async () => {
 const userName = computed(() => {
 
   if (!authStore.user) {
-    return "Guest"
+    return "Гость"
   }
 
   return `
@@ -282,4 +282,41 @@ const logout = () => {
 
   router.push("/")
 }
+
+const userRoleLabel = computed(() => {
+
+  switch (userRole.value) {
+
+    case "parent":
+      return "Родитель"
+
+    case "child":
+      return "Ребёнок"
+
+    case "admin":
+      return "Администратор"
+
+    default:
+      return "Пользователь"
+  }
+})
+
+const dashboardTitle = computed(() => {
+
+  switch (userRole.value) {
+
+    case "parent":
+      return "Панель управления родителя"
+
+    case "child":
+      return "Панель управления ученика"
+
+    case "admin":
+      return "Панель администратора"
+
+    default:
+      return "Панель управления"
+  }
+})
+
 </script>

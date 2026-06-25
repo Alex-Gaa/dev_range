@@ -10,12 +10,12 @@
     <div class="mb-8">
 
       <h1 class="text-3xl font-bold">
-        Welcome back,
-        {{ authStore.user?.first_name }} 🚀
+        Привет,
+        {{ authStore.user?.first_name }}! 🚀
       </h1>
 
       <p class="text-slate-500 mt-2">
-        Ready to continue learning today?
+        Готов продолжить обучение?
       </p>
 
     </div>
@@ -36,7 +36,7 @@
     >
 
       <p class="uppercase text-sm opacity-80">
-        Continue learning
+        Продолжить обучение
       </p>
 
       <h2 class="text-2xl md:text-3xl font-bold mt-3">
@@ -44,7 +44,7 @@
       </h2>
 
       <p class="mt-4 opacity-90">
-        You are doing amazing. Keep going 🚀
+        Ты отлично справляешься! Продолжай в том же духе 🚀
       </p>
 
       <div class="mt-6">
@@ -52,7 +52,7 @@
         <div class="flex justify-between mb-2 text-sm">
 
           <span>
-            Progress
+            Прогресс
           </span>
 
           <span>
@@ -100,7 +100,7 @@
           transition
         "
       >
-        Continue Lesson
+        Продолжить урок
       </button>
 
     </div>
@@ -126,7 +126,7 @@
           <div>
 
             <p class="text-slate-500">
-              Daily Goal
+              Цель на сегодня
             </p>
 
             <h3 class="text-4xl font-bold mt-2 text-green-600">
@@ -179,12 +179,12 @@
           <div>
 
             <p class="text-slate-500">
-              Learning Streak
+              Дней подряд
             </p>
 
-            <h3 class="text-4xl md:text-5xl font-bold mt-2 text-orange-500">
-              🔥 {{ streak }}
-            </h3>
+          <h3 class="text-4xl md:text-5xl font-bold mt-2 text-orange-500">
+            🔥 {{ formatDays(streak) }}
+          </h3>
 
           </div>
 
@@ -195,7 +195,7 @@
         </div>
 
         <p class="text-slate-500 mt-4">
-          Keep learning every day!
+          Занимайся каждый день!
         </p>
 
       </BaseCard>
@@ -209,11 +209,11 @@
           <div>
 
             <p class="text-slate-500">
-              Latest Achievement
+              Последнее достижение
             </p>
 
             <h3 class="text-2xl font-bold mt-2">
-              First Steps
+              Первые шаги
             </h3>
 
           </div>
@@ -225,7 +225,7 @@
         </div>
 
         <p class="text-slate-500 mt-4">
-          Completed your first lesson
+          Ты завершил свой первый урок
         </p>
 
       </BaseCard>
@@ -249,7 +249,7 @@
         >
 
         <h2 class="text-2xl font-bold">
-          Recent Lessons
+          Последние уроки
         </h2>
 
         <button
@@ -260,7 +260,7 @@
             font-medium
           "
         >
-          View all
+          Все уроки
         </button>
 
       </div>
@@ -415,13 +415,34 @@ const formatStatus = (status) => {
   switch (status) {
 
     case "completed":
-      return "Completed"
+      return "Завершён"
 
     case "in_progress":
-      return "In Progress"
+      return "В процессе"
 
     default:
-      return "Draft"
+      return "Черновик"
+  }
+}
+
+const formatDays = (days) => {
+
+  if (days % 100 >= 11 && days % 100 <= 14) {
+    return `${days} дней`
+  }
+
+  switch (days % 10) {
+
+    case 1:
+      return `${days} день`
+
+    case 2:
+    case 3:
+    case 4:
+      return `${days} дня`
+
+    default:
+      return `${days} дней`
   }
 }
 </script>

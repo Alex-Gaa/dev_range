@@ -27,11 +27,11 @@
       <div class="text-center mb-8">
 
         <h1 class="text-3xl font-bold">
-          Child Account Invitation
+          Приглашение в аккаунт ученика
         </h1>
 
         <p class="text-slate-500 mt-3">
-          Create your learning account
+          Создайте свой аккаунт для обучения
         </p>
 
       </div>
@@ -42,14 +42,14 @@
         <input
           v-model="form.first_name"
           type="text"
-          placeholder="First name"
+          placeholder="Имя"
           class="w-full border rounded-xl px-4 py-3"
         />
 
         <input
           v-model="form.last_name"
           type="text"
-          placeholder="Last name"
+          placeholder="Фамилия"
           class="w-full border rounded-xl px-4 py-3"
         />
 
@@ -66,7 +66,7 @@
           <input
             v-model="form.password"
             :type="showPassword ? 'text' : 'password'"
-            placeholder="Password"
+            placeholder="Пароль"
             class="w-full border rounded-xl px-4 py-3 pr-12"
           />
 
@@ -86,7 +86,7 @@
           <input
             v-model="form.password2"
             :type="showPassword ? 'text' : 'password'"
-            placeholder="Confirm password"
+            placeholder="Повторите пароль"
             class="w-full border rounded-xl px-4 py-3 pr-12"
           />
 
@@ -105,7 +105,7 @@
           v-if="success"
           class="bg-green-100 text-green-700 rounded-xl px-4 py-3 text-sm"
         >
-          Account created successfully
+          Аккаунт успешно создан
         </div>
 
         <!-- BUTTON -->
@@ -124,11 +124,11 @@
           "
         >
           <span v-if="loading">
-            Creating...
+            Создание...
           </span>
 
           <span v-else>
-            Create Account
+            Создать аккаунт
           </span>
         </button>
 
@@ -177,7 +177,7 @@ onMounted(async () => {
 
   } catch (e) {
     console.log(e)
-    error.value = "Invalid or expired invite link"
+    error.value = "Ссылка приглашения недействительна или срок её действия истёк"
   }
 })
 

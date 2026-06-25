@@ -11,7 +11,7 @@
         </h1>
 
         <p class="text-slate-500 mt-2">
-          {{ child.age }} years old • Grade {{ child.grade }}
+          {{ formatAge(child.age) }} • {{ child.grade }} класс
         </p>
       </div>
 
@@ -22,7 +22,7 @@
           class="border px-6 py-3 rounded-xl hover:bg-slate-50 transition"
           @click="goToProgress"
         >
-          View progress
+          Смотреть прогресс
         </button>
 
         <button
@@ -36,7 +36,7 @@
             rounded-xl
           "
         >
-          Reset Password
+          Сбросить пароль ученику
         </button>
 
       </div>
@@ -54,7 +54,7 @@
 
 
         <p class="font-semibold text-green-700">
-          New child password
+          Новый пароль ученика
         </p>
 
         <div class="mt-2 font-mono text-lg">
@@ -69,11 +69,11 @@
 
         <div class="flex items-center justify-between mb-5">
           <h2 class="text-xl font-semibold">
-            Generate AI Lesson
+            Сгенерировать задание с AI
           </h2>
 
           <div v-if="subscription" class="text-sm text-slate-500">
-            AI lessons:
+            задания с AI:
             <span class="font-semibold">{{ subscription.lessons_used }}</span>
             /
             <span class="font-semibold">{{ subscription.lessons_limit }}</span>
@@ -87,7 +87,7 @@
             v-model="aiForm.subject"
             class="w-full border rounded-xl px-4 py-3"
           >
-            <option value="">Select subject</option>
+            <option value="">Выберите предмет</option>
 
             <option
               v-for="subject in subjects"
@@ -103,7 +103,7 @@
             v-model="aiForm.topic"
             class="w-full border rounded-xl px-4 py-3"
           >
-            <option value="">Select topic</option>
+            <option value="">Выберите тему</option>
 
             <option
               v-for="topic in topics"
@@ -116,11 +116,11 @@
 
           <!-- CHILD INFO -->
           <div class="bg-slate-50 border rounded-xl p-4 text-sm text-slate-600">
-            <p><span class="font-semibold">Age:</span> {{ child.age }}</p>
-            <p class="mt-1"><span class="font-semibold">Grade:</span> {{ child.grade }}</p>
+            <p><span class="font-semibold">Возраст:</span> {{ child.age }}</p>
+            <p class="mt-1"><span class="font-semibold">Класс:</span> {{ child.grade }}</p>
             <p class="mt-1">
-              <span class="font-semibold">Interests:</span>
-              {{ child.interests || "Not specified" }}
+              <span class="font-semibold">Интересы:</span>
+              {{ child.interests || "Не указано" }}
             </p>
           </div>
 
@@ -138,7 +138,7 @@
             :disabled="loadingAI"
             class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-6 py-3 rounded-xl transition"
           >
-            {{ loadingAI ? "Generating..." : "Generate AI Lesson" }}
+            {{ loadingAI ? "Создание задания..." : "Сгенерировать задание" }}
           </button>
 
         </div>
@@ -147,7 +147,7 @@
       <!-- CREATE LESSON -->
       <div class="bg-white border rounded-2xl p-6">
         <h2 class="text-xl font-semibold mb-4">
-          Create lesson manually
+          Создать задание самостоятельно
         </h2>
 
         <!-- SUBJECT -->
@@ -188,22 +188,30 @@
 
         <input
           v-model="newLesson.title"
-          placeholder="Lesson title"
+          placeholder="Название задания"
           class="w-full border rounded-xl px-4 py-3 mb-3"
         />
 
         <textarea
           v-model="newLesson.content"
-          placeholder="Write lesson content..."
+          placeholder="Введите содержание задания..."
           class="w-full border rounded-xl px-4 py-3 mb-3"
           rows="5"
         />
 
+
+        <!-- ERROR -->
+        <div
+          v-if="manualError"
+          class="bg-red-50 border border-red-200 text-red-600 rounded-xl p-4 mb-3"
+        >
+          {{ manualError }}
+        </div>
         <button
           @click="addLesson"
           class="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition"
         >
-          Save lesson
+          Сохранить задание
         </button>
       </div>
 
@@ -211,10 +219,10 @@
       <div class="bg-white border rounded-2xl p-6">
 
         <div class="flex items-center justify-between mb-5">
-          <h2 class="text-xl font-semibold">Lessons</h2>
+          <h2 class="text-xl font-semibold">Задания</h2>
 
           <span class="text-sm text-slate-500">
-            {{ lessons.length }} total
+            {{ lessons.length }} всего
           </span>
         </div>
 
@@ -222,7 +230,7 @@
           v-if="lessons.length === 0"
           class="text-slate-500 text-center py-10"
         >
-          No lessons yet.
+          Пока нет уроков
         </div>
 
         <div v-else class="space-y-4">
@@ -238,7 +246,7 @@
             </h3>
 
             <p class="text-slate-500 text-sm mt-2 line-clamp-3">
-              {{ lesson.title }}
+              {{ lesson.content.slice(0, 120) }}...
             </p>
 
           </div>
@@ -268,7 +276,7 @@
         </h3>
 
         <p class="text-slate-600 mb-5">
-          Reset password for
+          Сбросить пароль для
           <strong>{{ child.first_name }}</strong>?
         </p>
 
@@ -286,14 +294,14 @@
             @click="showResetModal = false"
             class="border px-4 py-2 rounded-xl"
           >
-            Cancel
+            Отмена
           </button>
 
           <button
             @click="resetChildPassword"
             class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
           >
-            Reset
+            Сбросить
           </button>
 
         </div>
@@ -338,7 +346,7 @@ const subscription = ref(null)
 
 const loadingAI = ref(false)
 const aiError = ref("")
-
+const manualError = ref("")
 const resetChildPassword = async () => {
 
   resetError.value = ""
@@ -352,7 +360,7 @@ const resetChildPassword = async () => {
 
     generatedPassword.value = res.data.new_password
 
-    resetSuccess.value = "Password reset successfully"
+    resetSuccess.value = "Пароль успешно сброшен"
 
     // закрываем модалку через небольшую паузу
     setTimeout(() => {
@@ -363,31 +371,11 @@ const resetChildPassword = async () => {
 
     resetError.value =
       e.response?.data?.detail ||
-      "Failed to reset password"
+      "Не удалось сбросить пароль"
   }
 }
 
-const confirmResetPassword = async () => {
 
-  resetError.value = ""
-
-  try {
-
-    const res = await api.post(
-      `/children/${child.value.id}/reset-password/`
-    )
-
-    generatedPassword.value =
-      res.data.new_password
-
-    showResetModal.value = false
-
-  } catch (e) {
-
-    resetError.value =
-      getErrorMessage(e)
-  }
-}
 
 const newLesson = ref({
   subject: "",
@@ -494,26 +482,39 @@ const goToProgress = () =>
 
 const addLesson = async () => {
 
+  manualError.value = ""
+
+  if (!child.value) return
+
   if (
-    !child.value ||
-    !newLesson.value.title
+    !newLesson.value.subject ||
+    !newLesson.value.topic ||
+    !newLesson.value.title.trim()
   ) {
+    manualError.value = "Заполните предмет, тему и название задания"
     return
   }
 
-  await lessonsStore.addLesson(
-    child.value.id,
-    newLesson.value
-  )
+  try {
 
-  newLesson.value = {
-    title: "",
-    content: ""
+    await lessonsStore.addLesson(
+      child.value.id,
+      newLesson.value
+    )
+
+    newLesson.value = {
+      subject: "",
+      topic: "",
+      title: "",
+      content: ""
+    }
+
+    await lessonsStore.fetchLessons(child.value.id)
+
+  } catch (e) {
+
+    manualError.value = getErrorMessage(e) || "Ошибка при создании задания"
   }
-
-  await lessonsStore.fetchLessons(
-    child.value.id
-  )
 }
 
 const generateLesson = async () => {
@@ -526,7 +527,7 @@ const generateLesson = async () => {
   ) {
 
     aiError.value =
-      "Select subject and topic"
+      "Выберете предмет и тему"
 
     return
   }
@@ -560,7 +561,22 @@ const generateLesson = async () => {
     loadingAI.value = false
   }
 }
+const formatAge = (age) => {
+  if (age % 100 >= 11 && age % 100 <= 14) {
+    return `${age} лет`
+  }
 
+  switch (age % 10) {
+    case 1:
+      return `${age} год`
+    case 2:
+    case 3:
+    case 4:
+      return `${age} года`
+    default:
+      return `${age} лет`
+  }
+}
 const formatStatus = s => s
 const statusClass = () => ""
 </script>
