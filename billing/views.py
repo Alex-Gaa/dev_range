@@ -4,9 +4,14 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 
+from billing.constants import PLANS
 from billing.payment_service import create_payment, handle_success_payment
 from billing.serializers import SubscriptionSerializer
 from billing.services import activate_subscription, get_or_create_subscription
+
+class PlansView(APIView):
+    def get(self, request):
+        return Response(PLANS)
 
 
 class TestUpgradeView(APIView):

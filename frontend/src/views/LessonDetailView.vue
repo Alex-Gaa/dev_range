@@ -452,9 +452,9 @@ const completeLesson = async () => {
 /* STATUS */
 const formatStatus = (status) => {
   switch (status) {
-    case "completed": return "Completed"
-    case "in_progress": return "In Progress"
-    default: return "Draft"
+    case "completed": return "Выполнено"
+    case "in_progress": return "В процессе"
+    default: return "Черновик"
   }
 }
 

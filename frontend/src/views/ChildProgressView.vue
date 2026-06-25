@@ -238,13 +238,13 @@ const formatStatus = (status) => {
   switch (status) {
 
     case "completed":
-      return "Completed"
+      return "Выполнено"
 
     case "in_progress":
-      return "In Progress"
+      return "В процессе"
 
     default:
-      return "Draft"
+      return "Черновик"
   }
 }
 

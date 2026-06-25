@@ -6,13 +6,13 @@
 
       <div>
 
-        <h1 class="text-3xl font-bold">
-          Children
-        </h1>
+      <h1 class="text-3xl font-bold">
+        Ученики
+      </h1>
 
-        <p class="text-slate-500 mt-1">
-          Manage your children
-        </p>
+      <p class="text-slate-500 mt-1">
+        Управляйте профилями своих учеников
+      </p>
 
       </div>
 
@@ -27,7 +27,7 @@
           rounded-xl
         "
       >
-        Add child
+        Добавить ученика
       </button>
 
     </div>
@@ -36,7 +36,7 @@
       v-if="childrenStore.loading"
       class="text-slate-500"
     >
-      Loading...
+      Загрузка...
     </div>
 
     <div

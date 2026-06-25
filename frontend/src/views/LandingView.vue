@@ -8,7 +8,7 @@
     >
 
       <div class="text-2xl font-bold text-slate-900">
-        AI Learning
+        Отличник
       </div>
 
       <div class="space-x-4">

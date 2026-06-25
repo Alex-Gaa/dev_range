@@ -1,11 +1,28 @@
-<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
- "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
- width="2048.000000pt" height="2048.000000pt" viewBox="0 0 2048.000000 2048.000000"
- preserveAspectRatio="xMidYMid meet">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Фон -->
+  <rect width="100" height="100" rx="20" fill="#2C3E50"/>
 
-<g transform="translate(0.000000,2048.000000) scale(0.100000,-0.100000)"
-fill="#000000" stroke="none">
-</g>
+  <!-- Сова (упрощённо) -->
+  <circle cx="50" cy="45" r="25" fill="#8E44AD"/>
+
+  <!-- Глаза -->
+  <circle cx="40" cy="40" r="9" fill="white"/>
+  <circle cx="60" cy="40" r="9" fill="white"/>
+  <circle cx="40" cy="40" r="5" fill="#2C3E50"/>
+  <circle cx="60" cy="40" r="5" fill="#2C3E50"/>
+
+  <!-- Клюв -->
+  <polygon points="47,50 53,50 50,56" fill="#F39C12"/>
+
+  <!-- Очки отличника -->
+  <circle cx="40" cy="40" r="12" fill="none" stroke="#F1C40F" stroke-width="2"/>
+  <circle cx="60" cy="40" r="12" fill="none" stroke="#F1C40F" stroke-width="2"/>
+  <line x1="52" y1="40" x2="48" y2="40" stroke="#F1C40F" stroke-width="2"/>
+
+  <!-- Шапка выпускника -->
+  <rect x="35" y="22" width="30" height="5" fill="#F1C40F"/>
+  <polygon points="30,22 50,12 70,22" fill="#F1C40F"/>
+
+  <!-- Буква О (логотип) -->
+  <text x="50" y="88" font-size="16" font-weight="bold" text-anchor="middle" fill="#F1C40F" font-family="Arial">ОТЛИЧНИК</text>
 </svg>

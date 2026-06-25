@@ -6,7 +6,7 @@
     <div class="flex items-center justify-between mb-6">
 
       <h2 class="text-2xl font-bold">
-        Add child
+        Добавить ребенка
       </h2>
 
       <button
@@ -26,41 +26,41 @@
       <input
         v-model="form.first_name"
         type="text"
-        placeholder="Child name"
+        placeholder="Имя"
         class="w-full border rounded-xl px-4 py-3"
       />
 
       <input
         v-model="form.last_name"
         type="text"
-        placeholder="Last name"
+        placeholder="Фамилия"
         class="w-full border p-3 rounded-xl"
       />
 
       <input
         v-model="form.age"
         type="number"
-        placeholder="Age"
+        placeholder="Возраст"
         class="w-full border rounded-xl px-4 py-3"
       />
 
       <input
         v-model="form.grade"
         type="text"
-        placeholder="Grade"
+        placeholder="Класс"
         class="w-full border rounded-xl px-4 py-3"
       />
 
       <input
         v-model="form.email"
         type="email"
-        placeholder="Child email (optional)"
+        placeholder="Email (необязательно)"
         class="w-full border p-3 rounded-xl"
       />
 
       <textarea
         v-model="form.interests"
-        placeholder="Interests"
+        placeholder="Увлечения"
         class="w-full border rounded-xl px-4 py-3"
       />
 
@@ -72,7 +72,7 @@
         />
 
         <span>
-          Create separate child account
+          Создать отдельный аккаунт для ученика
         </span>
 
       </label>
@@ -101,7 +101,7 @@
           rounded-xl
         "
       >
-        Create child
+        Создать ученика
       </button>
 
     </form>

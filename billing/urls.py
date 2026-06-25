@@ -2,7 +2,7 @@
 from django.urls import path
 
 from billing.views import TestUpgradeView, SubscriptionView, ActivateSubscriptionView, CreatePaymentView, \
-    SimulatePaymentSuccessView
+    SimulatePaymentSuccessView, PlansView
 
 urlpatterns = [
     path(
@@ -20,4 +20,5 @@ urlpatterns = [
     ),
     path("create-payment/", CreatePaymentView.as_view()),
     path("simulate-success/", SimulatePaymentSuccessView.as_view()),
+    path("plans/", PlansView.as_view()),  # 👈 ВОТ ЭТО ГЛАВНОЕ
 ]

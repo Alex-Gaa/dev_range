@@ -24,7 +24,7 @@
         </h3>
 
         <p class="text-slate-500">
-          {{ child.age }} лет от роду
+          {{ formatAge(child.age) }}
         </p>
 
       </div>
@@ -51,12 +51,12 @@
     <div class="mt-5 space-y-2">
 
       <p>
-        <span class="font-medium">Grade:</span>
+        <span class="font-medium">Класс:</span>
         {{ child.grade }}
       </p>
 
       <p>
-        <span class="font-medium">Interests:</span>
+        <span class="font-medium">Увлечения:</span>
         {{ child.interests || "—" }}
       </p>
 
@@ -83,7 +83,7 @@
       <div class="flex items-center justify-between">
 
         <p class="text-green-700 font-medium text-sm">
-          Invite link generated
+          Ссылка-приглашение создана
         </p>
 
         <button
@@ -99,7 +99,7 @@
             transition
           "
         >
-          Copy
+          Копировать ссылку
         </button>
 
       </div>
@@ -173,17 +173,17 @@ const copyInviteLink = async () => {
   console.log("COPY LINK:", link)
 
   if (!link) {
-    successMessage.value = "No invite link available"
+    successMessage.value = "Ссылка приглашения отсутствует"
     return
   }
 
   try {
     await navigator.clipboard.writeText(link)
 
-    successMessage.value = "Copied: " + link
+    successMessage.value = "Ссылка скопирована"
   } catch (e) {
     console.error("Clipboard error:", e)
-    successMessage.value = "Clipboard failed"
+    successMessage.value = "Не удалось скопировать ссылку"
   }
 }
 
@@ -192,4 +192,27 @@ const openChild = () => {
   router.push(`/children/${props.child.id}`)
 }
 console.log(props.child.invite_link)
+
+const formatAge = (age) => {
+
+  if (age % 100 >= 11 && age % 100 <= 14) {
+    return `${age} лет`
+  }
+
+  switch (age % 10) {
+
+    case 1:
+      return `${age} год`
+
+    case 2:
+    case 3:
+    case 4:
+      return `${age} года`
+
+    default:
+      return `${age} лет`
+  }
+}
+
+
 </script>

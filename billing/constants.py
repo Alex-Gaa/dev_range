@@ -2,7 +2,7 @@
 PLANS = {
 
     "free": {
-        "name": "Free",
+        "name": "Бесплатный",
         "price": 0,
         "children_limit": 1,
         "subjects_limit": 1,
@@ -10,7 +10,7 @@ PLANS = {
     },
 
     "basic": {
-        "name": "Basic",
+        "name": "Базовый",
         "price": 499,
         "children_limit": 1,
         "subjects_limit": 3,
@@ -18,7 +18,7 @@ PLANS = {
     },
 
     "family": {
-        "name": "Family",
+        "name": "Семейный",
         "price": 999,
         "children_limit": 3,
         "subjects_limit": 999,

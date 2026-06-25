@@ -114,6 +114,7 @@
             </option>
           </select>
 
+
           <!-- CHILD INFO -->
           <div class="bg-slate-50 border rounded-xl p-4 text-sm text-slate-600">
             <p><span class="font-semibold">Возраст:</span> {{ child.age }}</p>
@@ -156,7 +157,7 @@
           class="w-full border rounded-xl px-4 py-3 mb-3"
         >
           <option value="">
-            Select subject
+            Выберите предмет
           </option>
 
           <option
@@ -174,7 +175,7 @@
           class="w-full border rounded-xl px-4 py-3 mb-3"
         >
           <option value="">
-            Select topic
+            Выберите тему
           </option>
 
           <option

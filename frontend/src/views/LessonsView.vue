@@ -5,13 +5,13 @@
     <!-- HEADER -->
     <div class="mb-8">
 
-      <h1 class="text-3xl font-bold">
-        All Lessons
-      </h1>
+    <h1 class="text-3xl font-bold">
+      Все задания
+    </h1>
 
-      <p class="text-slate-500 mt-2">
-        Lessons from all children
-      </p>
+    <p class="text-slate-500 mt-2">
+      Задания всех учеников
+    </p>
 
       <div class="flex gap-3 mt-6">
 
@@ -21,7 +21,7 @@
             class="px-4 py-2 rounded-xl border"
             :class="activeTab === 'lessons' ? 'bg-blue-600 text-white' : ''"
           >
-            Lessons
+            Задания
           </button>
 
           <button
@@ -30,7 +30,7 @@
             class="px-4 py-2 rounded-xl border"
             :class="activeTab === 'subjects' ? 'bg-blue-600 text-white' : ''"
           >
-            Subjects & Topics
+            Предметы и Темы
           </button>
 
 
@@ -42,7 +42,7 @@
               ? 'bg-blue-600 text-white'
               : ''"
           >
-            Create Lesson
+            Создать задание
           </button>
 
       </div>
@@ -70,7 +70,7 @@
         <!-- SEARCH -->
         <input
           v-model="filters.search"
-          placeholder="Search lessons..."
+          placeholder="Поиск заданий..."
           class="border rounded-xl px-4 py-3"
         />
 
@@ -81,7 +81,7 @@
           class="border rounded-xl px-4 py-3"
         >
           <option value="">
-            All children
+            Все ученики
           </option>
 
           <option
@@ -100,19 +100,19 @@
           class="border rounded-xl px-4 py-3"
         >
           <option value="">
-            All statuses
+            Все статусы
           </option>
 
           <option value="draft">
-            Draft
+            Черновик
           </option>
 
           <option value="in_progress">
-            In Progress
+            В процессе
           </option>
 
           <option value="completed">
-            Completed
+            Выполнено
           </option>
 
         </select>
@@ -123,7 +123,7 @@
           class="border rounded-xl px-4 py-3"
         >
           <option value="">
-            All subjects
+            Все предметы
           </option>
 
           <option
@@ -142,27 +142,27 @@
           class="border rounded-xl px-4 py-3"
         >
           <option value="-created_at">
-            Newest
+            Сначала новые
           </option>
 
           <option value="created_at">
-            Oldest
+            Сначала старые
           </option>
 
           <option value="title">
-            Title A-Z
+            Название А-Я
           </option>
 
           <option value="-title">
-            Title Z-A
+            Название Я-А
           </option>
 
           <option value="-progress">
-            Progress ↓
+            Прогресс ↓
           </option>
 
           <option value="progress">
-            Progress ↑
+            Прогресс ↑
           </option>
 
         </select>
@@ -181,7 +181,7 @@
             rounded-xl
           "
         >
-          Apply
+          Применить
         </button>
 
         <button
@@ -193,7 +193,7 @@
             rounded-xl
           "
         >
-          Reset
+          Сбросить
         </button>
 
       </div>
@@ -211,11 +211,11 @@
         class="bg-white border rounded-2xl p-10 text-center"
       >
         <h2 class="text-2xl font-semibold">
-          No lessons yet
+          Пока нет заданий
         </h2>
 
         <p class="text-slate-500 mt-3">
-          Generate first lesson for a child
+          Создайте первое задание для ученика
         </p>
       </div>
 
@@ -252,7 +252,7 @@
               </h2>
 
               <p class="text-slate-500 mt-1">
-                Child:
+                Ученик:
                 {{ lesson.child_name || "Unknown" }}
               </p>
 
@@ -319,7 +319,7 @@
             <div class="flex items-center justify-between mb-2">
 
               <span class="text-sm text-slate-500">
-                Progress
+                Прогресс
               </span>
 
               <span class="text-sm font-medium">
@@ -349,14 +349,14 @@
               class="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700"
               @click.stop="editLesson(lesson.id)"
             >
-              Edit
+              Изменить
             </button>
 
             <button
               class="px-4 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700"
               @click.stop="deleteLesson(lesson.id)"
             >
-              Delete
+              Удалить
             </button>
 
           </div>
@@ -366,10 +366,6 @@
       </div>
 
     </div>
-
-
-
-
 
     <!-- CREATE LESSON TAB -->
     <div
@@ -383,7 +379,7 @@
       <div class="bg-white border rounded-2xl p-6">
 
         <h2 class="text-2xl font-semibold mb-6">
-          Create Lesson
+          Создать задание
         </h2>
 
         <!-- CHILD -->
@@ -391,7 +387,7 @@
         <div class="mb-4">
 
           <label class="block text-sm font-medium mb-2">
-            Children
+            Ученик
           </label>
 
           <!-- DROPDOWN BUTTON -->
@@ -413,13 +409,17 @@
           >
             <div class="text-left">
 
-              <div
-                v-if="lessonForm.children.length"
-                class="font-medium"
-              >
-                {{ lessonForm.children.length }}
-                selected
-              </div>
+            <div
+              v-if="lessonForm.children.length"
+              class="font-medium"
+            >
+              {{ formatPlural(
+                lessonForm.children.length,
+                'ученик выбран',
+                'ученика выбрано',
+                'учеников выбрано'
+              ) }}
+            </div>
 
               <div
                 v-if="selectedChildrenNames"
@@ -432,7 +432,7 @@
                 v-else
                 class="text-slate-400"
               >
-                Select children
+                Выбрать ученика
               </div>
 
             </div>
@@ -470,7 +470,7 @@
                 @click="selectAllChildren"
                 class="text-blue-600 hover:underline"
               >
-                Select all
+                Выбрать всех
               </button>
 
               <button
@@ -478,7 +478,7 @@
                 @click="clearChildren"
                 class="text-red-500 hover:underline"
               >
-                Clear
+                Очистить выбор
               </button>
 
             </div>
@@ -528,7 +528,7 @@
           class="w-full border rounded-xl px-4 py-3 mb-4"
         >
           <option value="">
-            Select subject
+            Выбирете предмет
           </option>
 
           <option
@@ -547,7 +547,7 @@
           class="w-full border rounded-xl px-4 py-3 mb-4"
         >
           <option value="">
-            Select topic
+            Выбирете тему
           </option>
 
           <option
@@ -563,7 +563,7 @@
         <!-- TITLE -->
         <input
           v-model="lessonForm.title"
-          placeholder="Lesson title"
+          placeholder="Название задания"
           class="w-full border rounded-xl px-4 py-3 mb-4"
         />
 
@@ -571,7 +571,7 @@
         <textarea
           v-model="lessonForm.content"
           rows="8"
-          placeholder="Lesson content..."
+          placeholder="Введите содержание задания..."
           class="w-full border rounded-xl px-4 py-3 mb-4"
         />
 
@@ -579,7 +579,7 @@
           @click="createLesson"
           class="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700"
         >
-          Create Lesson
+          Создать задание
         </button>
 
       </div>
@@ -599,14 +599,14 @@
       <div class="flex items-center justify-between">
 
         <h1 class="text-2xl font-bold">
-          Subjects & Topics
+          Предметы и Темы
         </h1>
 
         <button
           @click="creating = true"
           class="bg-blue-600 text-white px-4 py-2 rounded-xl"
         >
-          + Add Subject
+          + Добавить предмет
         </button>
 
       </div>
@@ -619,7 +619,7 @@
 
         <input
           v-model="form.name"
-          placeholder="Subject name"
+          placeholder="Назваание предмета"
           class="w-full border rounded-lg px-3 py-2"
         />
 
@@ -642,14 +642,14 @@
             @click="createSubject"
             class="bg-green-600 text-white px-4 py-2 rounded-lg"
           >
-            Save
+            Сохранить
           </button>
 
           <button
             @click="creating = false"
             class="text-gray-500"
           >
-            Cancel
+            Отмена
           </button>
 
 
@@ -698,14 +698,14 @@
                 @click="saveEdit(subject.id)"
                 class="bg-green-600 text-white px-3 py-2 rounded"
               >
-                Save
+                Сохранить
               </button>
 
               <button
                 @click="cancelEdit"
                 class="text-gray-500"
               >
-                Cancel
+                Отмена
               </button>
 
             </div>
@@ -724,7 +724,12 @@
                 </div>
 
                 <div class="text-xs text-slate-400">
-                  {{ subject.topics.length }} topics
+                  {{ formatPlural(
+                    subject.topics.length,
+                    'тема',
+                    'темы',
+                    'тем'
+                  ) }}
                 </div>
 
               </div>
@@ -735,14 +740,14 @@
                   @click.stop="startEdit(subject)"
                   class="text-blue-600"
                 >
-                  Edit
+                  Изменить
                 </button>
 
                 <button
                   @click.stop="deleteSubject(subject.id)"
                   class="text-red-500"
                 >
-                  Delete
+                  Удалить
                 </button>
 
               </div>
@@ -783,7 +788,7 @@
 
               <input
                 v-model="newTopic"
-                placeholder="New topic"
+                placeholder="Новая тема"
                 class="w-full border rounded px-3 py-2 text-sm"
               />
 
@@ -793,14 +798,14 @@
                   @click="saveTopic(subject.id)"
                   class="bg-green-600 text-white px-3 py-1 rounded text-sm"
                 >
-                  Add
+                  Добавить
                 </button>
 
                 <button
                   @click="cancelTopic"
                   class="text-gray-500 text-sm"
                 >
-                  Cancel
+                  Отмена
                 </button>
 
               </div>
@@ -812,7 +817,7 @@
               @click="addingTopicFor = subject.id"
               class="text-blue-600 text-sm mt-2"
             >
-              + Add topic
+              + Добавить тему
             </button>
 
           </div>
@@ -1206,13 +1211,13 @@ const formatStatus = (status) => {
 
   switch (status) {
     case "completed":
-      return "Completed"
+      return "Выполнено"
 
     case "in_progress":
-      return "In Progress"
+      return "В процессе"
 
     default:
-      return "Draft"
+      return "Черновик"
   }
 }
 
@@ -1443,4 +1448,25 @@ watch(
     deep: true
   }
 )
+
+const formatPlural = (count, one, few, many) => {
+
+  if (count % 100 >= 11 && count % 100 <= 14) {
+    return `${count} ${many}`
+  }
+
+  switch (count % 10) {
+
+    case 1:
+      return `${count} ${one}`
+
+    case 2:
+    case 3:
+    case 4:
+      return `${count} ${few}`
+
+    default:
+      return `${count} ${many}`
+  }
+}
 </script>
