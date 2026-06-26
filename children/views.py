@@ -16,10 +16,7 @@ from .serializers import (
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import ValidationError
 
-from billing.services import get_or_create_subscription, is_subscription_active
-
-from billing.constants import PLANS
-
+from billing.services import get_or_create_subscription, is_subscription_active, get_plan
 from django.contrib.auth.password_validation import (
     validate_password
 )
@@ -65,9 +62,14 @@ class ChildListCreateView(generics.ListCreateAPIView):
             self.request.user
         )
 
-        limit = PLANS[
-            subscription.plan
-        ]["children_limit"]
+        plan = get_plan(subscription.plan)
+
+        if not plan:
+            raise ValidationError({
+                "detail": "Тариф не найден."
+            })
+
+        limit = plan.children_limit
 
         current_count = Child.objects.filter(
             parent=self.request.user
@@ -76,7 +78,7 @@ class ChildListCreateView(generics.ListCreateAPIView):
         if current_count >= limit:
             raise ValidationError({
                 "detail":
-                    f"Ваш {subscription.plan} план поддерживает создание только {limit} ребенка."
+                    f"Тариф «{plan.name}» позволяет создать только {limit} учеников."
             })
 
         serializer.save(

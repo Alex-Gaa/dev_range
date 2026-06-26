@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from billing.models import Subscription, Payment
+from billing.models import Subscription, Payment, Plan
 
 
 @admin.register(Subscription)
@@ -49,3 +49,26 @@ class PaymentAdmin(admin.ModelAdmin):
     )
 
     ordering = ("-created_at",)
+
+
+@admin.register(Plan)
+class PlanAdmin(admin.ModelAdmin):
+    list_display = (
+        "code",
+        "name",
+        "price",
+        "children_limit",
+        "subjects_limit",
+        "lessons_limit",
+        "is_active",
+    )
+
+    list_editable = (
+        "price",
+        "children_limit",
+        "subjects_limit",
+        "lessons_limit",
+        "is_active",
+    )
+
+    list_filter = ("is_active",)

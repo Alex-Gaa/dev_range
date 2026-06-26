@@ -21,8 +21,8 @@
 
         <div class="flex justify-between">
           <span>Тариф</span>
-          <span class="font-medium capitalize">
-            {{ billingStore.subscription.plan }}
+          <span class="font-medium">
+            {{ billingStore.subscription.plan_name }}
           </span>
         </div>
 
@@ -52,7 +52,7 @@
 
         <button
           v-if="billingStore.subscription.plan !== 'family'"
-          @click="openCheckout('family')"
+          @click="openFamilyCheckout"
           class="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl"
         >
           Улучшить тариф
@@ -90,7 +90,7 @@
           </ul>
 
           <button
-            @click="openCheckout(plan.id)"
+            @click="openCheckout(plan)"
             class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl"
           >
             Выбрать тариф
@@ -99,7 +99,7 @@
 
       </div>
 
-      <!-- FAKE CHECKOUT MODAL -->
+      <!-- MODAL -->
       <div
         v-if="checkoutPlan"
         class="fixed inset-0 bg-black/50 flex items-center justify-center"
@@ -112,7 +112,7 @@
 
           <p>
             Вы выбрали тариф:
-            <b>{{ checkoutPlan }}</b>
+            <b>{{ checkoutPlan.title }}</b>
           </p>
 
           <div class="bg-slate-50 p-3 rounded-lg text-sm">
@@ -145,53 +145,57 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue"
+import { computed, onMounted, ref } from "vue"
 import AppLayout from "@/layouts/AppLayout.vue"
 import { useBillingStore } from "@/stores/billing"
 import api from "@/api/axios"
 
 const billingStore = useBillingStore()
-const checkoutPlan = ref(null)
+
 const plans = ref([])
+const checkoutPlan = ref(null)
 
 /* LOAD */
 onMounted(async () => {
   await billingStore.fetchSubscription()
 
-  try {
-    const res = await api.get("/billing/plans/")
+  const res = await api.get("/billing/plans/")
 
-    plans.value = Object.entries(res.data).map(([id, plan]) => ({
-      id,
-      title: plan.name,
-      description: "",
-      price: plan.price,
-      lessons: plan.lessons_limit,
-      children: plan.children_limit
-    }))
-
-  } catch (e) {
-    console.error("Failed to load plans:", e)
-  }
+  plans.value = Object.entries(res.data).map(([id, plan]) => ({
+    id,
+    title: plan.name,
+    description: "",
+    price: plan.price,
+    lessons: plan.lessons_limit,
+    children: plan.children_limit
+  }))
 })
 
-/* ACTIONS */
-const openCheckout = (planId) => {
-  checkoutPlan.value = planId
+/* CURRENT PLAN */
+const currentPlan = computed(() =>
+  plans.value.find(p => p.id === billingStore.subscription?.plan)
+)
+
+/* FAMILY PLAN FIX */
+
+
+/* CHECKOUT */
+const openCheckout = (plan) => {
+  checkoutPlan.value = plan
 }
 
+/* PAY */
 const pay = async () => {
-  const plan = checkoutPlan.value
+  const planId = checkoutPlan.value?.id
   checkoutPlan.value = null
 
   await new Promise(r => setTimeout(r, 800))
 
-  await billingStore.activate(plan)
+  await billingStore.activate(planId)
   await billingStore.fetchSubscription()
 }
 
-/* ===== utils ===== */
-
+/* UTILS */
 const formatPlural = (count, one, few, many) => {
   if (count % 100 >= 11 && count % 100 <= 14) {
     return `${count} ${many}`
@@ -208,6 +212,19 @@ const formatPlural = (count, one, few, many) => {
       return `${count} ${many}`
   }
 }
+
+const openFamilyCheckout = () => {
+  const family = plans.value.find(p => p.id === "family")
+
+  if (!family) {
+    console.warn("Family plan not loaded yet")
+    return
+  }
+
+  checkoutPlan.value = family
+}
+
+
 
 const formatDate = (date) => {
   if (!date) return ""

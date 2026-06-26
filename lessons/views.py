@@ -4,13 +4,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
 
-from billing.constants import PLANS
+
 from .models import Lesson, Topic, Subject
 from .serializers import LessonSerializer, TopicSerializer, SubjectSerializer
 from django.utils.text import slugify
 from rest_framework.exceptions import ValidationError
 
-from billing.services import reserve_lesson, get_or_create_subscription
+from billing.services import reserve_lesson, get_or_create_subscription, get_plan
 
 
 class LessonViewSet(viewsets.ModelViewSet):
@@ -227,9 +227,14 @@ class SubjectViewSet(viewsets.ModelViewSet):
 
         subscription = get_or_create_subscription(user)
 
-        limit = PLANS[
-            subscription.plan
-        ]["subjects_limit"]
+        plan = get_plan(subscription.plan)
+
+        if not plan:
+            raise ValidationError({
+                "detail": "Тариф не найден."
+            })
+
+        limit = plan.subjects_limit
 
         current_count = Subject.objects.filter(
             parent=user
@@ -238,9 +243,8 @@ class SubjectViewSet(viewsets.ModelViewSet):
         if current_count >= limit:
             raise ValidationError({
                 "detail":
-                    f"Ваш {subscription.plan} план поддерживает создание только {limit} предмета."
+                    f"Тариф «{plan.name}» позволяет создать только {limit} предметов."
             })
-
         name = serializer.validated_data["name"]
 
         base_slug = slugify(name)
