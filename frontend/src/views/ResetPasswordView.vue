@@ -31,7 +31,7 @@
           text-slate-900
         "
       >
-        Reset Password
+        Сбросить пароль
       </h1>
 
       <p

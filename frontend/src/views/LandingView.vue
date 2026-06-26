@@ -17,14 +17,14 @@
           @click="openLogin"
           class="text-slate-600 hover:text-black transition"
         >
-          Login
+          Войти
         </button>
 
         <button
           @click="openRegister"
           class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl transition"
         >
-          Start free
+          Начать бесплатно
         </button>
 
       </div>
@@ -45,7 +45,7 @@
 
       <p class="mt-6 text-slate-600 text-lg max-w-2xl leading-relaxed">
 
-        Создавайте персональные уроки,
+        Создавайте персональные задания,
         отслеживайте прогресс
         и помогайте детям учиться быстрее.
 

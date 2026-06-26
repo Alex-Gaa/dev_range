@@ -10,11 +10,11 @@
       <div>
 
         <h1 class="text-3xl font-bold">
-          Learning Analytics 📊
+          Аналитика обучения 📊
         </h1>
 
         <p class="text-slate-500 mt-2">
-          Track your performance and consistency
+          Отслеживайте свой прогресс и регулярность обучения
         </p>
 
       </div>
@@ -34,7 +34,7 @@
         <div class="bg-white border rounded-2xl p-6">
 
           <p class="text-slate-500">
-            Total Lessons
+            Всего заданий
           </p>
 
           <h2 class="text-4xl font-bold mt-3 text-blue-600">
@@ -46,7 +46,7 @@
         <div class="bg-white border rounded-2xl p-6">
 
           <p class="text-slate-500">
-            Completed
+            Выполнено
           </p>
 
           <h2 class="text-4xl font-bold mt-3 text-green-600">
@@ -58,7 +58,7 @@
         <div class="bg-white border rounded-2xl p-6">
 
           <p class="text-slate-500">
-            In Progress
+            В процессе
           </p>
 
           <h2 class="text-4xl font-bold mt-3 text-orange-500">
@@ -70,7 +70,7 @@
         <div class="bg-white border rounded-2xl p-6">
 
           <p class="text-slate-500">
-            Completion Rate
+            Процент выполнения
           </p>
 
           <h2 class="text-4xl font-bold mt-3 text-purple-600">
@@ -88,7 +88,7 @@
         <div class="flex justify-between mb-3">
 
           <span class="font-medium">
-            Overall Completion
+            Общий прогресс
           </span>
 
           <span class="text-slate-500">
@@ -127,7 +127,7 @@
       <div class="bg-white border rounded-2xl p-6">
 
         <h2 class="text-xl font-semibold mb-5">
-          Recent Activity
+          Последняя активность
         </h2>
 
         <div class="space-y-4">

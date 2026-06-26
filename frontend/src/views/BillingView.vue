@@ -34,13 +34,13 @@
         </div>
 
         <div class="flex justify-between">
-          <span>Использовано уроков</span>
+          <span>Использовано заданий</span>
           <span>
             {{ formatPlural(
               billingStore.subscription.lessons_used,
-              'урок использован',
-              'урока использовано',
-              'уроков использовано'
+              'задание использовано',
+              'задания использовано',
+              'заданий использовано'
             ) }}
           </span>
         </div>
@@ -78,7 +78,7 @@
 
           <ul class="text-sm text-slate-600 space-y-1">
             <li>
-              ✔ {{ formatPlural(plan.lessons, 'урок', 'урока', 'уроков') }}
+              ✔ {{ formatPlural(plan.lessons, 'задание', 'задания', 'заданий') }}
             </li>
             <li>
               ✔ {{ formatPlural(plan.children, 'ученик', 'ученика', 'учеников') }}

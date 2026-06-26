@@ -231,7 +231,7 @@
           v-if="lessons.length === 0"
           class="text-slate-500 text-center py-10"
         >
-          Пока нет уроков
+          Пока нет заданий
         </div>
 
         <div v-else class="space-y-4">
@@ -273,7 +273,7 @@
       <div class="bg-white rounded-2xl p-6 w-full max-w-md">
 
         <h3 class="text-xl font-bold mb-3">
-          Reset Password
+          Сбросить пароль
         </h3>
 
         <p class="text-slate-600 mb-5">

@@ -10,11 +10,11 @@
       <div>
 
         <h1 class="text-3xl font-bold">
-          Achievements 🏆
+          Достижения 🏆
         </h1>
 
         <p class="text-slate-500 mt-2">
-          Unlock rewards by learning consistently
+          Получайте награды за регулярное обучение
         </p>
 
       </div>
@@ -35,7 +35,7 @@
         <div class="bg-white border rounded-2xl p-6">
 
           <p class="text-slate-500">
-            Total Achievements
+            Всего достижений
           </p>
 
           <h2 class="text-4xl font-bold mt-3 text-blue-600">
@@ -49,7 +49,7 @@
         <div class="bg-white border rounded-2xl p-6">
 
           <p class="text-slate-500">
-            Unlocked
+            Получено
           </p>
 
           <h2 class="text-4xl font-bold mt-3 text-green-600">
@@ -63,7 +63,7 @@
         <div class="bg-white border rounded-2xl p-6">
 
           <p class="text-slate-500">
-            Total XP
+            Всего опыта
           </p>
 
           <h2 class="text-4xl font-bold mt-3 text-purple-600">
@@ -135,7 +135,7 @@
             >
 
               <span class="text-slate-500">
-                Progress
+                Прогресс
               </span>
 
               <span class="font-medium">
@@ -197,8 +197,8 @@
 
               {{
                 achievement.unlocked
-                  ? 'Unlocked'
-                  : 'Locked'
+                  ? 'Получено'
+                  : 'Заблокировано'
               }}
 
             </div>
@@ -253,8 +253,8 @@ const achievements = computed(() => [
 
   {
     icon: "🚀",
-    title: "First Lesson",
-    description: "Complete your first lesson",
+    title: "Первое задание",
+    description: "Завершите свое первое задание",
     progress: completedLessons.value,
     goal: 1,
     unlocked: completedLessons.value >= 1,
@@ -263,8 +263,8 @@ const achievements = computed(() => [
 
   {
     icon: "📚",
-    title: "Learning Beginner",
-    description: "Complete 3 lessons",
+    title: "Начинающий ученик",
+    description: "Завершите 3 задания",
     progress: completedLessons.value,
     goal: 3,
     unlocked: completedLessons.value >= 3,
@@ -273,8 +273,8 @@ const achievements = computed(() => [
 
   {
     icon: "🏆",
-    title: "Lesson Master",
-    description: "Complete 10 lessons",
+    title: "Мастер учебы",
+    description: "Завершите 10 заданий",
     progress: completedLessons.value,
     goal: 10,
     unlocked: completedLessons.value >= 10,
@@ -283,8 +283,8 @@ const achievements = computed(() => [
 
   {
     icon: "🔥",
-    title: "3 Day Streak",
-    description: "Study 3 days in a row",
+    title: "Серия 3 дня",
+    description: "Занимайтесь 3 дня подряд",
     progress: streak,
     goal: 3,
     unlocked: streak >= 3,
@@ -293,8 +293,8 @@ const achievements = computed(() => [
 
   {
     icon: "⚡",
-    title: "7 Day Streak",
-    description: "Study 7 days in a row",
+    title: "Серия 7 дней",
+    description: "Занимайтесь 7 дней подряд",
     progress: streak,
     goal: 7,
     unlocked: streak >= 7,
@@ -303,8 +303,8 @@ const achievements = computed(() => [
 
   {
     icon: "🎯",
-    title: "Halfway There",
-    description: "Reach 50% overall progress",
+    title: "На полпути",
+    description: "Достигните 50% общего прогресса",
     progress: completedLessons.value,
     goal: 5,
     unlocked: completedLessons.value >= 5,

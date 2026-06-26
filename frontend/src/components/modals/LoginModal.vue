@@ -36,7 +36,7 @@ const handleLogin = async () => {
   <div>
 
     <h2 class="text-3xl font-bold mb-6">
-      Login
+      Вход
     </h2>
     <div
       v-if="errorMessage"
@@ -60,7 +60,7 @@ const handleLogin = async () => {
         <input
           v-model="password"
           :type="showPassword ? 'text' : 'password'"
-          placeholder="Password"
+          placeholder="Пароль"
           class="w-full border p-3 rounded-xl pr-12"
         />
 
@@ -83,7 +83,7 @@ const handleLogin = async () => {
           @click="router.push('/forgot-password')"
           class="text-sm text-blue-600 hover:underline"
         >
-          Forgot password?
+          Забыли пароль?
         </button>
 
       </div>
@@ -92,18 +92,18 @@ const handleLogin = async () => {
         @click="handleLogin"
         class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl"
       >
-        Login
+        Войти
       </button>
 
       <p class="text-center text-slate-500">
 
-        No account?
+        Нет аккаунта?
 
         <button
           @click="emit('switch')"
           class="text-blue-600"
         >
-          Register
+          Регистрация
         </button>
 
       </p>

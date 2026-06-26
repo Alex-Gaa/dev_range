@@ -31,7 +31,7 @@
           text-center
         "
       >
-        Forgot Password
+        Забыли пароль?
       </h1>
 
       <p
@@ -42,8 +42,7 @@
           mb-8
         "
       >
-        Enter your email address and we'll send
-        you a password reset code.
+        Введите свой адрес электронной почты, и мы вышлем вам код для сброса пароля.
       </p>
 
       <form
@@ -53,29 +52,18 @@
 
         <div>
 
-          <label
-            class="
-              block
-              mb-2
-              text-sm
-              font-medium
-              text-slate-700
-            "
-          >
-            Email
-          </label>
-
-          <input
-            v-model="email"
-            type="email"
-            required
-            class="
-              w-full
-              border
-              p-3
-              rounded-xl
-            "
-          />
+        <input
+          v-model="email"
+          type="email"
+          placeholder="Введите адрес электронной почты"
+          required
+          class="
+            w-full
+            border
+            p-3
+            rounded-xl
+          "
+        />
 
         </div>
 
@@ -120,7 +108,7 @@
             transition
           "
         >
-          {{ loading ? "Sending..." : "Send Reset Code" }}
+          {{ loading ? "Отправка..." : "Отправить пароль на почту" }}
         </button>
 
       </form>

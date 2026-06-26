@@ -14,7 +14,7 @@
         </h1>
 
         <p class="text-slate-500 mt-2">
-          Выполняй уроки каждый день и увеличивай свою серию обучения
+          Выполняй задания каждый день и увеличивай свою серию обучения
         </p>
 
       </div>
@@ -317,8 +317,8 @@ const tasks = computed(() => [
 
   {
     id: 1,
-    title: "Пройти 1 урок",
-    description: "Заверши хотя бы один урок сегодня",
+    title: "Пройти 1 задание",
+    description: "Заверши хотя бы одно задание сегодня",
     icon: "📚",
     completed: completedToday.value >= 1,
   },
@@ -326,7 +326,7 @@ const tasks = computed(() => [
   {
     id: 2,
     title: "Выполнить дневную цель",
-    description: `Пройди ${dailyGoal} урока`,
+    description: `Пройди ${dailyGoal} задания`,
     icon: "🎯",
     completed: completedToday.value >= dailyGoal,
   },

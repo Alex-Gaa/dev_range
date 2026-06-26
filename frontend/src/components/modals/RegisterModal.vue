@@ -67,7 +67,7 @@ const handleRegister = async () => {
   <div>
 
     <h2 class="text-3xl font-bold mb-6">
-      Register
+      Регистрация
     </h2>
     <div
       v-if="successMessage"
@@ -82,7 +82,7 @@ const handleRegister = async () => {
       <input
         v-model="form.first_name"
         type="text"
-        placeholder="First name"
+        placeholder="Имя"
         class="w-full border p-3 rounded-xl"
       />
       <p
@@ -95,7 +95,7 @@ const handleRegister = async () => {
       <input
         v-model="form.last_name"
         type="text"
-        placeholder="Last name"
+        placeholder="Фамилия"
         class="w-full border p-3 rounded-xl"
       />
       <p
@@ -123,7 +123,7 @@ const handleRegister = async () => {
         <input
           v-model="form.password"
           :type="showPassword ? 'text' : 'password'"
-          placeholder="Password"
+          placeholder="Пароль"
           class="w-full border p-3 rounded-xl pr-12"
         />
         <p
@@ -146,7 +146,7 @@ const handleRegister = async () => {
       <input
         v-model="form.password2"
         :type="showPassword ? 'text' : 'password'"
-        placeholder="Confirm password"
+        placeholder="Повторите пароль"
         class="w-full border p-3 rounded-xl"
       />
       <p
@@ -170,7 +170,7 @@ const handleRegister = async () => {
           rounded-xl
         "
       >
-        Register
+        Регистрация
       </button>
 
 
@@ -178,13 +178,13 @@ const handleRegister = async () => {
 
       <p class="text-center text-slate-500">
 
-        Already have account?
+        Уже есть аккаунт?
 
         <button
           @click="emit('switch')"
           class="text-blue-600"
         >
-          Login
+          Войти
         </button>
 
       </p>
@@ -200,37 +200,37 @@ const handleRegister = async () => {
         "
       >
         <p class="font-semibold mb-2">
-          Password requirements:
+          Требования к паролю:
         </p>
 
         <p>
           {{ passwordRules.length ? "✅" : "❌" }}
-          Minimum 8 characters
+          Минимум 8 символов
         </p>
 
         <p>
           {{ passwordRules.uppercase ? "✅" : "❌" }}
-          One uppercase letter
+          Хотя бы одна заглавная буква
         </p>
 
         <p>
           {{ passwordRules.lowercase ? "✅" : "❌" }}
-          One lowercase letter
+          Хотя бы одна строчная буква
         </p>
 
         <p>
           {{ passwordRules.number ? "✅" : "❌" }}
-          One number
+          Хотя бы одна цифра
         </p>
 
         <p>
           {{ passwordRules.special ? "✅" : "❌" }}
-          One special character
+          Хотя бы один специальный символ
         </p>
 
         <p>
           {{ passwordRules.match ? "✅" : "❌" }}
-          Passwords match
+          Пароли совпадают
         </p>
       </div>
 
