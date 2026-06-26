@@ -22,7 +22,7 @@
         <div class="flex justify-between">
           <span>Тариф</span>
           <span class="font-medium">
-            {{ billingStore.subscription.plan_name }}
+            {{ billingStore.subscription.plan_name || billingStore.subscription.plan }}
           </span>
         </div>
 
@@ -50,9 +50,10 @@
           <span>{{ formatDate(billingStore.subscription.expires_at) }}</span>
         </div>
 
+        <!-- UPGRADE (FIXED) -->
         <button
-          v-if="billingStore.subscription.plan !== 'family'"
-          @click="openFamilyCheckout"
+          v-if="featuredPlan"
+          @click="openCheckout(featuredPlan)"
           class="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl"
         >
           Улучшить тариф
@@ -70,10 +71,6 @@
           <h3 class="text-xl font-semibold">
             {{ plan.title }}
           </h3>
-
-          <p class="text-slate-500">
-            {{ plan.description }}
-          </p>
 
           <div class="text-2xl font-bold">
             {{ plan.price }} ₽
@@ -154,6 +151,7 @@ const billingStore = useBillingStore()
 
 const plans = ref([])
 const checkoutPlan = ref(null)
+const featuredCode = ref(null)
 
 /* LOAD */
 onMounted(async () => {
@@ -161,23 +159,22 @@ onMounted(async () => {
 
   const res = await api.get("/billing/plans/")
 
-  plans.value = Object.entries(res.data).map(([id, plan]) => ({
-    id,
-    title: plan.name,
-    description: "",
-    price: plan.price,
-    lessons: plan.lessons_limit,
-    children: plan.children_limit
+  // FIX: берем featured с backend
+  featuredCode.value = res.data.featured
+
+  plans.value = (res.data.plans || []).map(p => ({
+    id: p.code,
+    title: p.name,
+    price: p.price,
+    lessons: p.lessons_limit,
+    children: p.children_limit
   }))
 })
 
-/* CURRENT PLAN */
-const currentPlan = computed(() =>
-  plans.value.find(p => p.id === billingStore.subscription?.plan)
-)
-
-/* FAMILY PLAN FIX */
-
+/* FEATURED PLAN (FIXED) */
+const featuredPlan = computed(() => {
+  return plans.value.find(p => p.id === featuredCode.value)
+})
 
 /* CHECKOUT */
 const openCheckout = (plan) => {
@@ -212,19 +209,6 @@ const formatPlural = (count, one, few, many) => {
       return `${count} ${many}`
   }
 }
-
-const openFamilyCheckout = () => {
-  const family = plans.value.find(p => p.id === "family")
-
-  if (!family) {
-    console.warn("Family plan not loaded yet")
-    return
-  }
-
-  checkoutPlan.value = family
-}
-
-
 
 const formatDate = (date) => {
   if (!date) return ""

@@ -61,6 +61,7 @@ class PlanAdmin(admin.ModelAdmin):
         "subjects_limit",
         "lessons_limit",
         "is_active",
+        "is_featured",
     )
 
     list_editable = (
@@ -69,6 +70,8 @@ class PlanAdmin(admin.ModelAdmin):
         "subjects_limit",
         "lessons_limit",
         "is_active",
+        "is_featured",
     )
 
-    list_filter = ("is_active",)
+    list_filter = ("is_active", "is_featured")
+    search_fields = ("code", "name")

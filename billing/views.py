@@ -13,21 +13,24 @@ from billing.services import activate_subscription, get_or_create_subscription
 
 class PlansView(APIView):
     def get(self, request):
-
         plans = Plan.objects.filter(is_active=True)
 
-        data = {}
+        featured_plan = plans.filter(is_featured=True).first()
 
-        for plan in plans:
-            data[plan.code] = {
-                "name": plan.name,
-                "price": plan.price,
-                "children_limit": plan.children_limit,
-                "subjects_limit": plan.subjects_limit,
-                "lessons_limit": plan.lessons_limit,
-            }
-
-        return Response(data)
+        return Response({
+            "plans": [
+                {
+                    "code": p.code,
+                    "name": p.name,
+                    "price": p.price,
+                    "lessons_limit": p.lessons_limit,
+                    "children_limit": p.children_limit,
+                    "subjects_limit": p.subjects_limit,
+                }
+                for p in plans
+            ],
+            "featured": featured_plan.code if featured_plan else None
+        })
 
 class TestUpgradeView(APIView):
 
