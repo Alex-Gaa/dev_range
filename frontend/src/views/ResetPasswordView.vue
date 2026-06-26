@@ -42,8 +42,7 @@
           mb-8
         "
       >
-        Enter the verification code from your email
-        and choose a new password.
+        Введите код подтверждения из письма и придумайте новый пароль.
       </p>
 
       <form
@@ -53,21 +52,10 @@
 
         <div>
 
-          <label
-            class="
-              block
-              mb-2
-              text-sm
-              font-medium
-              text-slate-700
-            "
-          >
-            Email
-          </label>
-
           <input
             v-model="email"
             type="email"
+            placeholder="Введите адрес электронной почты"
             required
             class="
               w-full
@@ -80,22 +68,11 @@
         </div>
 
         <div>
-
-          <label
-            class="
-              block
-              mb-2
-              text-sm
-              font-medium
-              text-slate-700
-            "
-          >
-            Verification Code
-          </label>
 
           <input
             v-model="code"
             type="text"
+            placeholder="Введите код подтверждения"
             required
             class="
               w-full
@@ -109,83 +86,61 @@
 
         <div>
 
-          <label
-            class="
-              block
-              mb-2
-              text-sm
-              font-medium
-              text-slate-700
-            "
-          >
-            New Password
-          </label>
+          <div class="relative">
 
-            <div class="relative">
+            <input
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              placeholder="Введите новый пароль"
+              required
+              class="
+                w-full
+                border
+                p-3
+                rounded-xl
+                pr-12
+              "
+            />
 
-              <input
-                v-model="password"
-                :type="showPassword ? 'text' : 'password'"
-                required
-                class="
-                  w-full
-                  border
-                  p-3
-                  rounded-xl
-                  pr-12
-                "
-              />
+            <button
+              type="button"
+              @click="showPassword = !showPassword"
+              class="absolute right-4 top-3 text-slate-500"
+            >
+              {{ showPassword ? "🙈" : "👁️" }}
+            </button>
 
-              <button
-                type="button"
-                @click="showPassword = !showPassword"
-                class="absolute right-4 top-3 text-slate-500"
-              >
-                {{ showPassword ? "🙈" : "👁️" }}
-              </button>
-
-            </div>
+          </div>
 
         </div>
 
         <div>
 
-          <label
-            class="
-              block
-              mb-2
-              text-sm
-              font-medium
-              text-slate-700
-            "
-          >
-            Confirm Password
-          </label>
+          <div class="relative">
 
-            <div class="relative">
+            <input
+              v-model="password2"
+              :type="showPassword2 ? 'text' : 'password'"
+              placeholder="Повторите новый пароль"
+              required
+              class="
+                w-full
+                border
+                p-3
+                rounded-xl
+                pr-12
+              "
+            />
 
-              <input
-                v-model="password2"
-                :type="showPassword2 ? 'text' : 'password'"
-                required
-                class="
-                  w-full
-                  border
-                  p-3
-                  rounded-xl
-                  pr-12
-                "
-              />
+            <button
+              type="button"
+              @click="showPassword2 = !showPassword2"
+              class="absolute right-4 top-3 text-slate-500"
+            >
+              {{ showPassword2 ? "🙈" : "👁️" }}
+            </button>
 
-              <button
-                type="button"
-                @click="showPassword2 = !showPassword2"
-                class="absolute right-4 top-3 text-slate-500"
-              >
-                {{ showPassword2 ? "🙈" : "👁️" }}
-              </button>
-
-            </div>
+          </div>
 
         </div>
 
@@ -201,38 +156,39 @@
         >
 
           <p class="font-semibold mb-2">
-            Password requirements:
+            Требования к паролю:
           </p>
 
           <p>
             {{ hasMinLength ? "✅" : "❌" }}
-            Minimum 8 characters
+            Минимум 8 символов
           </p>
 
           <p>
             {{ hasUppercase ? "✅" : "❌" }}
-            One uppercase letter
+            Хотя бы одна заглавная буква
           </p>
 
           <p>
             {{ hasLowercase ? "✅" : "❌" }}
-            One lowercase letter
+            Хотя бы одна строчная буква
           </p>
 
           <p>
             {{ hasNumber ? "✅" : "❌" }}
-            One number
+            Хотя бы одна цифра
           </p>
 
           <p>
             {{ hasSpecial ? "✅" : "❌" }}
-            One special character
+            Хотя бы один специальный символ
           </p>
 
           <p>
             {{ passwordsMatch ? "✅" : "❌" }}
-            Passwords match
+            Пароли совпадают
           </p>
+
         </div>
 
         <div
@@ -278,7 +234,7 @@
             transition
           "
         >
-          {{ loading ? "Saving..." : "Reset Password" }}
+          {{ loading ? "Сохранение..." : "Сбросить пароль" }}
         </button>
 
       </form>
