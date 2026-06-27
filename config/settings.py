@@ -80,7 +80,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Указываем, каким HTTPS-адресам можно доверять (для CSRF-защиты)
-CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = [
+    "https://e-luno.ru",
+    "https://www.e-luno.ru",
+]
 
 # Говорим Django использовать безопасные куки
 SESSION_COOKIE_SECURE = False
