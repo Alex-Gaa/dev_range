@@ -8,7 +8,7 @@
     >
 
       <div class="text-2xl font-bold text-slate-900">
-        Отличник
+        LUNO
       </div>
 
       <div class="space-x-4">
