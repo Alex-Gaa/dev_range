@@ -26,11 +26,23 @@ jobs:
         run: |
           docker push alexandrgrebennikov/dev-range-backend:latest
 
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
+      # 1. СНАЧАЛА копируем инфраструктуру
+      - name: Copy nginx + compose
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: admin_diego
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "nginx.conf,docker-compose.yml"
+          target: "/home/admin_diego/dev_range/"
+
+      # 2. ПОТОМ деплой
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -41,9 +53,7 @@ jobs:
             cd /home/admin_diego/dev_range
 
             docker compose pull
-
             docker compose down --remove-orphans
-
             docker compose up -d --force-recreate
 
             docker image prune -f
