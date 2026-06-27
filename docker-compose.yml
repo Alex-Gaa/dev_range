@@ -94,7 +94,8 @@ services:
       - static_volume:/app/staticfiles:ro
 
       # Сертификаты Let's Encrypt
-      - /etc/letsencrypt/live/e-luno.ru:/etc/nginx/ssl:ro
+
+      - /etc/letsencrypt/archive/e-luno.ru:/etc/nginx/ssl:ro
 
 
 volumes:
