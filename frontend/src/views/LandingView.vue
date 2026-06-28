@@ -38,7 +38,7 @@
         class="text-3xl sm:text-4xl lg:text-5xl font-bold max-w-3xl leading-tight text-slate-900"
       >
 
-        AI объясняет школьные темы так,
+        LUNO AI объясняет школьные темы так,
         чтобы ребёнок понял за 10 минут!
 
       </h1>

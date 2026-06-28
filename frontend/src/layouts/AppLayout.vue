@@ -26,16 +26,17 @@
         <router-link
           to="/dashboard"
           @click="sidebarOpen = false"
-          class="
-            text-2xl
-            font-bold
-            text-blue-600
-            hover:text-blue-700
-            transition
-            inline-block
-          "
+          class="inline-flex items-center gap-2"
         >
-          LUNO
+          <img
+            :src="lunoLogo"
+            alt="LUNO"
+            class="h-10 w-auto"
+          />
+
+          <span class="text-xl font-bold text-blue-600">
+            LUNO
+          </span>
         </router-link>
 
       </div>
@@ -221,7 +222,7 @@ import {
   useRouter,
   useRoute,
 } from "vue-router"
-
+import lunoLogo from "@/assets/logo-luno.png"
 import { useAuthStore } from "@/stores/auth"
 import { sidebarConfig } from "@/config/sidebar"
 
