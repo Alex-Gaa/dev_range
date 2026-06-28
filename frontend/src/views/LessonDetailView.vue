@@ -91,7 +91,7 @@
       <div class="bg-white border rounded-2xl p-8">
 
         <h2 class="text-xl font-semibold mb-6">
-          Lesson content
+          {{ t.content }}
         </h2>
 
         <!-- TEXT LESSON -->
@@ -119,7 +119,7 @@
           <!-- THEORY -->
           <div>
             <h4 class="text-xl font-semibold mb-3">
-              Theory
+              {{ t.theory }}
             </h4>
 
             <p class="text-slate-700 leading-8">
@@ -131,7 +131,7 @@
           <div v-if="parsedContent.examples?.length">
 
             <h4 class="text-xl font-semibold mb-4">
-              Examples
+              {{ t.examples }}
             </h4>
 
             <div class="space-y-4">
@@ -163,7 +163,7 @@
           >
 
             <h4 class="text-xl font-semibold mb-3">
-              Activity 🚀
+              {{ t.activity }}
             </h4>
 
             <p class="text-slate-700">
@@ -176,7 +176,7 @@
           <div v-if="parsedContent.quiz?.length">
 
             <h4 class="text-xl font-semibold mb-4">
-              Quiz 🧠
+              {{ t.quiz }}
             </h4>
 
             <div class="space-y-5">
@@ -216,7 +216,7 @@
           >
 
             <h4 class="text-xl font-semibold mb-3">
-              Summary 🎉
+              {{ t.summary }}
             </h4>
 
             <p class="text-slate-700">
@@ -247,14 +247,14 @@
           class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-xl"
           @click="saveLesson"
         >
-          Save
+          {{ t.save }}
         </button>
 
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl"
           @click="removeLesson"
         >
-          Delete
+          {{ t.delete }}
         </button>
 
         <button
@@ -262,7 +262,7 @@
           class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl"
           @click="completeLesson"
         >
-          Complete
+          {{ t.complete }}
         </button>
 
       </div>
@@ -278,14 +278,14 @@
           class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl"
           @click="completeLesson"
         >
-          Mark as completed
+          {{ t.markCompleted }}
         </button>
 
         <div
           v-else
           class="px-5 py-3 rounded-xl bg-green-100 text-green-700 font-medium"
         >
-          Lesson completed 🎉
+          {{ t.completed }}
         </div>
 
       </div>
@@ -452,11 +452,10 @@ const completeLesson = async () => {
 /* STATUS */
 const formatStatus = (status) => {
   switch (status) {
-    case "completed": return "Выполнено"
-    case "in_progress": return "В процессе"
-    default: return "Черновик"
+    case "completed": return t.status.completed
+    case "in_progress": return t.status.in_progress
+    default: return t.status.draft
   }
-}
 
 const statusClass = computed(() => {
 
@@ -471,4 +470,28 @@ const statusClass = computed(() => {
       return "bg-slate-100 text-slate-700"
   }
 })
+const t = {
+  content: "Lesson content",
+  theory: "Theory",
+  examples: "Examples",
+  activity: "Activity 🚀",
+  quiz: "Quiz 🧠",
+  summary: "Summary 🎉",
+
+  cancel: "Cancel",
+  edit: "Edit",
+  save: "Save",
+  delete: "Delete",
+  complete: "Complete",
+  markCompleted: "Mark as completed",
+  completed: "Lesson completed 🎉",
+
+  status: {
+    draft: "Draft",
+    in_progress: "In progress",
+    completed: "Completed",
+  }
+}
+
+
 </script>

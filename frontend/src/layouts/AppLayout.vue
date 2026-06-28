@@ -35,7 +35,7 @@
             inline-block
           "
         >
-          Отличник
+          LUNO
         </router-link>
 
       </div>
