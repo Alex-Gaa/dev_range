@@ -474,27 +474,26 @@ const statusClass = computed(() => {
   }
 })
 const t = {
-  content: "Lesson content",
-  theory: "Theory",
-  examples: "Examples",
-  activity: "Activity 🚀",
-  quiz: "Quiz 🧠",
-  summary: "Summary 🎉",
+  content: "Содержание урока",
+  theory: "Теория",
+  examples: "Примеры",
+  activity: "Активность 🚀",
+  quiz: "Викторина 🧠",
+  summary: "Итоги 🎉",
 
-  cancel: "Cancel",
-  edit: "Edit",
-  save: "Save",
-  delete: "Delete",
-  complete: "Complete",
-  markCompleted: "Mark as completed",
-  completed: "Lesson completed 🎉",
+  cancel: "Отмена",
+  edit: "Редактировать",
+  save: "Сохранить",
+  delete: "Удалить",
+  complete: "Завершить",
+  markCompleted: "Отметить как выполненный",
+  completed: "Урок выполнен 🎉",
 
   status: {
-    draft: "Draft",
-    in_progress: "In progress",
-    completed: "Completed",
+    draft: "Черновик",
+    in_progress: "В процессе",
+    completed: "Завершён",
   }
 }
-
 
 </script>
