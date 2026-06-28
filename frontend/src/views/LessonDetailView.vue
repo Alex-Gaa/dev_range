@@ -452,11 +452,14 @@ const completeLesson = async () => {
 /* STATUS */
 const formatStatus = (status) => {
   switch (status) {
-    case "completed": return t.status.completed
-    case "in_progress": return t.status.in_progress
-    default: return t.status.draft
+    case "completed":
+      return t.status.completed
+    case "in_progress":
+      return t.status.in_progress
+    default:
+      return t.status.draft
   }
-
+}
 const statusClass = computed(() => {
 
   if (!lesson.value) return ""
